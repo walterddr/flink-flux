@@ -34,7 +34,17 @@ under the License.
 	<packaging>jar</packaging>
 
 	<dependencies>
+		<!-- Core streaming API -->
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
+		</dependency>
 
+		<!-- Apache Storm API -->
+		<dependency>
+			<groupId>org.apache.storm</groupId>
+			<artifactId>flux-core</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>
