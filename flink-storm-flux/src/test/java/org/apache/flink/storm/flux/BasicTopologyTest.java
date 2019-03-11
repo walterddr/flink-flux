@@ -1,23 +1,24 @@
 package org.apache.flink.storm.flux;
 
+import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.flink.storm.flux.parser.FluxParser;
 import org.apache.storm.Config;
 import org.apache.storm.flux.model.ExecutionContext;
 import org.apache.storm.flux.model.TopologyDef;
-import org.apache.storm.generated.StormTopology;
+import org.apache.storm.topology.TopologyBuilder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
 
-public class BasicTCKTest {
+public class BasicTopologyTest {
 
   @Test
-  public void testTCK() throws Exception {
-    TopologyDef topologyDef = FluxParser.parseResource("/configs/tck.yaml", false, true, null, false);
+  public void testBasicTopologyGen() throws Exception {
+    TopologyDef topologyDef = FluxParser.parseResource("/configs/basic_topology.yaml", false, true, null, false);
     Config conf = FluxBuilder.buildConfig(topologyDef);
     ExecutionContext context = new ExecutionContext(topologyDef, conf);
-    StormTopology topology = FluxBuilder.buildTopology(context);
+    TopologyBuilder builder = FluxBuilder.createTopologyBuilder(context);
+    FlinkTopology topology = FlinkTopology.createTopology(builder);
     assertNotNull(topology);
-    topology.validate();
   }
 }

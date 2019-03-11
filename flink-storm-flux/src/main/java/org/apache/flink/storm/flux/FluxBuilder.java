@@ -75,10 +75,10 @@ public class FluxBuilder {
      * Given a topology definition, return a Storm topology that can be run either locally or remotely.
      */
     @PublicEvolving
-    public static StormTopology buildTopology(ExecutionContext context) throws IllegalAccessException,
+    public static TopologyBuilder createTopologyBuilder(ExecutionContext context) throws IllegalAccessException,
             InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, NoSuchFieldException {
 
-        StormTopology topology = null;
+        TopologyBuilder builder = null;
         TopologyDef topologyDef = context.getTopologyDef();
 
         if(!topologyDef.validate()){
@@ -95,7 +95,7 @@ public class FluxBuilder {
             // This is a DSL (YAML, etc.) topology...
             LOG.info("Detected DSL topology...");
 
-            TopologyBuilder builder = new TopologyBuilder();
+            builder = new TopologyBuilder();
 
             // create spouts
             buildSpouts(context, builder);
@@ -106,16 +106,15 @@ public class FluxBuilder {
 
             // process stream definitions
             buildStreamDefinitions(context, builder);
-
-            topology = builder.createTopology();
         } else {
             // user class supplied...
             // this also provides a bridge to Trident...
             LOG.info("A topology source has been specified...");
-            ObjectDef def = topologyDef.getTopologySource();
-            topology = buildExternalTopology(def, context);
+//            ObjectDef def = topologyDef.getTopologySource();
+//            topology = buildExternalTopology(def, context);
+            throw new UnsupportedOperationException("Currently external topology builder is not supported!");
         }
-        return topology;
+        return builder;
     }
 
     /**
