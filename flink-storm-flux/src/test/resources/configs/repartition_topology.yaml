@@ -24,7 +24,7 @@
 
 # topology definition
 # name to be used when submitting
-name: "yaml-topology"
+name: "repartition-topology"
 
 # Components
 # Components are analagous to Spring beans. They are meant to be used as constructor,
@@ -36,9 +36,6 @@ name: "yaml-topology"
 #      foo: "bar"
 #      bar: "foo"
 
-# NOTE: We may want to consider some level of spring integration. For example, allowing component references
-# to a spring `ApplicationContext`.
-
 # topology configuration
 # this will be passed to the submitter as a map of config options
 #
@@ -49,45 +46,26 @@ config:
 # spout definitions
 spouts:
   - id: "spout-1"
-    className: "org.apache.storm.testing.TestWordSpout"
+    className: "org.apache.flink.storm.flux.utils.TestWordSpout"
     parallelism: 1
     # ...
 
 # bolt definitions
 bolts:
   - id: "bolt-1"
-    className: "org.apache.storm.testing.TestWordCounter"
-    parallelism: 1
-    # ...
-
-  - id: "bolt-2"
     className: "org.apache.storm.flux.wrappers.bolts.LogInfoBolt"
-    parallelism: 1
+    parallelism: 16
     # ...
 
 #stream definitions
 # stream definitions define connections between spouts and bolts.
 # note that such connections can be cyclical
 streams:
-  - name: "spout-1 --> bolt-1" # name isn't used (placeholder for logging, UI, etc.)
-#    id: "connection-1"
+  - name: "spout-1 --> bolt-1"   # name isn't used (placeholder for logging, UI, etc.)
     from: "spout-1"
     to: "bolt-1"
     grouping:
-      type: FIELDS
-      args: ["word"]
-
-  - name: "bolt-1 --> bolt2"
-    from: "bolt-1"
-    to: "bolt-2"
-    grouping:
-      type: CUSTOM
-      customClass:
-        className: "org.apache.storm.testing.NGrouping"
-        constructorArgs:
-          - 1
-
-
+      type: SHUFFLE
 
 
 

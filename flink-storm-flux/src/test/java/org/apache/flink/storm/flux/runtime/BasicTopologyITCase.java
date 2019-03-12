@@ -14,8 +14,19 @@ import static org.junit.Assert.assertNotNull;
 public class BasicTopologyITCase {
 
   @Test
-  public void testBasicTopologyGen() throws Exception {
+  public void testBasicTopologyExec() throws Exception {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/basic_topology.yaml", false, true, null, false);
+    Config conf = FluxBuilder.buildConfig(topologyDef);
+    ExecutionContext context = new ExecutionContext(topologyDef, conf);
+    TopologyBuilder builder = FluxBuilder.createTopologyBuilder(context);
+    FlinkTopology topology = FlinkTopology.createTopology(builder);
+    assertNotNull(topology);
+    topology.execute();
+  }
+
+  @Test
+  public void testRepartitionTopologyExec() throws Exception {
+    TopologyDef topologyDef = FluxParser.parseResource("/configs/repartition_topology.yaml", false, true, null, false);
     Config conf = FluxBuilder.buildConfig(topologyDef);
     ExecutionContext context = new ExecutionContext(topologyDef, conf);
     TopologyBuilder builder = FluxBuilder.createTopologyBuilder(context);
