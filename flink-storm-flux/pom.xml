@@ -51,6 +51,20 @@ under the License.
 			<groupId>org.apache.storm</groupId>
 			<artifactId>flux-core</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.storm</groupId>
+			<artifactId>storm-kafka</artifactId>
+			<version>1.0.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.11</artifactId>
+			<version>0.9.0.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>
