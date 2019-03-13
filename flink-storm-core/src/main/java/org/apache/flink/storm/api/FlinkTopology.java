@@ -156,7 +156,8 @@ public class FlinkTopology {
 		availableInputs.clear();
 
 		// Storm defaults to parallelism 1
-		env.setParallelism(1);
+		// TODO @rongr remove this constrain
+		// env.setParallelism(1);
 
 		/* Translation of topology */
 
