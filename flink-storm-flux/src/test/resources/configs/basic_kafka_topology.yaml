@@ -47,12 +47,12 @@ components:
   - "localhost:2181"
 
 - id: "spoutConfig"
-  className: "org.apache.storm.kafka.SpoutConfig"
+  className: "org.apache.flink.storm.flux.utils.KafkaSpoutConfig"
   constructorArgs:
   # brokerHosts
   - ref: "zkHosts"
   # topic
-  - "myKafkaTopic"
+  - "input-topic"
   # zkRoot
   - "/kafkaSpout"
   # id
@@ -62,6 +62,17 @@ components:
     value: true
   - name: "scheme"
     ref: "stringMultiScheme"
+
+- id: "boltConfig"
+  className: "org.apache.flink.storm.flux.utils.KafkaBoltConfig"
+  constructorArgs:
+  # brokerHosts
+  - "localhost:2181"
+  # topic
+  - "output-topic"
+  # id
+  - "myId"
+
 
 # topology configuration
 # this will be passed to the submitter as a map of config options
@@ -79,17 +90,19 @@ spouts:
 
 # bolt definitions
 bolts:
-- id: "console-bolt"
-  className: "org.apache.flink.storm.flux.utils.ConsoleOutputBolt"
+- id: "kafka-bolt"
+  className: "org.apache.flink.storm.flux.bolt.KafkaStringBolt"
   parallelism: 4
+  constructorArgs:
+  - ref: "boltConfig"
 
 #stream definitions
 # stream definitions define connections between spouts and bolts.
 # note that such connections can be cyclical
 streams:
-  - name: "kafka-spout --> console-bolt"   # name isn't used (placeholder for logging, UI, etc.)
+  - name: "kafka-spout --> kafka-bolt"   # name isn't used (placeholder for logging, UI, etc.)
     from: "kafka-spout"
-    to: "console-bolt"
+    to: "kafka-bolt"
     grouping:
       type: SHUFFLE
 

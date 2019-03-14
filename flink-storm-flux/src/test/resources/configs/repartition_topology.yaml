@@ -53,7 +53,7 @@ spouts:
 # bolt definitions
 bolts:
   - id: "bolt-1"
-    className: "org.apache.flink.storm.flux.utils.ConsoleOutputBolt"
+    className: "org.apache.flink.storm.flux.bolt.ConsoleOutputBolt"
     parallelism: 4
     # ...
 

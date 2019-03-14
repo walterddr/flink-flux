@@ -1,6 +1,7 @@
-package org.apache.flink.storm.flux;
+package org.apache.flink.storm.flux.topology;
 
 import org.apache.flink.storm.api.FlinkTopology;
+import org.apache.flink.storm.flux.FluxBuilder;
 import org.apache.flink.storm.flux.parser.FluxParser;
 import org.apache.storm.Config;
 import org.apache.storm.flux.model.ExecutionContext;

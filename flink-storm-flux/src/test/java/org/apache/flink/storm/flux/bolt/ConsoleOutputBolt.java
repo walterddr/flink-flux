@@ -1,4 +1,4 @@
-package org.apache.flink.storm.flux.utils;
+package org.apache.flink.storm.flux.bolt;
 
 import org.apache.storm.topology.BasicOutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;

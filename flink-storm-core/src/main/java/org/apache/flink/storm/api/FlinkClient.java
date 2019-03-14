@@ -340,7 +340,7 @@ public class FlinkClient {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	static void addStormConfigToTopology(FlinkTopology topology, Map conf) throws ClassNotFoundException {
+	public static void addStormConfigToTopology(FlinkTopology topology, Map conf) throws ClassNotFoundException {
 		if (conf != null) {
 			ExecutionConfig flinkConfig = topology.getExecutionEnvironment().getConfig();
 
