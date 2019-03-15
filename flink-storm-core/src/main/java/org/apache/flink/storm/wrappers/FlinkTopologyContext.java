@@ -122,7 +122,9 @@ final class FlinkTopologyContext extends TopologyContext {
 	 */
 	@Override
 	public <T extends IMetric> T registerMetric(final String name, final T metric, final int timeBucketSizeInSecs) {
-		throw new UnsupportedOperationException("Metrics are not supported by Flink");
+		// TODO: @rongr Fixme: work around kafka spout needs registered metric, disabled and return null for now
+		// throw new UnsupportedOperationException("Metrics are not supported by Flink");
+		return null;
 	}
 
 	/**

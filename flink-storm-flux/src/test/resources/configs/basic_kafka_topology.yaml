@@ -66,8 +66,8 @@ components:
 - id: "boltConfig"
   className: "org.apache.flink.storm.flux.utils.KafkaBoltConfig"
   constructorArgs:
-  # brokerHosts
-  - "localhost:2181"
+  # boostrapServers
+  - "localhost:9092"
   # topic
   - "output-topic"
   # id
@@ -96,17 +96,26 @@ bolts:
   constructorArgs:
   - ref: "boltConfig"
 
+- id: "console-bolt"
+  className: "org.apache.flink.storm.flux.bolt.ConsoleOutputBolt"
+  parallelism: 4
+  # ...
+
 #stream definitions
 # stream definitions define connections between spouts and bolts.
 # note that such connections can be cyclical
 streams:
-  - name: "kafka-spout --> kafka-bolt"   # name isn't used (placeholder for logging, UI, etc.)
-    from: "kafka-spout"
-    to: "kafka-bolt"
-    grouping:
-      type: SHUFFLE
+- name: "kafka-spout --> console-bolt"   # name isn't used (placeholder for logging, UI, etc.)
+  from: "kafka-spout"
+  to: "console-bolt"
+  grouping:
+    type: SHUFFLE
 
-
+- name: "kafka-spout --> kafka-bolt"
+  from: "kafka-spout"
+  to: "kafka-bolt"
+  grouping:
+    type: SHUFFLE
 
 
 

@@ -27,12 +27,15 @@ public class KafkaTopologyITCase {
     FlinkTopology topology = FlinkTopology.createTopology(builder);
     assertNotNull(topology);
 
+    // TODO: Testing Kafka logic, need global zookeeper configuration
     Map extraConf = new HashMap();
     extraConf.put(Config.STORM_ZOOKEEPER_SESSION_TIMEOUT, 1000);
     extraConf.put(Config.STORM_ZOOKEEPER_CONNECTION_TIMEOUT, 1000);
     extraConf.put(Config.STORM_ZOOKEEPER_RETRY_TIMES, 4);
     extraConf.put(Config.STORM_ZOOKEEPER_RETRY_INTERVAL, 5);
     conf.putAll(extraConf);
+
+    // TODO: Testing kafka logic, to add kafka input topic creation and programmatic produce to topic
 
     FlinkClient.addStormConfigToTopology(topology, extraConf);
     topology.execute();
