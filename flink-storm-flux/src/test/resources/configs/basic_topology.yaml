@@ -58,7 +58,7 @@ bolts:
     # ...
 
   - id: "bolt-2"
-    className: "org.apache.storm.flux.wrappers.bolts.LogInfoBolt"
+    className: "org.apache.flink.storm.flux.utils.bolt.ConsoleOutputBolt"
     parallelism: 1
     # ...
 
