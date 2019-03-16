@@ -91,13 +91,13 @@ spouts:
 # bolt definitions
 bolts:
 - id: "kafka-bolt"
-  className: "org.apache.flink.storm.flux.bolt.KafkaStringBolt"
+  className: "org.apache.flink.storm.flux.utils.bolt.KafkaStringBolt"
   parallelism: 4
   constructorArgs:
   - ref: "boltConfig"
 
 - id: "console-bolt"
-  className: "org.apache.flink.storm.flux.bolt.ConsoleOutputBolt"
+  className: "org.apache.flink.storm.flux.utils.bolt.ConsoleOutputBolt"
   parallelism: 4
   # ...
 

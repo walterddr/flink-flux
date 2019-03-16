@@ -1,4 +1,4 @@
-package org.apache.flink.storm.flux.bolt;
+package org.apache.flink.storm.flux.utils.bolt;
 
 import org.apache.flink.storm.flux.utils.KafkaBoltConfig;
 import org.apache.kafka.clients.producer.Callback;
