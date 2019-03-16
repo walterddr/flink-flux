@@ -2,10 +2,10 @@ package org.apache.flink.storm.flux.runtime;
 
 import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.flink.storm.flux.FluxBuilder;
+import org.apache.flink.storm.flux.model.ExecutionContext;
+import org.apache.flink.storm.flux.model.TopologyDef;
 import org.apache.flink.storm.flux.parser.FluxParser;
 import org.apache.storm.Config;
-import org.apache.storm.flux.model.ExecutionContext;
-import org.apache.storm.flux.model.TopologyDef;
 import org.apache.storm.topology.TopologyBuilder;
 import org.junit.Test;
 

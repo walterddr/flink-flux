@@ -46,11 +46,17 @@ under the License.
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- Apache Storm API -->
 		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-storm-pmml</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- Apache Storm API -->
+		<!--dependency>
 			<groupId>org.apache.storm</groupId>
 			<artifactId>flux-core</artifactId>
-		</dependency>
+		</dependency-->
 
 		<dependency>
 			<groupId>org.apache.storm</groupId>

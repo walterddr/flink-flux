@@ -18,18 +18,18 @@
 package org.apache.flink.storm.flux;
 
 import org.apache.flink.annotation.PublicEvolving;
+import org.apache.flink.storm.flux.model.BeanDef;
+import org.apache.flink.storm.flux.model.BeanReference;
+import org.apache.flink.storm.flux.model.BoltDef;
+import org.apache.flink.storm.flux.model.ConfigMethodDef;
+import org.apache.flink.storm.flux.model.ExecutionContext;
+import org.apache.flink.storm.flux.model.GroupingDef;
+import org.apache.flink.storm.flux.model.ObjectDef;
+import org.apache.flink.storm.flux.model.PropertyDef;
+import org.apache.flink.storm.flux.model.SpoutDef;
+import org.apache.flink.storm.flux.model.StreamDef;
+import org.apache.flink.storm.flux.model.TopologyDef;
 import org.apache.storm.Config;
-import org.apache.storm.flux.model.BeanDef;
-import org.apache.storm.flux.model.BeanReference;
-import org.apache.storm.flux.model.BoltDef;
-import org.apache.storm.flux.model.ConfigMethodDef;
-import org.apache.storm.flux.model.ExecutionContext;
-import org.apache.storm.flux.model.GroupingDef;
-import org.apache.storm.flux.model.ObjectDef;
-import org.apache.storm.flux.model.PropertyDef;
-import org.apache.storm.flux.model.SpoutDef;
-import org.apache.storm.flux.model.StreamDef;
-import org.apache.storm.flux.model.TopologyDef;
 import org.apache.storm.generated.StormTopology;
 import org.apache.storm.grouping.CustomStreamGrouping;
 import org.apache.storm.topology.BoltDeclarer;
@@ -56,7 +56,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FluxBuilder {
-    private static Logger LOG = LoggerFactory.getLogger(org.apache.storm.flux.FluxBuilder.class);
+    private static Logger LOG = LoggerFactory.getLogger(FluxBuilder.class);
 
     /**
      * Given a topology definition, return a populated `org.apache.storm.Config` instance.
@@ -83,7 +83,7 @@ public class FluxBuilder {
 
         if(!topologyDef.validate()){
             throw new IllegalArgumentException("Invalid topology config. Spouts, bolts and streams cannot be " +
-                    "defined in the same configuration as a topologySource.");
+                    "defined in the same configuration as a topologyBuilder.");
         }
 
         // build components that may be referenced by spouts, bolts, etc.
@@ -110,9 +110,8 @@ public class FluxBuilder {
             // user class supplied...
             // this also provides a bridge to Trident...
             LOG.info("A topology source has been specified...");
-//            ObjectDef def = topologyDef.getTopologySource();
-//            topology = buildExternalTopology(def, context);
-            throw new UnsupportedOperationException("Currently external topology builder is not supported!");
+            ObjectDef def = topologyDef.getTopologyBuilder();
+            builder = genExternalTopologyBuilder(def, context);
         }
         return builder;
     }
@@ -121,15 +120,15 @@ public class FluxBuilder {
      * Given a `java.lang.Object` instance and a method name, attempt to find a method that matches the input
      * parameter: `java.util.Map` or `org.apache.storm.Config`.
      */
-    private static Method findGetTopologyMethod(Object topologySource, String methodName) throws NoSuchMethodException {
-        Class clazz = topologySource.getClass();
+    private static Method findGetTopologyBuilderMethod(Object topologyBuilder, String methodName) throws NoSuchMethodException {
+        Class clazz = topologyBuilder.getClass();
         Method[] methods =  clazz.getMethods();
         ArrayList<Method> candidates = new ArrayList<Method>();
         for(Method method : methods){
             if(!method.getName().equals(methodName)){
                 continue;
             }
-            if(!method.getReturnType().equals(StormTopology.class)){
+            if(!method.getReturnType().equals(TopologyBuilder.class)){
                 continue;
             }
             Class[] paramTypes = method.getParameterTypes();
@@ -237,26 +236,28 @@ public class FluxBuilder {
         }
     }
 
+// TODO: @rongr fix me: at this omment, genExternalTopologyBuilder only returns the topology builder - It should generate with sets of bolt/spout passed in.
     /**
      * Convert into external (Storm Topology)
-     *
-     * TODO @rongr convert this into FlinkTopology, or convert class into TopologyBuilder.
      */
-    private static StormTopology buildExternalTopology(ObjectDef def, ExecutionContext context)
+    private static TopologyBuilder genExternalTopologyBuilder(ObjectDef def, ExecutionContext context)
         throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException,
         InvocationTargetException, NoSuchFieldException {
 
-        Object topologySource = buildObject(def, context);
+        Object topologyBuilder = buildObject(def, context);
 
-        String methodName = context.getTopologyDef().getTopologySource().getMethodName();
-        Method getTopology = findGetTopologyMethod(topologySource, methodName);
-        if(getTopology.getParameterTypes()[0].equals(Config.class)){
+        String methodName = context.getTopologyDef().getTopologyBuilder().getMethodName();
+        Method getTopology = findGetTopologyBuilderMethod(topologyBuilder, methodName);
+        final TopologyBuilder stormTopologyBuilder;
+        if (getTopology.getParameterTypes()[0].equals(Config.class)){
             Config config = new Config();
             config.putAll(context.getTopologyDef().getConfig());
-            return (StormTopology) getTopology.invoke(topologySource, config);
+            stormTopologyBuilder = (TopologyBuilder) getTopology.invoke(topologyBuilder, config);
         } else {
-            return (StormTopology) getTopology.invoke(topologySource, context.getTopologyDef().getConfig());
+            stormTopologyBuilder = (TopologyBuilder) getTopology.invoke(topologyBuilder, context.getTopologyDef().getConfig());
         }
+
+        return stormTopologyBuilder;
     }
 
     private static void applyProperties(ObjectDef bean, Object instance, ExecutionContext context) throws

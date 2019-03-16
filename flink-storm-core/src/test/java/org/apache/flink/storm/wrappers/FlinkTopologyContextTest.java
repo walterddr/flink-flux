@@ -26,6 +26,7 @@ import org.apache.storm.generated.StormTopology;
 import org.apache.storm.metric.api.ICombiner;
 import org.apache.storm.metric.api.IMetric;
 import org.apache.storm.metric.api.IReducer;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -71,6 +72,7 @@ public class FlinkTopologyContextTest extends AbstractTest {
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
+	@Ignore("This is temporarily supported to work around kafka spout issue")
 	public void testRegisteredMetric3() {
 		new FlinkTopologyContext(new StormTopology(new HashMap<String, SpoutSpec>(),
 				new HashMap<String, Bolt>(), new HashMap<String, StateSpoutSpec>()), null, null,
