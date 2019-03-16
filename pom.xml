@@ -45,10 +45,14 @@ under the License.
 		<flink.version>1.7.2</flink.version>
 		<scala.version>2.11.12</scala.version>
 		<scala.binary.version>2.11</scala.binary.version>
+		<jpmml.version>1.0.22</jpmml.version>
+		<jaxb-version>2.3.0</jaxb-version>
+		<storm.version>1.0.0</storm.version>
 	</properties>
 
 	<modules>
 		<module>flink-storm-core</module>
+		<module>flink-storm-pmml</module>
 		<module>flink-storm-flux</module>
 	</modules>
 
@@ -77,7 +81,7 @@ under the License.
 			<dependency>
 				<groupId>org.apache.storm</groupId>
 				<artifactId>storm-core</artifactId>
-				<version>1.0.0</version>
+				<version>${storm.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.slf4j</groupId>
@@ -228,6 +232,31 @@ under the License.
 				<scope>test</scope>
 				<type>test-jar</type>
 			</dependency>
+
+			<!-- Storm PMML dependencies -->
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-model</artifactId>
+				<version>${jpmml.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-schema</artifactId>
+				<version>${jpmml.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-evaluator</artifactId>
+				<version>${jpmml.version}</version>
+			</dependency>
+
+			<!-- JAXB api -->
+			<dependency>
+				<groupId>javax.xml.bind</groupId>
+				<artifactId>jaxb-api</artifactId>
+				<version>${jaxb-version}</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
