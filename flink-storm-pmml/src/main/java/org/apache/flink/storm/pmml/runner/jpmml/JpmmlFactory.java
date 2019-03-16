@@ -16,11 +16,11 @@
  *   limitations under the License.
  */
 
-package org.apache.storm.pmml.runner.jpmml;
+package org.apache.flink.storm.pmml.runner.jpmml;
 
-import org.apache.storm.pmml.model.ModelOutputs;
-import org.apache.storm.pmml.runner.ModelRunner;
-import org.apache.storm.pmml.runner.ModelRunnerFactory;
+import org.apache.flink.storm.pmml.runner.ModelRunner;
+import org.apache.flink.storm.pmml.model.ModelOutputs;
+import org.apache.flink.storm.pmml.runner.ModelRunnerFactory;
 import org.apache.storm.utils.Utils;
 import org.dmg.pmml.IOUtil;
 import org.dmg.pmml.PMML;

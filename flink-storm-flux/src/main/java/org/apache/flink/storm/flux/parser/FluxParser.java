@@ -17,15 +17,15 @@
  */
 package org.apache.flink.storm.flux.parser;
 
-import org.apache.storm.flux.model.BoltDef;
-import org.apache.storm.flux.model.IncludeDef;
-import org.apache.storm.flux.model.SpoutDef;
-import org.apache.storm.flux.model.TopologyDef;
+import org.apache.flink.storm.flux.model.BoltDef;
+import org.apache.flink.storm.flux.model.IncludeDef;
+import org.apache.flink.storm.flux.model.SpoutDef;
+import org.apache.flink.storm.flux.model.TopologyDef;
+import org.apache.storm.shade.org.yaml.snakeyaml.TypeDescription;
+import org.apache.storm.shade.org.yaml.snakeyaml.Yaml;
+import org.apache.storm.shade.org.yaml.snakeyaml.constructor.Constructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yaml.snakeyaml.TypeDescription;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Properties;
 
 public class FluxParser {
-    private static final Logger LOG = LoggerFactory.getLogger(org.apache.storm.flux.parser.FluxParser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FluxParser.class);
 
     private FluxParser(){}
 
@@ -53,7 +53,7 @@ public class FluxParser {
     public static TopologyDef parseResource(String resource, boolean dumpYaml, boolean processIncludes,
                                             String propertiesFile, boolean envSub) throws IOException {
         
-        InputStream in = org.apache.storm.flux.parser.FluxParser.class.getResourceAsStream(resource);
+        InputStream in = FluxParser.class.getResourceAsStream(resource);
         TopologyDef topology = parseInputStream(in, dumpYaml, processIncludes, propertiesFile, envSub);
         in.close();
         

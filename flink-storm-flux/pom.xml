@@ -53,10 +53,10 @@ under the License.
 		</dependency>
 
 		<!-- Apache Storm API -->
-		<dependency>
+		<!--dependency>
 			<groupId>org.apache.storm</groupId>
 			<artifactId>flux-core</artifactId>
-		</dependency>
+		</dependency-->
 
 		<dependency>
 			<groupId>org.apache.storm</groupId>

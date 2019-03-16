@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.storm.pmml;
+package org.apache.flink.storm.pmml;
 
 import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Tuple;

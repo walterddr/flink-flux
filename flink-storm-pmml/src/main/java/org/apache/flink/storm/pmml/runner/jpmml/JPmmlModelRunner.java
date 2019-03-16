@@ -16,10 +16,10 @@
  *   limitations under the License.
  */
 
-package org.apache.storm.pmml.runner.jpmml;
+package org.apache.flink.storm.pmml.runner.jpmml;
 
-import org.apache.storm.pmml.model.ModelOutputs;
-import org.apache.storm.pmml.runner.PmmlModelRunner;
+import org.apache.flink.storm.pmml.runner.PmmlModelRunner;
+import org.apache.flink.storm.pmml.model.ModelOutputs;
 import org.apache.storm.tuple.Tuple;
 import org.dmg.pmml.FieldName;
 import org.jpmml.evaluator.Evaluator;

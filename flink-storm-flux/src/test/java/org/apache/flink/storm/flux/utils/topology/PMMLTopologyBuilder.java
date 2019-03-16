@@ -1,13 +1,13 @@
 package org.apache.flink.storm.flux.utils.topology;
 
 import com.google.common.collect.Lists;
+import org.apache.flink.storm.flux.api.FluxTopologyBuilder;
 import org.apache.flink.storm.flux.utils.spout.RawInputFromCSVSpout;
-import org.apache.storm.flux.api.TopologySource;
-import org.apache.storm.generated.StormTopology;
-import org.apache.storm.pmml.PMMLPredictorBolt;
-import org.apache.storm.pmml.model.ModelOutputs;
-import org.apache.storm.pmml.model.jpmml.JpmmlModelOutputs;
-import org.apache.storm.pmml.runner.jpmml.JpmmlFactory;
+import org.apache.flink.storm.pmml.PMMLPredictorBolt;
+import org.apache.flink.storm.pmml.model.ModelOutputs;
+import org.apache.flink.storm.pmml.model.jpmml.JpmmlModelOutputs;
+import org.apache.flink.storm.pmml.runner.jpmml.JpmmlFactory;
+import org.apache.storm.shade.org.apache.commons.io.IOUtils;
 import org.apache.storm.topology.BasicOutputCollector;
 import org.apache.storm.topology.IRichBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -17,10 +17,13 @@ import org.apache.storm.tuple.Tuple;
 import org.apache.storm.utils.Utils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-public class PMMLTopologySource implements TopologySource {
+public class PMMLTopologyBuilder implements FluxTopologyBuilder {
 
   private static final String PMML_MODEL_FILE = "KNIME_PMML_4.1_Examples_single_audit_logreg.xml";
   private static final String RAW_INPUTS_FILE = "Audit.50.csv";
@@ -36,15 +39,35 @@ public class PMMLTopologySource implements TopologySource {
   private String blobKey;           // PMML Model downloaded from Blobstore - null if using File
   private String tplgyName = "test";
 
+  public PMMLTopologyBuilder() {
+    this(null, null);
+  }
+
+  public PMMLTopologyBuilder(String inputFilePath, String modelFilePath) {
+    rawInputs = loadFile(inputFilePath == null ? RAW_INPUTS_FILE : inputFilePath);
+    pmml = loadFile(modelFilePath == null ? PMML_MODEL_FILE : modelFilePath);
+  }
+
+  private File loadFile(String example) {
+    File file;
+    try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(example)) {
+      file = File.createTempFile("pmml-example", ".tmp");
+      IOUtils.copy(stream, new FileOutputStream(file));
+    } catch (IOException e) {
+      throw new RuntimeException("Error loading example " + example, e);
+    }
+    return file;
+  }
+
   @Override
-  public StormTopology getTopology(Map<String, Object> map) {
+  public TopologyBuilder getTopologyBuilder(Map<String, Object> map) {
     final TopologyBuilder builder = new TopologyBuilder();
     try {
       builder.setSpout(RAW_INPUT_FROM_CSV_SPOUT, RawInputFromCSVSpout.newInstance(rawInputs));
       builder.setBolt(PMML_PREDICTOR_BOLT, newBolt()).shuffleGrouping(RAW_INPUT_FROM_CSV_SPOUT);
       builder.setBolt(PRINT_BOLT_1, new PrinterBolt()).shuffleGrouping(PMML_PREDICTOR_BOLT);
       builder.setBolt(PRINT_BOLT_2, new PrinterBolt()).shuffleGrouping(PMML_PREDICTOR_BOLT, NON_DEFAULT_STREAM_ID);
-      return builder.createTopology();
+      return builder;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

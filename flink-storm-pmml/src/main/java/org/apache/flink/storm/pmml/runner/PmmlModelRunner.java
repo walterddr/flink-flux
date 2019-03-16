@@ -16,7 +16,7 @@
  *   limitations under the License.
  */
 
-package org.apache.storm.pmml.runner;
+package org.apache.flink.storm.pmml.runner;
 
 import org.apache.storm.tuple.Tuple;
 

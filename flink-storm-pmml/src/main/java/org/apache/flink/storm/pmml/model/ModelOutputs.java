@@ -16,23 +16,30 @@
  *   limitations under the License.
  */
 
-package org.apache.storm.pmml.runner;
+package org.apache.flink.storm.pmml.model;
 
-import org.apache.storm.pmml.model.ModelOutputs;
-import org.apache.storm.tuple.Tuple;
+import org.apache.flink.storm.pmml.PMMLPredictorBolt;
+import org.apache.storm.tuple.Fields;
 
-import java.util.List;
+import java.io.Serializable;
 import java.util.Map;
+import java.util.Set;
 
-public interface ModelRunner {
+/**
+ * Represents the streams and output fields declared by the {@link PMMLPredictorBolt}
+ */
+public interface ModelOutputs extends Serializable {
     /**
-     * Creates and returns a map with the predicted scores that are to be emitted on each stream.
-     * The keys of this map are the stream ids, and the values the predicted scores.
-     * It's up to the implementation to guarantee that the streams ids match the stream ids defined in
-     * {@link ModelOutputs}. Namely, the set of keys of the {@code Map<String, List<Object>>} returned
-     * by this method should be a subset of {@link ModelOutputs#streams()}
-     *
-     * @return The map with the predicted scores that are to be emitted on each stream
+     * @return a map with the output fields declared for each stream by the {@link PMMLPredictorBolt}
      */
-    Map<String, List<Object>> scoredTuplePerStream(Tuple input);
+    Map<String, ? extends Fields> streamFields();
+
+    /**
+     * Convenience method that returns a set with all the streams declared by the {@link PMMLPredictorBolt}.
+     * By default this this method calls {@link #streamFields()}{@code .keySet()}
+     * @return The set with all declared streams
+     */
+    default Set<String> streams() {
+        return streamFields().keySet();
+    }
 }
