@@ -110,9 +110,8 @@ public class FluxBuilder {
             // user class supplied...
             // this also provides a bridge to Trident...
             LOG.info("A topology source has been specified...");
-//            ObjectDef def = topologyDef.getTopologySource();
-//            topology = buildExternalTopology(def, context);
-            throw new UnsupportedOperationException("Currently external topology builder is not supported!");
+            ObjectDef def = topologyDef.getTopologySource();
+            builder = genExternalTopologyBuilder(def, context);
         }
         return builder;
     }
@@ -239,10 +238,8 @@ public class FluxBuilder {
 
     /**
      * Convert into external (Storm Topology)
-     *
-     * TODO @rongr convert this into FlinkTopology, or convert class into TopologyBuilder.
      */
-    private static StormTopology buildExternalTopology(ObjectDef def, ExecutionContext context)
+    private static TopologyBuilder genExternalTopologyBuilder(ObjectDef def, ExecutionContext context)
         throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException,
         InvocationTargetException, NoSuchFieldException {
 
@@ -250,13 +247,21 @@ public class FluxBuilder {
 
         String methodName = context.getTopologyDef().getTopologySource().getMethodName();
         Method getTopology = findGetTopologyMethod(topologySource, methodName);
+        final StormTopology stormTopology;
         if(getTopology.getParameterTypes()[0].equals(Config.class)){
             Config config = new Config();
             config.putAll(context.getTopologyDef().getConfig());
-            return (StormTopology) getTopology.invoke(topologySource, config);
+            stormTopology = (StormTopology) getTopology.invoke(topologySource, config);
         } else {
-            return (StormTopology) getTopology.invoke(topologySource, context.getTopologyDef().getConfig());
+            stormTopology = (StormTopology) getTopology.invoke(topologySource, context.getTopologyDef().getConfig());
         }
+
+        return new TopologyBuilder(){
+            @Override
+            public StormTopology createTopology() {
+                return stormTopology;
+            }
+        };
     }
 
     private static void applyProperties(ObjectDef bean, Object instance, ExecutionContext context) throws
