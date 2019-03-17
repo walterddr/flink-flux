@@ -72,7 +72,7 @@ public class RawInputFromCSVSpout extends BaseRichSpout {
 
     @Override
     public void open(Map conf, TopologyContext context, SpoutOutputCollector spoutOutputCollector) {
-        this.collector = collector;
+        this.collector = spoutOutputCollector;
         openReader();
     }
 

@@ -28,7 +28,7 @@ public class PMMLTopologyBuilder implements FluxTopologyBuilder {
   private static final String PMML_MODEL_FILE = "KNIME_PMML_4.1_Examples_single_audit_logreg.xml";
   private static final String RAW_INPUTS_FILE = "Audit.50.csv";
 
-  private static final String RAW_INPUT_FROM_CSV_SPOUT = "org.apache.storm.pmml.utils.rawInputFromCsvSpout";
+  private static final String RAW_INPUT_FROM_CSV_SPOUT = "rawInputFromCsvSpout";
   private static final String PMML_PREDICTOR_BOLT = "pmmLPredictorBolt";
   private static final String PRINT_BOLT_1 = "printBolt1";
   private static final String PRINT_BOLT_2 = "printBolt2";
@@ -63,10 +63,12 @@ public class PMMLTopologyBuilder implements FluxTopologyBuilder {
   public TopologyBuilder getTopologyBuilder(Map<String, Object> map) {
     final TopologyBuilder builder = new TopologyBuilder();
     try {
-      builder.setSpout(RAW_INPUT_FROM_CSV_SPOUT, RawInputFromCSVSpout.newInstance(rawInputs));
-      builder.setBolt(PMML_PREDICTOR_BOLT, newBolt()).shuffleGrouping(RAW_INPUT_FROM_CSV_SPOUT);
-      builder.setBolt(PRINT_BOLT_1, new PrinterBolt()).shuffleGrouping(PMML_PREDICTOR_BOLT);
-      builder.setBolt(PRINT_BOLT_2, new PrinterBolt()).shuffleGrouping(PMML_PREDICTOR_BOLT, NON_DEFAULT_STREAM_ID);
+      // Running as a single parallelism as currently something is not correct when running as multi-parallelism
+      // TODO @rongr fix task ID to component ID mapper.
+      builder.setSpout(RAW_INPUT_FROM_CSV_SPOUT, RawInputFromCSVSpout.newInstance(rawInputs), 1);
+      builder.setBolt(PMML_PREDICTOR_BOLT, newBolt(), 1).shuffleGrouping(RAW_INPUT_FROM_CSV_SPOUT);
+      builder.setBolt(PRINT_BOLT_1, new PrinterBolt(), 1).shuffleGrouping(PMML_PREDICTOR_BOLT);
+      builder.setBolt(PRINT_BOLT_2, new PrinterBolt(), 1).shuffleGrouping(PMML_PREDICTOR_BOLT, NON_DEFAULT_STREAM_ID);
       return builder;
     } catch (Exception e) {
       throw new RuntimeException(e);
