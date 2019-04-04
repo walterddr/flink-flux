@@ -29,76 +29,36 @@ under the License.
 		<relativePath>../</relativePath>
 	</parent>
 
-	<name>flink-storm-core</name>
-	<artifactId>flink-storm-core_${scala.binary.version}</artifactId>
+	<name>flink-flux-core</name>
+	<artifactId>flink-flux-core</artifactId>
 	<packaging>jar</packaging>
 
 	<dependencies>
-
-		<!-- core dependencies -->
-		<dependency>
-			<groupId>com.esotericsoftware.kryo</groupId>
-			<artifactId>kryo</artifactId>
-		</dependency>
 		<!-- Core streaming API -->
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
 		</dependency>
 
-		<!-- Apache Storm API -->
 		<dependency>
-			<groupId>org.apache.storm</groupId>
-			<artifactId>storm-core</artifactId>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-shaded-jackson</artifactId>
+			<version>2.7.9-4.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.googlecode.json-simple</groupId>
-			<artifactId>json-simple</artifactId>
-		</dependency>
-
-		<!-- test dependencies -->
+		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito</artifactId>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-runtime_${scala.binary.version}</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
-			<scope>test</scope>
-			<type>test-jar</type>
 		</dependency>
 	</dependencies>
+
+
 
 </project>

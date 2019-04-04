@@ -23,7 +23,7 @@ under the License.
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.apache.flink</groupId>
-	<artifactId>flink-flux</artifactId>
+	<artifactId>flink-flux-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -54,6 +54,7 @@ under the License.
 		<module>flink-storm-core</module>
 		<module>flink-storm-pmml</module>
 		<module>flink-storm-flux</module>
+		<module>flink-flux-core</module>
 	</modules>
 
 	<dependencyManagement>
