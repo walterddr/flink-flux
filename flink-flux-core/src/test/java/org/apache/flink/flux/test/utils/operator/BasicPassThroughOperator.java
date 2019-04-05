@@ -6,25 +6,23 @@ import org.apache.flink.util.Collector;
 
 public class BasicPassThroughOperator extends ProcessOperator<String, String> {
 
-    public BasicPassThroughOperator(ProcessFunction<String, String> function) {
-        super(function);
+  public BasicPassThroughOperator(ProcessFunction<String, String> function) {
+    super(function);
+  }
+
+  public BasicPassThroughOperator() {
+    this(PassThroughFunction.getInstance());
+  }
+
+  private static class PassThroughFunction extends ProcessFunction<String, String> {
+
+    public static PassThroughFunction getInstance() {
+      return new PassThroughFunction();
     }
 
-    public BasicPassThroughOperator() {
-        this(PassThroughFunction.getInstance());
+    @Override
+    public void processElement(String s, Context context, Collector<String> collector) throws Exception {
+      collector.collect(s);
     }
-
-    private static class PassThroughFunction extends ProcessFunction<String, String> {
-
-        static PassThroughFunction INSTANCE = new PassThroughFunction();
-
-        @Override
-        public void processElement(String s, Context context, Collector<String> collector) throws Exception {
-            collector.collect(s);
-        }
-
-        public static PassThroughFunction getInstance() {
-            return INSTANCE;
-        }
-    }
+  }
 }

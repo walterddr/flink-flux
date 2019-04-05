@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.flink.flux.model;
 
 import java.util.ArrayList;
@@ -23,40 +24,40 @@ import java.util.List;
 import java.util.Map;
 
 public class ConfigMethodDef {
-    private String name;
-    private List<Object> args;
-    private boolean hasReferences = false;
+  private String name;
+  private List<Object> args;
+  private boolean hasReferences = false;
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public List<Object> getArgs() {
-        return args;
-    }
+  public List<Object> getArgs() {
+    return args;
+  }
 
-    public void setArgs(List<Object> args) {
+  public void setArgs(List<Object> args) {
 
-        List<Object> newVal = new ArrayList<Object>();
-        for(Object obj : args){
-            if(obj instanceof LinkedHashMap){
-                Map map = (Map)obj;
-                if(map.containsKey("ref") && map.size() == 1){
-                    newVal.add(new ComponentReference((String)map.get("ref")));
-                    this.hasReferences = true;
-                }
-            } else {
-                newVal.add(obj);
-            }
+    List<Object> newVal = new ArrayList<Object>();
+    for (Object obj : args) {
+      if (obj instanceof LinkedHashMap) {
+        Map map = (Map) obj;
+        if (map.containsKey("ref") && map.size() == 1) {
+          newVal.add(new ComponentReferenceDef((String) map.get("ref")));
+          this.hasReferences = true;
         }
-        this.args = newVal;
+      } else {
+        newVal.add(obj);
+      }
     }
+    this.args = newVal;
+  }
 
-    public boolean hasReferences(){
-        return this.hasReferences;
-    }
+  public boolean hasReferences() {
+    return this.hasReferences;
+  }
 }

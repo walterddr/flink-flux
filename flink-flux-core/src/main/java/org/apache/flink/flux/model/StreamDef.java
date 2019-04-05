@@ -15,19 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.flink.flux.model;
 
 /**
  * Represents a stream of tuples from one component to another, extends an edge in the topology DAG.
  */
 public class StreamDef extends EdgeDef {
-    private String type;
+  private String type;
 
-    public String getType() {
-        return type;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 }

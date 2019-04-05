@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.flink.flux.model;
 
 import java.util.ArrayList;
@@ -27,64 +28,64 @@ import java.util.Map;
  * and properties, can be instantiated.
  */
 public class ObjectDef {
-    private String className;
-    private List<Object> constructorArgs;
-    private boolean hasReferences;
-    private List<PropertyDef> properties;
-    private List<ConfigMethodDef> configMethods;
+  private String className;
+  private List<Object> constructorArgs;
+  private boolean hasReferences;
+  private List<PropertyDef> properties;
+  private List<ConfigMethodDef> configMethods;
 
-    public String getClassName() {
-        return className;
-    }
+  public String getClassName() {
+    return className;
+  }
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
+  public void setClassName(String className) {
+    this.className = className;
+  }
 
-    public List<Object> getConstructorArgs() {
-        return constructorArgs;
-    }
+  public List<Object> getConstructorArgs() {
+    return constructorArgs;
+  }
 
-    public void setConstructorArgs(List<Object> constructorArgs) {
+  public void setConstructorArgs(List<Object> constructorArgs) {
 
-        List<Object> newVal = new ArrayList<Object>();
-        for(Object obj : constructorArgs){
-            if(obj instanceof LinkedHashMap){
-                Map map = (Map)obj;
-                if(map.containsKey("ref") && map.size() == 1){
-                    newVal.add(new ComponentReference((String)map.get("ref")));
-                    this.hasReferences = true;
-                } else {
-                    newVal.add(obj);
-                }
-            } else {
-                newVal.add(obj);
-            }
+    List<Object> newVal = new ArrayList<Object>();
+    for (Object obj : constructorArgs) {
+      if (obj instanceof LinkedHashMap) {
+        Map map = (Map) obj;
+        if (map.containsKey("ref") && map.size() == 1) {
+          newVal.add(new ComponentReferenceDef((String) map.get("ref")));
+          this.hasReferences = true;
+        } else {
+          newVal.add(obj);
         }
-        this.constructorArgs = newVal;
+      } else {
+        newVal.add(obj);
+      }
     }
+    this.constructorArgs = newVal;
+  }
 
-    public boolean hasConstructorArgs(){
-        return this.constructorArgs != null && this.constructorArgs.size() > 0;
-    }
+  public boolean hasConstructorArgs() {
+    return this.constructorArgs != null && this.constructorArgs.size() > 0;
+  }
 
-    public boolean hasReferences(){
-        return this.hasReferences;
-    }
+  public boolean hasReferences() {
+    return this.hasReferences;
+  }
 
-    public List<PropertyDef> getProperties() {
-        return properties;
-    }
+  public List<PropertyDef> getProperties() {
+    return properties;
+  }
 
-    public void setProperties(List<PropertyDef> properties) {
-        this.properties = properties;
-    }
+  public void setProperties(List<PropertyDef> properties) {
+    this.properties = properties;
+  }
 
-    public List<ConfigMethodDef> getConfigMethods() {
-        return configMethods;
-    }
+  public List<ConfigMethodDef> getConfigMethods() {
+    return configMethods;
+  }
 
-    public void setConfigMethods(List<ConfigMethodDef> configMethods) {
-        this.configMethods = configMethods;
-    }
+  public void setConfigMethods(List<ConfigMethodDef> configMethods) {
+    this.configMethods = configMethods;
+  }
 }

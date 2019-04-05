@@ -15,10 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.flink.flux.api;
 
 import org.apache.flink.api.common.JobExecutionResult;
-import org.apache.flink.flux.compiler.FluxContext;
 import org.apache.flink.flux.model.TopologyDef;
 
 import java.io.IOException;
@@ -27,29 +27,30 @@ import java.util.Map;
 /**
  * Marker interface for objects that can produce `StormTopology` objects.
  *
- * If a `topology-source` class implements the `getTopology()` method, Flux will
+ * <p>If a `topology-source` class implements the `getTopology()` method, Flux will
  * call that method. Otherwise, it will introspect the given class and look for a
  * similar method that produces a `StormTopology` instance.
  *
- * Note that it is not strictly necessary for a class to implement this interface.
+ * <p>Note that it is not strictly necessary for a class to implement this interface.
  * If a class defines a method with a similar signature, Flux should be able to find
  * and invoke it.
- *
  */
 public interface FluxTopologyBuilder {
 
-    /**
-     * Create Flux topology based on topology definition.
-     * @param topologyDef
-     * @param config
-     * @return
-     */
-    FluxTopology getTopology(TopologyDef topologyDef, Map<String, Object> config) throws IOException;
+  /**
+   * Create Flux topology based on topology definition.
+   *
+   * @param topologyDef topology definition
+   * @param config      configuration global map
+   * @return topology
+   */
+  FluxTopology getTopology(TopologyDef topologyDef, Map<String, Object> config) throws IOException;
 
-    /**
-     * Execute the topology in current Builder environment.
-     * @param fluxTopology the flux topology
-     * @return execution result
-     */
-    JobExecutionResult execute(FluxTopology fluxTopology) throws Exception ;
+  /**
+   * Execute the topology in current Builder environment.
+   *
+   * @param fluxTopology the flux topology
+   * @return execution result
+   */
+  JobExecutionResult execute(FluxTopology fluxTopology) throws Exception;
 }

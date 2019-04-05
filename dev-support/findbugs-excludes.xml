@@ -19,7 +19,4 @@ under the License.
 -->
 <FindBugsFilter>
     <!-- Ignore the generated SqlParser -->
-    <Match>
-        <Package name="com.uber.athenax.vm.compiler.parser.impl" />
-    </Match>
 </FindBugsFilter>

@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.flink.flux.model;
 
 /**
@@ -23,24 +24,24 @@ package org.apache.flink.flux.model;
  */
 public abstract class VertexDef extends ComponentDef {
 
-    // default parallelism to 1 so if it's ommitted, the topology will still function.
-    private int parallelism = 1;
-    private String typeInformation = null;
+  // default parallelism to 1 so if it's ommitted, the topology will still function.
+  private int parallelism = 1;
+  private String typeInformation = null;
 
-    public int getParallelism() {
-        return parallelism;
-    }
+  public int getParallelism() {
+    return parallelism;
+  }
 
-    public void setParallelism(int parallelism) {
-        this.parallelism = parallelism;
-    }
+  public void setParallelism(int parallelism) {
+    this.parallelism = parallelism;
+  }
 
 
-    public String getTypeInformation() {
-        return typeInformation;
-    }
+  public String getTypeInformation() {
+    return typeInformation;
+  }
 
-    public void setTypeInformation(String typeInformation) {
-        this.typeInformation = typeInformation;
-    }
+  public void setTypeInformation(String typeInformation) {
+    this.typeInformation = typeInformation;
+  }
 }

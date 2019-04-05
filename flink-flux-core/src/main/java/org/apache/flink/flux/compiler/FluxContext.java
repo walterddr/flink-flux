@@ -1,6 +1,23 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.flink.flux.compiler;
 
-import org.apache.flink.api.common.operators.Operator;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.flux.model.TopologyDef;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
@@ -13,7 +30,7 @@ import java.util.Map;
 
 public class FluxContext {
   // parsed Topology definition
-  TopologyDef topologyDef;
+  private TopologyDef topologyDef;
 
   // Storm config
   private Configuration config;
@@ -37,39 +54,77 @@ public class FluxContext {
    */
   private Map<String, CompilationVertex> compilationVertexMap = new HashMap<>();
 
-  public FluxContext(TopologyDef topologyDef, Configuration config){
+  public FluxContext(TopologyDef topologyDef, Configuration config) {
     this.topologyDef = topologyDef;
     this.config = config;
   }
 
-  public TopologyDef getTopologyDef(){
+  public TopologyDef getTopologyDef() {
     return this.topologyDef;
   }
 
-  public void addSource(String id, DataStreamSource<?> source){
+  /**
+   * add source.
+   *
+   * @param id source id
+   * @param source source object
+   */
+  public void addSource(String id, DataStreamSource<?> source) {
     this.dataStreamSourceMap.put(id, source);
   }
 
-  public void addSink(String id, DataStreamSink<?> sink){
+  /**
+   * Add sink.
+   *
+   * @param id sink ID
+   * @param sink sink object
+   */
+  public void addSink(String id, DataStreamSink<?> sink) {
     this.dataStreamSinkMap.put(id, sink);
   }
 
-  public void addOperator(String id, StreamOperator<?> op){
+  /**
+   * add operator.
+   */
+  public void addOperator(String id, StreamOperator<?> op) {
     this.operatorMap.put(id, op);
   }
 
-  public void addComponent(String id, Object value){
+  /**
+   * add compilation components, used for reference.
+   * @param id component key
+   * @param value component object
+   */
+  public void addComponent(String id, Object value) {
     this.componentMap.put(id, value);
   }
 
-  public Object getComponent(String id){
+  /**
+   * get component by ID.
+   *
+   * @param id component id
+   * @return the component as object
+   */
+  public Object getComponent(String id) {
     return this.componentMap.get(id);
   }
 
+  /**
+   * Put a compilation vertex into the vertex map.
+   *
+   * @param key   vertex id, identical to the ComponentDef ID
+   * @param value compilation vertex.
+   */
   public void putCompilationVertex(String key, CompilationVertex value) {
     compilationVertexMap.put(key, value);
   }
 
+  /**
+   * get a compilation vertex by ID.
+   *
+   * @param key vertex id, identical to the ComponentDef ID
+   * @return compilation vertex.
+   */
   public CompilationVertex getCompilationVertex(String key) {
     return compilationVertexMap.get(key);
   }

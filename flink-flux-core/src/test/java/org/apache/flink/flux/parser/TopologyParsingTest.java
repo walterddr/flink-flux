@@ -1,7 +1,6 @@
 package org.apache.flink.flux.parser;
 
 import org.apache.flink.flux.model.TopologyDef;
-import org.apache.flink.flux.parser.FluxParser;
 import org.junit.Test;
 
 public class TopologyParsingTest {

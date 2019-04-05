@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.flink.flux.model;
 
 /**
@@ -22,13 +23,13 @@ package org.apache.flink.flux.model;
  * and properties, can be instantiated.
  */
 public class ComponentDef extends ObjectDef {
-    private String id;
+  private String id;
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 }

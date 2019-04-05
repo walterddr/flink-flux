@@ -15,22 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.flink.flux.model;
 
 public class TopologyBuilderDef extends ObjectDef {
-    public static final String DEFAULT_METHOD_NAME = "getTopologyBuilder";
+  public static final String DEFAULT_METHOD_NAME = "getTopologyBuilder";
 
-    private String methodName;
+  private String methodName;
 
-    public TopologyBuilderDef(){
-        this.methodName = DEFAULT_METHOD_NAME;
-    }
+  public TopologyBuilderDef() {
+    this.methodName = DEFAULT_METHOD_NAME;
+  }
 
-    public String getMethodName() {
-        return methodName;
-    }
+  public String getMethodName() {
+    return methodName;
+  }
 
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
-    }
+  public void setMethodName(String methodName) {
+    this.methodName = methodName;
+  }
 }
