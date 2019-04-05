@@ -46,7 +46,7 @@ public class ConfigMethodDef {
             if(obj instanceof LinkedHashMap){
                 Map map = (Map)obj;
                 if(map.containsKey("ref") && map.size() == 1){
-                    newVal.add(new ComponentReference((String)map.get("ref")));
+                    newVal.add(new ComponentReferenceDef((String)map.get("ref")));
                     this.hasReferences = true;
                 }
             } else {

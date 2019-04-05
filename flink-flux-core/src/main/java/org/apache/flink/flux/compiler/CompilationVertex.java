@@ -50,26 +50,43 @@ public class CompilationVertex implements Comparable<CompilationVertex> {
     // Getters
     //-------------------------------------------------------------------------
 
+    /**
+     * Get vertex
+     * @return vertex definition
+     */
     public VertexDef getVertex() {
         return vertex;
     }
 
+    /**
+     * Get incoming edge
+     * @return edge definition
+     */
     public List<EdgeDef> getIncomingEdge() {
         return incomingEdge;
     }
 
+    /**
+     * Get outgoing edge
+     * @return edge definition
+     */
     public List<EdgeDef> getOutgoingEdge() {
         return outgoingEdge;
     }
 
+    /**
+     * Get compiled datastream
+     * @return data stream definition
+     */
     public DataStream getDataStream() {
         return dataStream;
     }
 
-    public int getCompiledSourceCount() {
-        return compiledSourceCount;
-    }
-
+    /**
+     * comparator used during priority queue compilation
+     * @param that other object.
+     * @return compilation object vs incoming edge differences. smaller has priority.
+     */
     @Override
     public int compareTo(CompilationVertex that) {
         return (this.compiledSourceCount - this.incomingEdge.size()) -

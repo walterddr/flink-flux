@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import static org.apache.flink.flux.compiler.utils.CompilationUtils.*;
 
 /**
- * Compile
+ * Compiler implementation for operator-level Flux compilation.
  */
 public class OperatorCompiler implements Compiler {
     private static Logger LOG = LoggerFactory.getLogger(OperatorCompiler.class);

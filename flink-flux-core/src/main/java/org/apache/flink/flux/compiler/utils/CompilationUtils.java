@@ -27,6 +27,13 @@ import static org.apache.flink.flux.compiler.utils.ReflectiveInvokeUtils.*;
 public final class CompilationUtils {
     private static final Logger LOG = LoggerFactory.getLogger(CompilationUtils.class);
 
+    /**
+     * compile source.
+     * @param fluxContext flux context
+     * @param senv stream execution environment to start the source definition
+     * @param vertex compilation vertex
+     * @throws Exception when compilation fails.
+     */
     public static void compileSource(
             FluxContext fluxContext,
             StreamExecutionEnvironment senv,
@@ -41,6 +48,12 @@ public final class CompilationUtils {
         fluxContext.addSource(sourceDef.getId(), dataStreamSource);
     }
 
+    /**
+     * compile operator.
+     * @param fluxContext flux context
+     * @param vertex compilation vertex
+     * @throws Exception when compilation fails.
+     */
     public static void compileOperator(
             FluxContext fluxContext,
             CompilationVertex vertex) throws Exception {
@@ -63,6 +76,12 @@ public final class CompilationUtils {
         fluxContext.addOperator(operatorDef.getId(), operator);
     }
 
+    /**
+     * compile sink.
+     * @param fluxContext flux context
+     * @param vertex compilation vertex
+     * @throws Exception when compilation fails.
+     */
     public static void compileSink(
             FluxContext fluxContext,
             CompilationVertex vertex) throws Exception {
@@ -84,7 +103,7 @@ public final class CompilationUtils {
         fluxContext.addSink(sinkDef.getId(), streamSink);
     }
 
-    public static Object buildObject(ObjectDef def, FluxContext fluxContext) throws Exception {
+    private static Object buildObject(ObjectDef def, FluxContext fluxContext) throws Exception {
         Class clazz = Class.forName(def.getClassName());
         Object obj = null;
         if (def.hasConstructorArgs()) {

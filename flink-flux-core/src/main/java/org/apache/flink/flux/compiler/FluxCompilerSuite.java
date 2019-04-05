@@ -36,7 +36,7 @@ public class FluxCompilerSuite {
 
     /**
      * compile topology definition to {@link FluxTopology}.
-     * @return
+     * @return flux topology.
      */
     public FluxTopology compile() {
         Preconditions.checkNotNull(topologyDef, "topology cannot be null!");

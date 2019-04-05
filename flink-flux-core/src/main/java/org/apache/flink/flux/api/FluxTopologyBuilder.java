@@ -40,9 +40,9 @@ public interface FluxTopologyBuilder {
 
     /**
      * Create Flux topology based on topology definition.
-     * @param topologyDef
-     * @param config
-     * @return
+     * @param topologyDef topology definition
+     * @param config configuration global map
+     * @return topology
      */
     FluxTopology getTopology(TopologyDef topologyDef, Map<String, Object> config) throws IOException;
 

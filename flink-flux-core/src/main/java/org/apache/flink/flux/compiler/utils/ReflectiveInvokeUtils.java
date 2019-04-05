@@ -1,7 +1,7 @@
 package org.apache.flink.flux.compiler.utils;
 
 import org.apache.flink.flux.compiler.FluxContext;
-import org.apache.flink.flux.model.ComponentReference;
+import org.apache.flink.flux.model.ComponentReferenceDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +16,10 @@ final class ReflectiveInvokeUtils {
 
     /**
      * Given a list of constructor arguments, and a target class, attempt to find a suitable constructor.
+     * @param args argument list
+     * @param target target classs
+     * @return constructor method
+     * @throws NoSuchMethodException cannot be found
      */
     static Constructor findCompatibleConstructor(List<Object> args, Class target) throws NoSuchMethodException {
         Constructor retval = null;
@@ -45,13 +49,20 @@ final class ReflectiveInvokeUtils {
         return retval;
     }
 
+    /**
+     * Find referenced objects based on component name.
+     *
+     * @param args arguments
+     * @param context the flux compilation context used to search for reference objects.
+     * @return java.lang.Method
+     */
     static List<Object> resolveReferences(List<Object> args, FluxContext context) {
         LOG.debug("Checking arguments for references.");
         List<Object> cArgs = new ArrayList<Object>();
         // resolve references
         for (Object arg : args) {
-            if (arg instanceof ComponentReference) {
-                cArgs.add(context.getComponent(((ComponentReference) arg).getId()));
+            if (arg instanceof ComponentReferenceDef) {
+                cArgs.add(context.getComponent(((ComponentReferenceDef) arg).getId()));
             } else {
                 cArgs.add(arg);
             }
@@ -59,6 +70,14 @@ final class ReflectiveInvokeUtils {
         return cArgs;
     }
 
+    /**
+     * Find compatible methods for a specific list of arguments and a class reference.
+     *
+     * @param args arguments
+     * @param target target class
+     * @param methodName method name
+     * @return java.lang.Method
+     */
     static Method findCompatibleMethod(List<Object> args, Class target, String methodName){
         Method retval = null;
         int eligibleCount = 0;
@@ -92,13 +111,15 @@ final class ReflectiveInvokeUtils {
                     new Object[]{target, methodName, args});
         }
         return retval;
-    }    /**
+    }
+
+    /**
      * Determine if the given constructor/method parameter types are compatible given arguments List. Consider if
      * list coercian can make it possible.
      *
-     * @param args
-     * @param parameterTypes
-     * @return
+     * @param args arguments
+     * @param parameterTypes parameter types for setting
+     * @return whether can be invoked from
      */
     private static boolean canInvokeWithArgs(List<Object> args, Class[] parameterTypes) {
         if (parameterTypes.length != args.size()) {
@@ -133,11 +154,11 @@ final class ReflectiveInvokeUtils {
         return true;
     }
 
-    static boolean isPrimitiveNumber(Class clazz){
+    private static boolean isPrimitiveNumber(Class clazz){
         return clazz.isPrimitive() && !clazz.equals(boolean.class);
     }
 
-    static boolean isPrimitiveBoolean(Class clazz){
+    private static boolean isPrimitiveBoolean(Class clazz){
         return clazz.isPrimitive() && clazz.equals(boolean.class);
     }
 
@@ -145,6 +166,10 @@ final class ReflectiveInvokeUtils {
      * Given a java.util.List of contructor/method arguments, and a list of parameter types, attempt to convert the
      * list to an java.lang.Object array that can be used to invoke the constructor. If an argument needs
      * to be coerced from a List to an Array, do so.
+     *
+     * @param args list of arguments
+     * @param parameterTypes list of parameter types
+     * @return argument object list.
      */
     static Object[] getArgsWithListCoercian(List<Object> args, Class[] parameterTypes) {
 //        Class[] parameterTypes = constructor.getParameterTypes();

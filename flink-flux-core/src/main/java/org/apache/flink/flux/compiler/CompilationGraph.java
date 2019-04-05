@@ -1,6 +1,5 @@
 package org.apache.flink.flux.compiler;
 
-import org.apache.flink.api.common.JobID;
 import org.apache.flink.flux.api.FluxTopology;
 import org.apache.flink.flux.model.*;
 import org.apache.flink.flux.runtime.FluxTopologyImpl;
@@ -25,6 +24,10 @@ public class CompilationGraph {
         this.fluxContext = fluxContext;
     }
 
+    /**
+     * Compile current graph into a {@link FluxTopology}.
+     * @return the topology
+     */
     public FluxTopology compile() {
         constructCompilationGraph(fluxContext);
         compileVertexQueue(senv, fluxContext);

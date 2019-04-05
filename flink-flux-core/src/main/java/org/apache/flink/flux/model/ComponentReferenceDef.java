@@ -20,12 +20,12 @@ package org.apache.flink.flux.model;
 /**
  * A bean reference is simply a string pointer to another id.
  */
-public class ComponentReference {
+public class ComponentReferenceDef {
     public String id;
 
-    public ComponentReference(){}
+    public ComponentReferenceDef(){}
 
-    public ComponentReference(String id){
+    public ComponentReferenceDef(String id){
         this.id = id;
     }
 

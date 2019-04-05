@@ -32,6 +32,10 @@
     <artifactId>flink-storm-pmml</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <checkstyle.skip>true</checkstyle.skip>
+    </properties>
+
     <dependencies>
         <!--parent module dependency-->
         <dependency>

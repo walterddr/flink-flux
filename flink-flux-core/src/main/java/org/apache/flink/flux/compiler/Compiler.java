@@ -17,9 +17,9 @@ public interface Compiler {
     /**
      * Compile the thing.
      *
-     * @param senv
-     * @param fluxContext
-     * @param vertex
+     * @param senv stream execution environment
+     * @param fluxContext flux context
+     * @param vertex compilation vertex.
      */
     void compile(StreamExecutionEnvironment senv, FluxContext fluxContext, CompilationVertex vertex);
 }

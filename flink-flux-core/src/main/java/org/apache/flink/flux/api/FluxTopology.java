@@ -13,11 +13,13 @@ public interface FluxTopology {
 
   /**
    * Get the job graph represent the execution topology.
+   * @return job graph
    */
   JobGraph getJobGraph();
 
   /**
    * Get extra classpath JAR required for instantiating runtime.
+   * @return list of paths that indicates JAR files needed in the classpath
    */
   List<Path> getAdditionalJars();
 }
