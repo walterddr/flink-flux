@@ -23,8 +23,6 @@ import org.apache.flink.flux.model.SinkDef;
 import org.apache.flink.flux.model.SourceDef;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.util.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.apache.flink.flux.compiler.utils.CompilationUtils.compileOperator;
 import static org.apache.flink.flux.compiler.utils.CompilationUtils.compileSink;
@@ -33,12 +31,17 @@ import static org.apache.flink.flux.compiler.utils.CompilationUtils.compileSourc
 /**
  * Compiler implementation for operator-level Flux compilation.
  */
-public class OperatorCompiler implements Compiler {
-  private static Logger LOG = LoggerFactory.getLogger(OperatorCompiler.class);
+public class CompilerImpl implements Compiler {
 
-  public OperatorCompiler() {
+  public CompilerImpl() {
   }
 
+  /**
+   * Compile a single vertex into chaining datastream.
+   * @param senv        stream execution environment
+   * @param fluxContext flux context
+   * @param vertex      compilation vertex.
+   */
   @Override
   public void compile(StreamExecutionEnvironment senv, FluxContext fluxContext, CompilationVertex vertex) {
     Preconditions.checkArgument(vertex.readyToCompile());

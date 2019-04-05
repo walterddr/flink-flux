@@ -32,15 +32,19 @@ import java.util.List;
 final class ReflectiveInvokeUtils {
   private static final Logger LOG = LoggerFactory.getLogger(ReflectiveInvokeUtils.class);
 
+  private ReflectiveInvokeUtils() {
+  }
+
   /**
-   * Given a list of constructor arguments, and a target class, attempt to find a suitable constructor.
+   * Given a list of constructor arguments and target class, attempt to find a suitable constructor.
    *
    * @param args   argument list
    * @param target target classs
    * @return constructor method
    * @throws NoSuchMethodException cannot be found
    */
-  static Constructor findCompatibleConstructor(List<Object> args, Class target) throws NoSuchMethodException {
+  static Constructor findCompatibleConstructor(List<Object> args, Class target)
+      throws NoSuchMethodException {
     Constructor retval = null;
     int eligibleCount = 0;
 
@@ -62,8 +66,8 @@ final class ReflectiveInvokeUtils {
       }
     }
     if (eligibleCount > 1) {
-      LOG.warn("Found multiple invokable constructors for class {}, given arguments {}. Using the last one found.",
-          target, args);
+      LOG.warn("Found multiple invokable constructors "
+              + "for class {}, given arguments {}. Using the last one found.", target, args);
     }
     return retval;
   }
@@ -125,9 +129,8 @@ final class ReflectiveInvokeUtils {
       }
     }
     if (eligibleCount > 1) {
-      LOG.warn("Found multiple invokable methods for class {}, method {}, given arguments {}. " +
-              "Using the last one found.",
-          new Object[]{target, methodName, args});
+      LOG.warn("Found multiple invokable methods for class {}, method {}, given arguments {}. "
+              + "Using the last one found.", new Object[]{target, methodName, args});
     }
     return retval;
   }
@@ -191,7 +194,6 @@ final class ReflectiveInvokeUtils {
    * @return argument object list.
    */
   static Object[] getArgsWithListCoercian(List<Object> args, Class[] parameterTypes) {
-//        Class[] parameterTypes = constructor.getParameterTypes();
     if (parameterTypes.length != args.size()) {
       throw new IllegalArgumentException("Contructor parameter count does not egual argument size.");
     }

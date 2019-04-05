@@ -41,7 +41,7 @@ public class FluxTopologyBuilderImpl implements FluxTopologyBuilder {
   private StreamExecutionEnvironment senv;
   private TimeCharacteristic timeCharacteristic;
 
-  private FluxTopologyBuilderImpl(Configuration flinkConf) {
+  FluxTopologyBuilderImpl(Configuration flinkConf) {
     senv = StreamExecutionEnvironment.getExecutionEnvironment();
     // TODO fix time characteristic setting
     timeCharacteristic = TimeCharacteristic.ProcessingTime;

@@ -34,7 +34,7 @@ public class CompilationVertex implements Comparable<CompilationVertex> {
   private int compiledSourceCount;
   private DataStream dataStream = null;
 
-  private CompilationVertex(VertexDef vertex, List<EdgeDef> incomingEdge, List<EdgeDef> outgoingEdge) {
+  CompilationVertex(VertexDef vertex, List<EdgeDef> incomingEdge, List<EdgeDef> outgoingEdge) {
     this.vertex = vertex;
     this.incomingEdge = incomingEdge;
     this.outgoingEdge = outgoingEdge;
@@ -51,24 +51,19 @@ public class CompilationVertex implements Comparable<CompilationVertex> {
   /**
    * Determine whether this vertex is ready for compilation.
    *
-   * @return
+   * @return return whether ready to compile.
    */
   public boolean readyToCompile() {
     return this.compiledSourceCount == incomingEdge.size();
   }
 
-  /**
-   * Get vertex
-   *
-   * @return vertex definition
-   */
-  public VertexDef getVertex() {
-    return vertex;
-  }
-
   //-------------------------------------------------------------------------
   // Getters
   //-------------------------------------------------------------------------
+
+  public VertexDef getVertex() {
+    return vertex;
+  }
 
   public List<EdgeDef> getIncomingEdge() {
     return incomingEdge;
@@ -87,15 +82,15 @@ public class CompilationVertex implements Comparable<CompilationVertex> {
   }
 
   /**
-   * comparator used during priority queue compilation
+   * comparator used during priority queue compilation.
    *
    * @param that other object.
    * @return compilation object vs incoming edge differences. smaller has priority.
    */
   @Override
   public int compareTo(CompilationVertex that) {
-    return (this.compiledSourceCount - this.incomingEdge.size()) -
-        (that.compiledSourceCount - that.incomingEdge.size());
+    return (this.compiledSourceCount - this.incomingEdge.size())
+        -  (that.compiledSourceCount - that.incomingEdge.size());
   }
 
 

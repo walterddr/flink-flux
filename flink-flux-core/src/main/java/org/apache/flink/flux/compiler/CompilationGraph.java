@@ -101,10 +101,10 @@ public class CompilationGraph {
   }
 
   private void compileVertexQueue(StreamExecutionEnvironment senv, FluxContext fluxContext) {
-    OperatorCompiler operatorCompiler = new OperatorCompiler();
+    CompilerImpl compilerImpl = new CompilerImpl();
     while (this.compilationQueue.size() > 0) {
       CompilationVertex vertex = this.compilationQueue.poll();
-      operatorCompiler.compile(senv, fluxContext, vertex);
+      compilerImpl.compile(senv, fluxContext, vertex);
 
       // set downstream vertex compilation flags.
       for (EdgeDef downstreamEdge : vertex.getOutgoingEdge()) {

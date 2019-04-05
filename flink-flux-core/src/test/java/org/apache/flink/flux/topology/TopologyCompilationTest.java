@@ -1,8 +1,6 @@
 package org.apache.flink.flux.topology;
 
 import org.apache.flink.flux.api.FluxTopology;
-import org.apache.flink.flux.api.FluxTopologyBuilder;
-import org.apache.flink.flux.compiler.FluxContext;
 import org.apache.flink.flux.model.TopologyDef;
 import org.apache.flink.flux.parser.FluxParser;
 import org.apache.flink.flux.runtime.FluxTopologyBuilderImpl;

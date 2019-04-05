@@ -22,7 +22,12 @@ import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.flux.compiler.CompilationVertex;
 import org.apache.flink.flux.compiler.FluxContext;
-import org.apache.flink.flux.model.*;
+import org.apache.flink.flux.model.ConfigMethodDef;
+import org.apache.flink.flux.model.ObjectDef;
+import org.apache.flink.flux.model.OperatorDef;
+import org.apache.flink.flux.model.PropertyDef;
+import org.apache.flink.flux.model.SinkDef;
+import org.apache.flink.flux.model.SourceDef;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -40,10 +45,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apache.flink.flux.compiler.utils.ReflectiveInvokeUtils.*;
-
 public final class CompilationUtils {
   private static final Logger LOG = LoggerFactory.getLogger(CompilationUtils.class);
+
+  private CompilationUtils() {
+
+  }
 
   /**
    * compile source.
@@ -89,7 +96,10 @@ public final class CompilationUtils {
 
     // Compile vertex
     OneInputStreamOperator operator = (OneInputStreamOperator) buildObject(operatorDef, fluxContext);
-    DataStream stream = sourceStream.transform(operatorDef.getId(), resolveTypeInformation(operatorDef.getTypeInformation()), operator);
+    DataStream stream = sourceStream.transform(
+        operatorDef.getId(),
+        resolveTypeInformation(operatorDef.getTypeInformation()),
+        operator);
 
     // set compilation results
     vertex.setDataStream(stream);
@@ -132,15 +142,17 @@ public final class CompilationUtils {
       List<Object> cArgs = def.getConstructorArgs();
 
       if (def.hasReferences()) {
-        cArgs = resolveReferences(cArgs, fluxContext);
+        cArgs = ReflectiveInvokeUtils.resolveReferences(cArgs, fluxContext);
       }
 
-      Constructor con = findCompatibleConstructor(cArgs, clazz);
+      Constructor con = ReflectiveInvokeUtils.findCompatibleConstructor(cArgs, clazz);
       if (con != null) {
         LOG.debug("Found something seemingly compatible, attempting invocation...");
-        obj = con.newInstance(getArgsWithListCoercian(cArgs, con.getParameterTypes()));
+        obj = con.newInstance(
+            ReflectiveInvokeUtils.getArgsWithListCoercian(cArgs, con.getParameterTypes()));
       } else {
-        String msg = String.format("Couldn't find a suitable constructor for class '%s' with arguments '%s'.",
+        String msg = String.format(
+            "Couldn't find a suitable constructor for class '%s' with arguments '%s'.",
             clazz.getName(),
             cArgs);
         throw new IllegalArgumentException(msg);
@@ -153,7 +165,8 @@ public final class CompilationUtils {
     return obj;
   }
 
-  private static void applyProperties(ObjectDef bean, Object instance, FluxContext context) throws Exception {
+  private static void applyProperties(ObjectDef bean, Object instance, FluxContext context)
+      throws Exception {
     List<PropertyDef> props = bean.getProperties();
     Class clazz = instance.getClass();
     if (props != null) {
@@ -190,15 +203,17 @@ public final class CompilationUtils {
         args = new ArrayList<>();
       }
       if (methodDef.hasReferences()) {
-        args = resolveReferences(args, context);
+        args = ReflectiveInvokeUtils.resolveReferences(args, context);
       }
       String methodName = methodDef.getName();
-      Method method = findCompatibleMethod(args, clazz, methodName);
+      Method method = ReflectiveInvokeUtils.findCompatibleMethod(args, clazz, methodName);
       if (method != null) {
-        Object[] methodArgs = getArgsWithListCoercian(args, method.getParameterTypes());
+        Object[] methodArgs =
+            ReflectiveInvokeUtils.getArgsWithListCoercian(args, method.getParameterTypes());
         method.invoke(instance, methodArgs);
       } else {
-        String msg = String.format("Unable to find configuration method '%s' in class '%s' with arguments %s.",
+        String msg = String.format(
+            "Unable to find configuration method '%s' in class '%s' with arguments %s.",
             methodName, clazz.getName(), args);
         throw new IllegalArgumentException(msg);
       }

@@ -38,15 +38,18 @@ import java.util.Properties;
 /**
  * Flux parser.
  */
-public class FluxParser {
+public final class FluxParser {
   private static final Logger LOG = LoggerFactory.getLogger(FluxParser.class);
 
   private FluxParser() {
   }
 
-  // TODO refactor input stream processing (see parseResource() method).
-  public static TopologyDef parseFile(String inputFile, boolean dumpYaml, boolean processIncludes,
-                                      String propertiesFile, boolean envSub) throws IOException {
+  static TopologyDef parseFile(
+      String inputFile,
+      boolean dumpYaml,
+      boolean processIncludes,
+      String propertiesFile,
+      boolean envSub) throws IOException {
 
     FileInputStream in = new FileInputStream(inputFile);
     TopologyDef topology = parseInputStream(in, dumpYaml, processIncludes, propertiesFile, envSub);
@@ -55,8 +58,12 @@ public class FluxParser {
     return topology;
   }
 
-  public static TopologyDef parseResource(String resource, boolean dumpYaml, boolean processIncludes,
-                                          String propertiesFile, boolean envSub) throws IOException {
+  static TopologyDef parseResource(
+      String resource,
+      boolean dumpYaml,
+      boolean processIncludes,
+      String propertiesFile,
+      boolean envSub) throws IOException {
 
     InputStream in = FluxParser.class.getResourceAsStream(resource);
     TopologyDef topology = parseInputStream(in, dumpYaml, processIncludes, propertiesFile, envSub);
@@ -65,8 +72,12 @@ public class FluxParser {
     return topology;
   }
 
-  public static TopologyDef parseInputStream(InputStream inputStream, boolean dumpYaml, boolean processIncludes,
-                                             String propertiesFile, boolean envSub) throws IOException {
+  static TopologyDef parseInputStream(
+      InputStream inputStream,
+      boolean dumpYaml,
+      boolean processIncludes,
+      String propertiesFile,
+      boolean envSub) throws IOException {
 
     Yaml yaml = yaml();
 
@@ -133,12 +144,12 @@ public class FluxParser {
   }
 
   private static Yaml yaml() {
-    Constructor constructor = new Constructor(TopologyDef.class);
-
     TypeDescription topologyDescription = new TypeDescription(TopologyDef.class);
     topologyDescription.putListPropertyType("spouts", SourceDef.class);
     topologyDescription.putListPropertyType("bolts", OperatorDef.class);
     topologyDescription.putListPropertyType("includes", IncludeDef.class);
+
+    Constructor constructor = new Constructor(TopologyDef.class);
     constructor.addTypeDescription(topologyDescription);
 
     Yaml yaml = new Yaml(constructor);

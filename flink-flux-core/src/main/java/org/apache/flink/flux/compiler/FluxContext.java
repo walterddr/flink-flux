@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class FluxContext {
   // parsed Topology definition
-  TopologyDef topologyDef;
+  private TopologyDef topologyDef;
 
   // Storm config
   private Configuration config;

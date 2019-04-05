@@ -21,8 +21,6 @@ package org.apache.flink.flux.runtime;
 import org.apache.flink.core.fs.Path;
 import org.apache.flink.flux.api.FluxTopology;
 import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
