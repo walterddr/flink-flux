@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.flink.flux.runtime;
 
 import org.apache.flink.core.fs.Path;
@@ -25,32 +26,34 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * implementation of the Flux Topology, encloses the job graph and the classpath jar files.
+ */
 public class FluxTopologyImpl implements FluxTopology {
-    private static Logger LOG = LoggerFactory.getLogger(FluxTopologyImpl.class);
 
-    private transient JobGraph jobGraph;
-    private transient List<Path> additionalJars;
+  private transient JobGraph jobGraph;
+  private transient List<Path> additionalJars;
 
-    public FluxTopologyImpl() {
-    }
+  public FluxTopologyImpl() {
+  }
 
-    @Override
-    public List<Path> getAdditionalJars() {
-        return additionalJars;
-    }
+  @Override
+  public List<Path> getAdditionalJars() {
+    return additionalJars;
+  }
 
-    public void setAdditionalJars(List<Path> additionalJars) {
-        this.additionalJars = additionalJars;
-    }
+  public void setAdditionalJars(List<Path> additionalJars) {
+    this.additionalJars = additionalJars;
+  }
 
-    @Override
-    public JobGraph getJobGraph() {
-        return jobGraph;
-    }
+  @Override
+  public JobGraph getJobGraph() {
+    return jobGraph;
+  }
 
-    public void setJobGraph(JobGraph jobGraph) {
-        this.jobGraph = jobGraph;
-    }
+  public void setJobGraph(JobGraph jobGraph) {
+    this.jobGraph = jobGraph;
+  }
 }
 
 

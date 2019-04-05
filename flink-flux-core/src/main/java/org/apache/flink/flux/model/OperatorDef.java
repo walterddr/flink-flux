@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.flink.flux.model;
 
 /**
@@ -22,13 +23,13 @@ package org.apache.flink.flux.model;
  */
 public class OperatorDef extends VertexDef {
 
-    private String type;
+  private String type;
 
-    public String getType() {
-        return type;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 }

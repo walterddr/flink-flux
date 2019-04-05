@@ -15,10 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.flink.flux.parser;
 
-import org.apache.flink.flux.model.OperatorDef;
 import org.apache.flink.flux.model.IncludeDef;
+import org.apache.flink.flux.model.OperatorDef;
 import org.apache.flink.flux.model.SourceDef;
 import org.apache.flink.flux.model.TopologyDef;
 import org.apache.flink.shaded.jackson2.org.yaml.snakeyaml.TypeDescription;
@@ -34,10 +35,14 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Flux parser.
+ */
 public class FluxParser {
   private static final Logger LOG = LoggerFactory.getLogger(FluxParser.class);
 
-  private FluxParser(){}
+  private FluxParser() {
+  }
 
   // TODO refactor input stream processing (see parseResource() method).
   public static TopologyDef parseFile(String inputFile, boolean dumpYaml, boolean processIncludes,
@@ -91,27 +96,27 @@ public class FluxParser {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     LOG.info("loading YAML from input stream...");
     int b = -1;
-    while((b = in.read()) != -1){
+    while ((b = in.read()) != -1) {
       bos.write(b);
     }
 
     String str = bos.toString();
 
     // properties file substitution
-    if(propsFile != null){
+    if (propsFile != null) {
       LOG.info("Performing property substitution.");
       InputStream propsIn = new FileInputStream(propsFile);
       Properties props = new Properties();
       props.load(propsIn);
       for (Object key : props.keySet()) {
-        str = str.replace("${" + key + "}", props.getProperty((String)key));
+        str = str.replace("${" + key + "}", props.getProperty((String) key));
       }
     } else {
       LOG.info("Not performing property substitution.");
     }
 
     // environment variable substitution
-    if(envSubstitution){
+    if (envSubstitution) {
       LOG.info("Performing environment variable substitution...");
       Map<String, String> envs = System.getenv();
       for (String key : envs.keySet()) {
@@ -120,14 +125,14 @@ public class FluxParser {
     } else {
       LOG.info("Not performing environment variable substitution.");
     }
-    return (TopologyDef)yaml.load(str);
+    return (TopologyDef) yaml.load(str);
   }
 
-  private static void dumpYaml(TopologyDef topology, Yaml yaml){
+  private static void dumpYaml(TopologyDef topology, Yaml yaml) {
     System.out.println("Configuration (interpreted): \n" + yaml.dump(topology));
   }
 
-  private static Yaml yaml(){
+  private static Yaml yaml() {
     Constructor constructor = new Constructor(TopologyDef.class);
 
     TypeDescription topologyDescription = new TypeDescription(TopologyDef.class);
@@ -141,8 +146,7 @@ public class FluxParser {
   }
 
   /**
-   *
-   * @param yaml the yaml parser for parsing the include file(s)
+   * @param yaml        the yaml parser for parsing the include file(s)
    * @param topologyDef the topology definition containing (possibly zero) includes
    * @return The TopologyDef with includes resolved.
    */
@@ -152,7 +156,7 @@ public class FluxParser {
       String propsFile,
       boolean envSub) throws IOException {
     if (topologyDef.getIncludes() != null) {
-      for (IncludeDef include : topologyDef.getIncludes()){
+      for (IncludeDef include : topologyDef.getIncludes()) {
         TopologyDef includeTopologyDef = null;
         if (include.isResource()) {
           LOG.info("Loading includes from resource: {}", include.getFile());
@@ -165,23 +169,22 @@ public class FluxParser {
         // if overrides are disabled, we won't replace anything that already exists
         boolean override = include.isOverride();
         // name
-        if(includeTopologyDef.getName() != null){
+        if (includeTopologyDef.getName() != null) {
           topologyDef.setName(includeTopologyDef.getName(), override);
         }
 
         // config
-        if(includeTopologyDef.getConfig() != null) {
+        if (includeTopologyDef.getConfig() != null) {
           //TODO move this logic to the model class
           Map<String, Object> config = topologyDef.getConfig();
           Map<String, Object> includeConfig = includeTopologyDef.getConfig();
-          if(override) {
+          if (override) {
             config.putAll(includeTopologyDef.getConfig());
           } else {
-            for(String key : includeConfig.keySet()){
-              if(config.containsKey(key)){
+            for (String key : includeConfig.keySet()) {
+              if (config.containsKey(key)) {
                 LOG.warn("Ignoring attempt to set topology config property '{}' with override == false", key);
-              }
-              else {
+              } else {
                 config.put(key, includeConfig.get(key));
               }
             }
@@ -189,20 +192,20 @@ public class FluxParser {
         }
 
         //component overrides
-        if(includeTopologyDef.getComponents() != null){
+        if (includeTopologyDef.getComponents() != null) {
           topologyDef.addAllComponents(includeTopologyDef.getComponents(), override);
         }
         //bolt overrides
-        if(includeTopologyDef.getOperators() != null){
+        if (includeTopologyDef.getOperators() != null) {
           topologyDef.addAllOperators(includeTopologyDef.getOperators(), override);
         }
         //spout overrides
-        if(includeTopologyDef.getSources() != null) {
+        if (includeTopologyDef.getSources() != null) {
           topologyDef.addAllSources(includeTopologyDef.getSources(), override);
         }
         //stream overrides
         //TODO streams should be uniquely identifiable
-        if(includeTopologyDef.getStreams() != null) {
+        if (includeTopologyDef.getStreams() != null) {
           topologyDef.addAllStreams(includeTopologyDef.getStreams(), override);
         }
       } // end include processing
