@@ -45,9 +45,6 @@ public class TopologyDef {
   private List<IncludeDef> includes; // not required
   private Map<String, Object> config = new HashMap<String, Object>();
 
-  // a "topology source" is a class that can produce a `StormTopology` thrift object.
-  private TopologyBuilderDef topologyBuilderDef;
-
   // the following are required if we're defining a core storm topology DAG in YAML, etc.
   private Map<String, OperatorDef> operatorMap = new LinkedHashMap<String, OperatorDef>();
   private Map<String, SourceDef> sourceMap = new LinkedHashMap<String, SourceDef>();
@@ -219,29 +216,15 @@ public class TopologyDef {
     this.streams.addAll(streams);
   }
 
-  public TopologyBuilderDef getTopologyBuilder() {
-    return topologyBuilderDef;
-  }
-
-  public void setTopologyBuilderDef(TopologyBuilderDef topologyBuilderDef) {
-    this.topologyBuilderDef = topologyBuilderDef;
-  }
-
-  public boolean isDslTopology() {
-    return this.topologyBuilderDef == null;
-  }
-
-
+  /**
+   * validate that the definition actually represents a valid Flux topology
+   * @return true if the topology def is valid.
+   */
   public boolean validate() {
     boolean hasSources = this.sourceMap != null && this.sourceMap.size() > 0;
-    boolean hasOperators = this.operatorMap != null && this.operatorMap.size() > 0;
     boolean hasSinks = this.sinkMap != null && this.sinkMap.size() > 0;
     boolean hasStreams = this.streams != null && this.streams.size() > 0;
-    // you cant define a topologySource and a DSL topology at the same time...
-    if (!isDslTopology() && (hasSources || hasOperators || hasStreams || hasSinks)) {
-      return false;
-    }
-    if (isDslTopology() && (hasSources && hasSinks && hasStreams)) {
+    if (hasSources && hasSinks && hasStreams) {
       return true;
     }
     return true;
