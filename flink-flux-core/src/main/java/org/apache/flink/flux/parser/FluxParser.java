@@ -44,7 +44,7 @@ public final class FluxParser {
   private FluxParser() {
   }
 
-  static TopologyDef parseFile(
+  public static TopologyDef parseFile(
       String inputFile,
       boolean dumpYaml,
       boolean processIncludes,
@@ -58,7 +58,7 @@ public final class FluxParser {
     return topology;
   }
 
-  static TopologyDef parseResource(
+  public static TopologyDef parseResource(
       String resource,
       boolean dumpYaml,
       boolean processIncludes,
@@ -72,7 +72,7 @@ public final class FluxParser {
     return topology;
   }
 
-  static TopologyDef parseInputStream(
+  public static TopologyDef parseInputStream(
       InputStream inputStream,
       boolean dumpYaml,
       boolean processIncludes,

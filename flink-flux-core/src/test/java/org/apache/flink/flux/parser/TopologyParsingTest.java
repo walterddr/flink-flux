@@ -16,4 +16,10 @@ public class TopologyParsingTest {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/repartition_topology.yaml", false, true, null, false);
     topologyDef.validate();
   }
+
+  @Test
+  public void testKafkaTopologyGen() throws Exception {
+    TopologyDef topologyDef = FluxParser.parseResource("/configs/kafka_topology.yaml", false, true, null, false);
+    topologyDef.validate();
+  }
 }

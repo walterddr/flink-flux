@@ -24,4 +24,13 @@ public class TopologyRuntimeITCase {
     FluxTopology topology = fluxBuilder.getTopology(topologyDef, null);
     fluxBuilder.execute(topology);
   }
+
+  @Test
+  public void testKafkaTopologyRuntime() throws Exception {
+    TopologyDef topologyDef = FluxParser.parseResource("/configs/kafka_topology.yaml", false, true, null, false);
+    topologyDef.validate();
+    FluxTopologyBuilderImpl fluxBuilder = FluxTopologyBuilderImpl.createFluxBuilder();
+    FluxTopology topology = fluxBuilder.getTopology(topologyDef, null);
+    fluxBuilder.execute(topology);
+  }
 }

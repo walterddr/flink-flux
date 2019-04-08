@@ -27,4 +27,13 @@ public class TopologyCompilationTest {
     FluxTopology topology = fluxBuilder.getTopology(topologyDef, null);
     assertNotNull(topology.getJobGraph());
   }
+
+  @Test
+  public void testKafkaTopologyCompilation() throws Exception {
+    TopologyDef topologyDef = FluxParser.parseResource("/configs/kafka_topology.yaml", false, true, null, false);
+    topologyDef.validate();
+    FluxTopologyBuilderImpl fluxBuilder = FluxTopologyBuilderImpl.createFluxBuilder();
+    FluxTopology topology = fluxBuilder.getTopology(topologyDef, null);
+    assertNotNull(topology.getJobGraph());
+  }
 }
