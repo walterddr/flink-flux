@@ -36,6 +36,7 @@ under the License.
 	<properties>
 		<checkstyle.skip>true</checkstyle.skip>
 		<enforcer.skip>true</enforcer.skip>
+		<rat.skip>true</rat.skip>
 	</properties>
 
 	<dependencies>
@@ -77,5 +78,4 @@ under the License.
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 </project>

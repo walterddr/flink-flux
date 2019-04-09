@@ -29,6 +29,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 final class ReflectiveInvokeUtils {
   private static final Logger LOG = LoggerFactory.getLogger(ReflectiveInvokeUtils.class);
 

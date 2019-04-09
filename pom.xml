@@ -50,6 +50,7 @@ under the License.
 		<storm.version>1.0.0</storm.version>
 		<checkstyle.skip>true</checkstyle.skip>
 		<enforcer.skip>true</enforcer.skip>
+		<rat.skip>true</rat.skip>
 	</properties>
 
 	<modules>

@@ -26,7 +26,7 @@ from subprocess import Popen
 import sys
 import xml.etree.ElementTree as ET
 
-TARGET_DIR = "./target/"
+TARGET_DIR = "./build/"
 FORMAT = '%(asctime)-15s %(message)s'
 logging.basicConfig(format=FORMAT)
 LOG = logging.getLogger('testpatch')
@@ -140,9 +140,9 @@ class TestPatchRunner:
             self.out.write('The compilation has failed.\n')
             return ret
 
-        if self.compilationWarnings > 0:
-            self.out.write('The compiler has generated %d warnings.\n\n' % self.compilationWarnings)
-            return -1
+#        if self.compilationWarnings > 0:
+#            self.out.write('The compiler has generated %d warnings.\n\n' % self.compilationWarnings)
+#            return -1
 
         ret = self.checkstyle()
         if ret != 0:
@@ -171,7 +171,8 @@ class TestPatchRunner:
                 for name, bugs in self.findbugsWarnings:
                     self.out.write('  Project %s has %s findbugs warnings.\n' % (name, bugs))
 
-        if self.compilationWarnings > 0 or len(self.failedTests) > 0 or len(self.findbugsWarnings) > 0:
+#        if self.compilationWarnings > 0 or len(self.failedTests) > 0 or len(self.findbugsWarnings) > 0:
+        if len(self.failedTests) > 0:
             return -1
         else:
             return 0

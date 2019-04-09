@@ -45,6 +45,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public final class CompilationUtils {
   private static final Logger LOG = LoggerFactory.getLogger(CompilationUtils.class);
 
