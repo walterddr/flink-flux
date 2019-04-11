@@ -49,7 +49,7 @@ sources:
   className: "org.apache.flink.flux.test.utils.source.KafkaStringSource"
   parallelism: 1
   constructorArgs:
-  - "my_topic"
+  - "input_topic"
   - "localhost:2181"
   - "localhost:9092"
   # ...
@@ -57,9 +57,11 @@ sources:
 # sink definitions
 sinks:
 - id: "sink-1"
-  className: "org.apache.flink.flux.test.utils.sink.ConsoleOutputSink"
+  className: "org.apache.flink.flux.test.utils.sink.KafkaStringSink"
   parallelism: 1
-  # ...
+  constructorArgs:
+  - "output_topic"
+  - "localhost:9092"
 
 #stream definitions
 # stream definitions define connections between spouts and bolts.
