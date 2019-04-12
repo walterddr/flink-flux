@@ -25,7 +25,7 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompilationVertex implements Comparable<CompilationVertex> {
+public class CompilationVertex {
 
   private final VertexDef vertex;
   private final List<EdgeDef> incomingEdge;
@@ -79,18 +79,6 @@ public class CompilationVertex implements Comparable<CompilationVertex> {
 
   public void setDataStream(DataStream dataStream) {
     this.dataStream = dataStream;
-  }
-
-  /**
-   * comparator used during priority queue compilation.
-   *
-   * @param that other object.
-   * @return compilation object vs incoming edge differences. smaller has priority.
-   */
-  @Override
-  public int compareTo(CompilationVertex that) {
-    return (this.compiledSourceCount - this.incomingEdge.size())
-        -  (that.compiledSourceCount - that.incomingEdge.size());
   }
 
 

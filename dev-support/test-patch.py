@@ -22,9 +22,11 @@
 import fnmatch
 import logging
 import os
-from subprocess import Popen
 import sys
+import re
 import xml.etree.ElementTree as ET
+
+from subprocess import Popen
 
 TARGET_DIR = "./build/"
 FORMAT = '%(asctime)-15s %(message)s'
@@ -84,7 +86,9 @@ class TestPatchRunner:
             with open(TARGET_DIR + '/buildWarnings.txt') as f:
                 for line in f:
                     if line.startswith('[WARNING]') and line.find('/target/generated-sources/') == -1:
-                        self.compilationWarnings += 1
+                        # TODO: currently remove anything "storm" related
+                        if not re.search('storm', line):
+                            self.compilationWarnings += 1
         return ret
 
     def run_test(self):
@@ -130,25 +134,29 @@ class TestPatchRunner:
                 continue
 
     def run(self):
+        # -- Begin mvn enforcer and rat check --
         ret = self.validate()
         if ret != 0:
             self.out.write('The validation of dependency or licenses have failed.\n')
             return ret
 
+        # -- Begin mvn compile check --
         ret = self.compile()
         if ret != 0:
             self.out.write('The compilation has failed.\n')
             return ret
 
-#        if self.compilationWarnings > 0:
-#            self.out.write('The compiler has generated %d warnings.\n\n' % self.compilationWarnings)
-#            return -1
+        if self.compilationWarnings > 0:
+            self.out.write('The compiler has generated %d warnings.\n\n' % self.compilationWarnings)
+            return -1
 
+        # -- Begin mvn checkstyle check --
         ret = self.checkstyle()
         if ret != 0:
             self.out.write('The validation of checkstyles have failed.\n')
             return ret
 
+        # -- Begin mvn test check --
         if self.run_test() != 0:
             self.out.write('There are failures when running the tests.\n')
 
@@ -159,7 +167,9 @@ class TestPatchRunner:
             self.out.write('The following tests have failed:\n')
             for test in self.failedTests:
                 self.out.write('  %s\n' % test)
+            return -1
 
+        # -- Begin findbugs check --
         if self.run_findbugs() != 0:
             self.out.write('There are failures when running findbugs.\n')
         else:
@@ -170,12 +180,12 @@ class TestPatchRunner:
                 self.out.write('Findbugs has failed.\n')
                 for name, bugs in self.findbugsWarnings:
                     self.out.write('  Project %s has %s findbugs warnings.\n' % (name, bugs))
+                return -1
 
-#        if self.compilationWarnings > 0 or len(self.failedTests) > 0 or len(self.findbugsWarnings) > 0:
-        if len(self.failedTests) > 0:
-            return -1
-        else:
-            return 0
+        self.out.write('====================================================\n')
+        self.out.write('TEST PATCH PASSED!\n')
+        self.out.write('====================================================\n')
+        return 0
 
 try:
   os.mkdir(TARGET_DIR)

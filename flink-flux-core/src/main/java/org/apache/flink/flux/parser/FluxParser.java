@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -40,6 +41,7 @@ import java.util.Properties;
  */
 public final class FluxParser {
   private static final Logger LOG = LoggerFactory.getLogger(FluxParser.class);
+  private static final String DEFAULT_ENCODING = "UTF8";
 
   private FluxParser() {
   }
@@ -111,14 +113,19 @@ public final class FluxParser {
       bos.write(b);
     }
 
-    String str = bos.toString();
+    String str = bos.toString(DEFAULT_ENCODING);
 
     // properties file substitution
     if (propsFile != null) {
       LOG.info("Performing property substitution.");
-      InputStream propsIn = new FileInputStream(propsFile);
       Properties props = new Properties();
-      props.load(propsIn);
+      InputStream propsIn = new FileInputStream(propsFile);
+      try {
+        props.load(propsIn);
+      } catch (Exception e) {
+        LOG.error("Cannot load property file: " + propsFile, e);
+      }
+      propsIn.close();
       for (Object key : props.keySet()) {
         str = str.replace("${" + key + "}", props.getProperty((String) key));
       }
@@ -130,8 +137,8 @@ public final class FluxParser {
     if (envSubstitution) {
       LOG.info("Performing environment variable substitution...");
       Map<String, String> envs = System.getenv();
-      for (String key : envs.keySet()) {
-        str = str.replace("${ENV-" + key + "}", envs.get(key));
+      for (Map.Entry<String, String> e : envs.entrySet()) {
+        str = str.replace("${ENV-" + e.getKey() + "}", e.getValue());
       }
     } else {
       LOG.info("Not performing environment variable substitution.");
@@ -192,11 +199,12 @@ public final class FluxParser {
           if (override) {
             config.putAll(includeTopologyDef.getConfig());
           } else {
-            for (String key : includeConfig.keySet()) {
-              if (config.containsKey(key)) {
-                LOG.warn("Ignoring attempt to set topology config property '{}' with override == false", key);
+            for (Map.Entry<String, Object> e : includeConfig.entrySet()) {
+              if (config.containsKey(e.getKey())) {
+                LOG.warn("Ignoring attempt to set topology config property: "
+                    + "'{}' with override == false", e.getKey());
               } else {
-                config.put(key, includeConfig.get(key));
+                config.put(e.getKey(), e.getValue());
               }
             }
           }

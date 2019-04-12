@@ -42,6 +42,7 @@ under the License.
 	</repositories>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<flink.version>1.7.2</flink.version>
 		<scala.version>2.11.12</scala.version>
 		<scala.binary.version>2.11</scala.binary.version>
@@ -303,7 +304,7 @@ under the License.
 					<dependency>
 						<groupId>com.puppycrawl.tools</groupId>
 						<artifactId>checkstyle</artifactId>
-						<version>7.7</version>
+						<version>8.18</version>
 					</dependency>
 				</dependencies>
 			</plugin>

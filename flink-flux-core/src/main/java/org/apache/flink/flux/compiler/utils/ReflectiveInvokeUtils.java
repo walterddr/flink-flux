@@ -221,7 +221,7 @@ final class ReflectiveInvokeUtils {
       if (isPrimitiveBoolean(paramType) && Boolean.class.isAssignableFrom(objectType)) {
         LOG.debug("Its a primitive boolean.");
         Boolean bool = (Boolean) args.get(i);
-        constructorParams[i] = bool.booleanValue();
+        constructorParams[i] = bool;
         continue;
       }
       if (isPrimitiveNumber(paramType) && Number.class.isAssignableFrom(objectType)) {

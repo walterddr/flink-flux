@@ -30,12 +30,13 @@ under the License.
 	</parent>
 
 	<name>flink-storm-core</name>
-	<artifactId>flink-storm-core_${scala.binary.version}</artifactId>
+	<artifactId>flink-storm-core</artifactId>
 	<packaging>jar</packaging>
 
 	<properties>
 		<checkstyle.skip>true</checkstyle.skip>
 		<enforcer.skip>true</enforcer.skip>
+		<findbugs.skip>true</findbugs.skip>
 		<rat.skip>true</rat.skip>
 	</properties>
 

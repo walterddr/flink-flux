@@ -59,7 +59,7 @@ public class FluxTopologyBuilderImpl implements FluxTopologyBuilder {
    * @param conf        extra global configuration
    * @return a {@code FluxTopologyImpl} class that contains all required components.
    */
-  private static FluxTopology compileTopologyDef(
+  private FluxTopology compileTopologyDef(
       StreamExecutionEnvironment senv,
       TopologyDef topologyDef,
       Map<String, Object> conf) {
@@ -96,6 +96,10 @@ public class FluxTopologyBuilderImpl implements FluxTopologyBuilder {
   public FluxTopology getTopology(
       TopologyDef topologyDef,
       Map<String, Object> config) throws IOException {
+
+    // set time characteristic first
+    senv.setStreamTimeCharacteristic(timeCharacteristic);
+
     try {
       return compileTopologyDef(senv, topologyDef, config);
     } catch (Exception e) {

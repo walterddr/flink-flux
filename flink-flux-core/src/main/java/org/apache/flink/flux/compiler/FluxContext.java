@@ -63,6 +63,22 @@ public class FluxContext {
     return this.topologyDef;
   }
 
+  public List<Object> getAdditionalComponents() {
+    return additionalComponents;
+  }
+
+  public void setAdditionalComponents(List<Object> additionalComponents) {
+    this.additionalComponents = additionalComponents;
+  }
+
+  public Configuration getConfig() {
+    return config;
+  }
+
+  public void setConfig(Configuration config) {
+    this.config = config;
+  }
+
   /**
    * add source.
    *

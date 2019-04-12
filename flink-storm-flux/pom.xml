@@ -36,6 +36,7 @@ under the License.
 	<properties>
 		<checkstyle.skip>true</checkstyle.skip>
 		<enforcer.skip>true</enforcer.skip>
+		<findbugs.skip>true</findbugs.skip>
 		<rat.skip>true</rat.skip>
 	</properties>
 
