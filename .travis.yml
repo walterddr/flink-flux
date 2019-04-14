@@ -22,7 +22,7 @@ jdk: "oraclejdk8"
 jobs:
   include:
     - if: type in (pull_request, push)
-      stage: compile
+      stage: main 
       script: python ./dev-support/test-patch.py
       name: main
  
