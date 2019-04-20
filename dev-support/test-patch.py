@@ -86,9 +86,7 @@ class TestPatchRunner:
             with open(TARGET_DIR + '/buildWarnings.txt') as f:
                 for line in f:
                     if line.startswith('[WARNING]') and line.find('/target/generated-sources/') == -1:
-                        # TODO: currently remove anything "storm" related
-                        if not re.search('storm', line):
-                            self.compilationWarnings += 1
+                        self.compilationWarnings += 1
         return ret
 
     def run_test(self):

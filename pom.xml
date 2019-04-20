@@ -48,16 +48,12 @@ under the License.
 		<scala.binary.version>2.11</scala.binary.version>
 		<jpmml.version>1.0.22</jpmml.version>
 		<jaxb-version>2.3.0</jaxb-version>
-		<storm.version>1.0.0</storm.version>
 		<checkstyle.skip>true</checkstyle.skip>
 		<enforcer.skip>true</enforcer.skip>
 		<rat.skip>true</rat.skip>
 	</properties>
 
 	<modules>
-		<module>flink-storm-core</module>
-		<module>flink-storm-pmml</module>
-		<module>flink-storm-flux</module>
 		<module>flink-flux-core</module>
 	</modules>
 
@@ -80,107 +76,6 @@ under the License.
 				<artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
 				<version>${flink.version}</version>
 			</dependency>
-
-			<!-- we only need the Apache Storm API, not all the runtime and web UI functionality,
-                so we exclude many of the unnecessary and possibly conflicting dependencies -->
-			<dependency>
-				<groupId>org.apache.storm</groupId>
-				<artifactId>storm-core</artifactId>
-				<version>${storm.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.slf4j</groupId>
-						<artifactId>log4j-over-slf4j</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.apache.logging.log4j</groupId>
-						<artifactId>log4j-slf4j-impl</artifactId>
-					</exclusion>
-					<exclusion>
-						<artifactId>slf4j-log4j12</artifactId>
-						<groupId>org.slf4j</groupId>
-					</exclusion>
-					<exclusion>
-						<groupId>javax.servlet</groupId>
-						<artifactId>servlet-api</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>junit</groupId>
-						<artifactId>junit</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.mockito</groupId>
-						<artifactId>mockito-all</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.mockito</groupId>
-						<artifactId>mockito-all</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.apache.curator</groupId>
-						<artifactId>curator-test</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.esotericsoftware</groupId>
-						<artifactId>kryo</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>ring</groupId>
-						<artifactId>ring-core</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>ring</groupId>
-						<artifactId>ring-devel</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>ring</groupId>
-						<artifactId>ring-servlet</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>ring</groupId>
-						<artifactId>ring-jetty-adapter</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.mortbay.jetty</groupId>
-						<artifactId>jetty</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.jgrapht</groupId>
-						<artifactId>jgrapht-core</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>compojure</groupId>
-						<artifactId>compojure</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.twitter</groupId>
-						<artifactId>chill-java</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>commons-fileupload</groupId>
-						<artifactId>commons-fileupload</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>javax.servlet</groupId>
-						<artifactId>servlet-api</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>clout</groupId>
-						<artifactId>clout</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>hiccup</groupId>
-						<artifactId>hiccup</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.storm</groupId>
-				<artifactId>flux-core</artifactId>
-				<version>1.0.0</version>
-			</dependency>
-
 			<dependency>
 				<groupId>com.googlecode.json-simple</groupId>
 				<artifactId>json-simple</artifactId>
