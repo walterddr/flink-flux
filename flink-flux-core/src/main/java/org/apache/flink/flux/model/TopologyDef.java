@@ -29,8 +29,8 @@ import java.util.Map;
 
 /**
  * Bean represenation of a topology.
- * <p>
- * It consists of the following:
+ *
+ * <p>It consists of the following:
  * 1. The topology name
  * 2. A `java.util.Map` representing the `org.apache.storm.config` for the topology
  * 3. A list of spout definitions
@@ -38,11 +38,11 @@ import java.util.Map;
  * 5. A list of stream definitions that define the flow between spouts and bolts.
  */
 public class TopologyDef {
-  private static Logger LOG = LoggerFactory.getLogger(TopologyDef.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TopologyDef.class);
 
   private String name;
-  private Map<String, ComponentDef> componentMap = new LinkedHashMap<String, ComponentDef>(); // not required
-  private List<IncludeDef> includes; // not required
+  private Map<String, ComponentDef> componentMap = new LinkedHashMap<String, ComponentDef>();
+  private List<IncludeDef> includes;
   private Map<String, Object> config = new HashMap<String, Object>();
 
   // the following are required if we're defining a core storm topology DAG in YAML, etc.
@@ -50,7 +50,6 @@ public class TopologyDef {
   private Map<String, SourceDef> sourceMap = new LinkedHashMap<String, SourceDef>();
   private Map<String, SinkDef> sinkMap = new LinkedHashMap<String, SinkDef>();
   private List<StreamDef> streams = new ArrayList<StreamDef>();
-
 
   public String getName() {
     return name;
@@ -217,7 +216,7 @@ public class TopologyDef {
   }
 
   /**
-   * validate that the definition actually represents a valid Flux topology
+   * validate that the definition actually represents a valid Flux topology.
    * @return true if the topology def is valid.
    */
   public boolean validate() {

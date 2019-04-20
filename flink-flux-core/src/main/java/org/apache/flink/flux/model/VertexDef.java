@@ -19,8 +19,7 @@
 package org.apache.flink.flux.model;
 
 /**
- * Abstract parent class of component definitions
- * (spouts/bolts)
+ * Abstract parent class of component definitions.
  */
 public abstract class VertexDef extends ComponentDef {
 
@@ -35,7 +34,6 @@ public abstract class VertexDef extends ComponentDef {
   public void setParallelism(int parallelism) {
     this.parallelism = parallelism;
   }
-
 
   public String getTypeInformation() {
     return typeInformation;

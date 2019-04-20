@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -164,6 +163,8 @@ public final class FluxParser {
   }
 
   /**
+   * Process includes of a specific yaml component.
+   *
    * @param yaml        the yaml parser for parsing the include file(s)
    * @param topologyDef the topology definition containing (possibly zero) includes
    * @return The TopologyDef with includes resolved.

@@ -20,8 +20,8 @@ package org.apache.flink.flux.model;
 
 /**
  * Represents an edge in a graph.
- * <p>
- * Required fields are `from` and `to`, which define the source and destination.
+ *
+ * <p>Required fields are `from` and `to`, which define the source and destination.
  */
 public class EdgeDef {
 
