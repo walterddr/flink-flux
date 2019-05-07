@@ -27,27 +27,14 @@ under the License.
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<repositories>
-		<!-- This repository is needed as a stable source for some Clojure libraries -->
-		<repository>
-			<id>clojars</id>
-			<url>https://clojars.org/repo/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<flink.version>1.7.2</flink.version>
+		<flink.shaded.jackson.version>2.7.9-5.0</flink.shaded.jackson.version>
+		<powermock.version>1.6.5</powermock.version>
 		<scala.version>2.11.12</scala.version>
 		<scala.binary.version>2.11</scala.binary.version>
-		<jpmml.version>1.0.22</jpmml.version>
-		<jaxb-version>2.3.0</jaxb-version>
+		<slf4j.version>1.7.7</slf4j.version>
 	</properties>
 
 	<modules>
@@ -83,19 +70,13 @@ under the License.
 			<dependency>
 				<groupId>org.apache.flink</groupId>
 				<artifactId>flink-shaded-jackson</artifactId>
-				<version>2.7.9-5.0</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.googlecode.json-simple</groupId>
-				<artifactId>json-simple</artifactId>
-				<version>1.1</version>
+				<version>${flink.shaded.jackson.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.7.7</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 
 			<!-- test dependencies -->
@@ -122,21 +103,21 @@ under the License.
 			<dependency>
 				<groupId>org.powermock</groupId>
 				<artifactId>powermock-api-mockito</artifactId>
-				<version>1.6.5</version>
+				<version>${powermock.version}</version>
 				<scope>test</scope>
 			</dependency>
 
 			<dependency>
 				<groupId>org.powermock</groupId>
 				<artifactId>powermock-core</artifactId>
-				<version>1.6.5</version>
+				<version>${powermock.version}</version>
 				<scope>test</scope>
 			</dependency>
 
 			<dependency>
 				<groupId>org.powermock</groupId>
 				<artifactId>powermock-module-junit4</artifactId>
-				<version>1.6.5</version>
+				<version>${powermock.version}</version>
 				<scope>test</scope>
 			</dependency>
 
