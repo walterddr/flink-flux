@@ -30,6 +30,7 @@ under the License.
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<flink.version>1.7.2</flink.version>
+		<jackson.version>2.7.9</jackson.version>
 		<flink.shaded.jackson.version>2.7.9-5.0</flink.shaded.jackson.version>
 		<powermock.version>1.6.5</powermock.version>
 		<scala.version>2.11.12</scala.version>
@@ -38,6 +39,7 @@ under the License.
 	</properties>
 
 	<modules>
+		<module>flux-core</module>
 		<module>flink-flux-core</module>
 	</modules>
 
@@ -45,6 +47,12 @@ under the License.
 		<dependencies>
 
 			<!-- core dependencies -->
+
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+				<version>1.15</version>
+			</dependency>
 
 			<!-- Together with the dependency management section in flink-parent, this
                 pins the Kryo version of transitive dependencies to the Flink Kryo version -->
