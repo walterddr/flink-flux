@@ -16,10 +16,27 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.utils.operator;
+package com.uber.athena.flux.flink.test.utils.sink;
 
-public class BasicOperator {
+import org.apache.flink.api.common.serialization.SerializationSchema;
+import org.apache.flink.api.common.serialization.SimpleStringSchema;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer010;
 
-  public BasicOperator() {
+/**
+ * Test consumer for kafka.
+ */
+public class KafkaStringSink extends FlinkKafkaProducer010<String> {
+
+  public KafkaStringSink(
+      String topic,
+      String brokerConnectionString) {
+    this(topic, new SimpleStringSchema(), brokerConnectionString);
+  }
+
+  public KafkaStringSink(
+      String topic,
+      SerializationSchema<String> valueSerializer,
+      String brokerConnectionString) {
+    super(brokerConnectionString, topic, valueSerializer);
   }
 }

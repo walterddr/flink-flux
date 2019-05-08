@@ -16,11 +16,41 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.utils.sink;
+package com.uber.athena.flux.flink.runtime;
 
-public class BasicSink {
+import com.uber.athena.flux.api.topology.FluxTopology;
+import org.apache.flink.core.fs.Path;
+import org.apache.flink.runtime.jobgraph.JobGraph;
 
-  public BasicSink() {
+import java.util.List;
 
+/**
+ * implementation of the Flux Topology, encloses the job graph and the classpath jar files.
+ */
+public class FluxTopologyImpl implements FluxTopology {
+
+  private transient JobGraph jobGraph;
+  private transient List<Path> additionalJars;
+
+  public FluxTopologyImpl() {
+  }
+
+  public List<Path> getAdditionalJars() {
+    return additionalJars;
+  }
+
+  public void setAdditionalJars(List<Path> additionalJars) {
+    this.additionalJars = additionalJars;
+  }
+
+  public JobGraph getJobGraph() {
+    return jobGraph;
+  }
+
+  public void setJobGraph(JobGraph jobGraph) {
+    this.jobGraph = jobGraph;
   }
 }
+
+
+

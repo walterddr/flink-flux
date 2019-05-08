@@ -46,7 +46,7 @@ config:
 # source definitions
 sources:
   - id: "source-1"
-    className: "org.apache.flink.flux.test.utils.source.RandomSource"
+    className: "com.uber.athena.flux.flink.test.utils.source.RandomSource"
     parallelism: 4
     constructorArgs:
       - 10 # limit
@@ -57,7 +57,7 @@ sources:
 # sink definitions
 sinks:
   - id: "sink-1"
-    className: "org.apache.flink.flux.test.utils.sink.ConsoleOutputSink"
+    className: "com.uber.athena.flux.flink.test.utils.sink.ConsoleOutputSink"
     parallelism: 16
     # ...
 

@@ -46,7 +46,7 @@ config:
 # source definitions
 sources:
 - id: "source-1"
-  className: "org.apache.flink.flux.test.utils.source.KafkaStringSource"
+  className: "com.uber.athena.flux.flink.test.utils.source.KafkaStringSource"
   parallelism: 1
   constructorArgs:
   - "input_topic"
@@ -57,7 +57,7 @@ sources:
 # sink definitions
 sinks:
 - id: "sink-1"
-  className: "org.apache.flink.flux.test.utils.sink.KafkaStringSink"
+  className: "com.uber.athena.flux.flink.test.utils.sink.KafkaStringSink"
   parallelism: 1
   constructorArgs:
   - "output_topic"

@@ -46,7 +46,7 @@ config:
 # source definitions
 sources:
   - id: "source-1"
-    className: "org.apache.flink.flux.test.utils.source.RandomSource"
+    className: "com.uber.athena.flux.flink.test.utils.source.RandomSource"
     parallelism: 1
     constructorArgs:
       - 10 # limit
@@ -56,7 +56,7 @@ sources:
 operators:
   - id: "operator-1"
     type: "operator"
-    className: "org.apache.flink.flux.test.utils.operator.BasicPassThroughOperator"
+    className: "com.uber.athena.flux.flink.test.utils.operator.BasicPassThroughOperator"
     parallelism: 1
     typeInformation: "string"
     # ...
@@ -64,7 +64,7 @@ operators:
 # sink definitions
 sinks:
   - id: "sink-1"
-    className: "org.apache.flink.flux.test.utils.sink.ConsoleOutputSink"
+    className: "com.uber.athena.flux.flink.test.utils.sink.ConsoleOutputSink"
     parallelism: 1
     # ...
 

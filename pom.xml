@@ -22,7 +22,7 @@ under the License.
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.apache.flink</groupId>
+	<groupId>com.uber.athena</groupId>
 	<artifactId>flink-flux-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -30,7 +30,7 @@ under the License.
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<flink.version>1.7.2</flink.version>
-		<jackson.version>2.7.9</jackson.version>
+		<snakeyaml.version>1.15</snakeyaml.version>
 		<flink.shaded.jackson.version>2.7.9-5.0</flink.shaded.jackson.version>
 		<powermock.version>1.6.5</powermock.version>
 		<scala.version>2.11.12</scala.version>
@@ -46,12 +46,17 @@ under the License.
 	<dependencyManagement>
 		<dependencies>
 
-			<!-- core dependencies -->
+			<dependency>
+				<groupId>com.uber.athena</groupId>
+				<artifactId>flux-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
+			<!-- core dependencies -->
 			<dependency>
 				<groupId>org.yaml</groupId>
 				<artifactId>snakeyaml</artifactId>
-				<version>1.15</version>
+				<version>${snakeyaml.version}</version>
 			</dependency>
 
 			<!-- Together with the dependency management section in flink-parent, this

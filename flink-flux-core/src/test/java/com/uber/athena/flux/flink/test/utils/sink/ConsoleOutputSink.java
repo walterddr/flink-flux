@@ -16,10 +16,18 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.utils.operator;
+package com.uber.athena.flux.flink.test.utils.sink;
 
-public class BasicOperator {
+import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 
-  public BasicOperator() {
+public class ConsoleOutputSink implements SinkFunction<String> {
+
+  public ConsoleOutputSink() {
+
+  }
+
+  @Override
+  public void invoke(String value, SinkFunction.Context context) throws Exception {
+    System.out.println(value);
   }
 }

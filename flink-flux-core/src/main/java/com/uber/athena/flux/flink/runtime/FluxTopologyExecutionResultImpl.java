@@ -16,10 +16,22 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.utils.operator;
+package com.uber.athena.flux.flink.runtime;
 
-public class BasicOperator {
+import com.uber.athena.flux.api.topology.FluxTopologyExecutionResult;
+import org.apache.flink.api.common.JobExecutionResult;
 
-  public BasicOperator() {
+public class FluxTopologyExecutionResultImpl implements FluxTopologyExecutionResult {
+  private transient JobExecutionResult executionResult;
+
+  public FluxTopologyExecutionResultImpl() {
+  }
+
+  public JobExecutionResult getExecutionResult() {
+    return executionResult;
+  }
+
+  public void setExecutionResult(JobExecutionResult executionResult) {
+    this.executionResult = executionResult;
   }
 }
