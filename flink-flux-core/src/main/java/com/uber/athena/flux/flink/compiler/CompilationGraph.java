@@ -52,7 +52,7 @@ public class CompilationGraph {
    *
    * @return the topology
    */
-  public FluxTopology compile() {
+  public FluxTopologyImpl compile() {
     constructCompilationGraph(fluxContext);
     compileVertexQueue(senv, fluxContext);
     JobGraph jobGraph = senv.getStreamGraph().getJobGraph();

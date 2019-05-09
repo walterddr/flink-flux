@@ -21,6 +21,7 @@ package com.uber.athena.flux.flink.runtime;
 import com.uber.athena.flux.api.topology.FluxTopology;
 import com.uber.athena.flux.model.TopologyDef;
 import com.uber.athena.flux.parser.FluxParser;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TopologyRuntimeITCase {
@@ -44,6 +45,7 @@ public class TopologyRuntimeITCase {
   }
 
   @Test
+  @Ignore("Need to implement kafka test base to launch mini-kafka")
   public void testKafkaTopologyRuntime() throws Exception {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/kafka_topology.yaml", false, true, null, false);
     topologyDef.validate();

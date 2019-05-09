@@ -59,7 +59,7 @@ public class FluxTopologyBuilderImpl implements FluxTopologyBuilder {
    * @param conf        extra global configuration
    * @return a {@code FluxTopologyImpl} class that contains all required components.
    */
-  private FluxTopology compileTopologyDef(
+  private FluxTopologyImpl compileTopologyDef(
       StreamExecutionEnvironment senv,
       TopologyDef topologyDef,
       Map<String, Object> conf) {
@@ -93,7 +93,7 @@ public class FluxTopologyBuilderImpl implements FluxTopologyBuilder {
    * @throws IOException when compilation fails
    */
   @Override
-  public FluxTopology getTopology(
+  public FluxTopologyImpl getTopology(
       TopologyDef topologyDef,
       Map<String, Object> config) throws IOException {
 
@@ -118,7 +118,7 @@ public class FluxTopologyBuilderImpl implements FluxTopologyBuilder {
    * @throws Exception when execution fails.
    */
   @Override
-  public FluxTopologyExecutionResult execute(FluxTopology fluxTopology) throws Exception {
+  public FluxTopologyExecutionResultImpl execute(FluxTopology fluxTopology) throws Exception {
     FluxTopologyExecutionResultImpl executionResult = new FluxTopologyExecutionResultImpl();
     executionResult.setExecutionResult(this.senv.execute());
     return executionResult;

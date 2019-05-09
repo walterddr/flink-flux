@@ -33,7 +33,7 @@ public class TopologyCompilationTest {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/basic_topology.yaml", false, true, null, false);
     topologyDef.validate();
     FluxTopologyBuilderImpl fluxBuilder = FluxTopologyBuilderImpl.createFluxBuilder();
-    FluxTopologyImpl topology = (FluxTopologyImpl) fluxBuilder.getTopology(topologyDef, null);
+    FluxTopologyImpl topology = fluxBuilder.getTopology(topologyDef, null);
     assertNotNull(topology.getJobGraph());
   }
 
@@ -42,7 +42,7 @@ public class TopologyCompilationTest {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/repartition_topology.yaml", false, true, null, false);
     topologyDef.validate();
     FluxTopologyBuilderImpl fluxBuilder = FluxTopologyBuilderImpl.createFluxBuilder();
-    FluxTopologyImpl topology = (FluxTopologyImpl) fluxBuilder.getTopology(topologyDef, null);
+    FluxTopologyImpl topology = fluxBuilder.getTopology(topologyDef, null);
     assertNotNull(topology.getJobGraph());
   }
 
@@ -51,7 +51,7 @@ public class TopologyCompilationTest {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/kafka_topology.yaml", false, true, null, false);
     topologyDef.validate();
     FluxTopologyBuilderImpl fluxBuilder = FluxTopologyBuilderImpl.createFluxBuilder();
-    FluxTopologyImpl topology = (FluxTopologyImpl) fluxBuilder.getTopology(topologyDef, null);
+    FluxTopologyImpl topology = fluxBuilder.getTopology(topologyDef, null);
     assertNotNull(topology.getJobGraph());
   }
 }
