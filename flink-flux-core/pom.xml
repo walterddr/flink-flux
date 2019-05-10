@@ -23,7 +23,7 @@ under the License.
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.apache.flink</groupId>
+		<groupId>com.uber.athena</groupId>
 		<artifactId>flink-flux-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../</relativePath>
@@ -41,8 +41,8 @@ under the License.
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-shaded-jackson</artifactId>
+			<groupId>com.uber.athena</groupId>
+			<artifactId>flux-core</artifactId>
 		</dependency>
 
 		<dependency>
