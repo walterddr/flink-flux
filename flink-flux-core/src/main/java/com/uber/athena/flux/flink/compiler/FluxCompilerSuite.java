@@ -18,7 +18,6 @@
 
 package com.uber.athena.flux.flink.compiler;
 
-import com.uber.athena.flux.api.topology.FluxTopology;
 import com.uber.athena.flux.flink.runtime.FluxTopologyImpl;
 import com.uber.athena.flux.model.TopologyDef;
 import org.apache.flink.configuration.Configuration;
@@ -51,7 +50,7 @@ public class FluxCompilerSuite {
   }
 
   /**
-   * compile topology definition to {@link FluxTopology}.
+   * compile topology definition to {@code FluxTopology}.
    *
    * @return flux topology.
    */

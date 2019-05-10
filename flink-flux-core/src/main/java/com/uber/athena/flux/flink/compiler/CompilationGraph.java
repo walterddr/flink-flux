@@ -18,7 +18,6 @@
 
 package com.uber.athena.flux.flink.compiler;
 
-import com.uber.athena.flux.api.topology.FluxTopology;
 import com.uber.athena.flux.flink.runtime.FluxTopologyImpl;
 import com.uber.athena.flux.model.EdgeDef;
 import com.uber.athena.flux.model.OperatorDef;
@@ -48,7 +47,7 @@ public class CompilationGraph {
   }
 
   /**
-   * Compile current graph into a {@link FluxTopology}.
+   * Compile current graph into a {@code FluxTopology}.
    *
    * @return the topology
    */

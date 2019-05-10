@@ -20,7 +20,6 @@ package com.uber.athena.flux.flink.runtime;
 
 import com.uber.athena.flux.api.topology.FluxTopology;
 import com.uber.athena.flux.api.topology.FluxTopologyBuilder;
-import com.uber.athena.flux.api.topology.FluxTopologyExecutionResult;
 import com.uber.athena.flux.flink.compiler.FluxCompilerSuite;
 import com.uber.athena.flux.model.TopologyDef;
 import org.apache.flink.configuration.Configuration;
