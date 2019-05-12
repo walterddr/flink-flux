@@ -19,7 +19,7 @@
 package com.uber.athena.flux.flink.runtime;
 
 import com.uber.athena.flux.api.topology.FluxTopologyBuilder;
-import com.uber.athena.flux.flink.compiler.impl.datastream.FluxCompilerSuite;
+import com.uber.athena.flux.flink.compiler.impl.FluxCompilerSuite;
 import com.uber.athena.flux.model.TopologyDef;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.TimeCharacteristic;

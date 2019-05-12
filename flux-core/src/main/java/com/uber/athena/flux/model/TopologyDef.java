@@ -32,10 +32,11 @@ import java.util.Map;
  *
  * <p>It consists of the following:
  * 1. The topology name
- * 2. A `java.util.Map` representing the `org.apache.storm.config` for the topology
- * 3. A list of spout definitions
- * 4. A list of bolt definitions
- * 5. A list of stream definitions that define the flow between spouts and bolts.
+ * 2. A `java.util.Map` representing the Flink {@code Configuration} for the topology
+ * 3. A list of source definitions
+ * 4. A list of operator definitions
+ * 5. A list of sink definitions
+ * 6. A list of stream definitions that define the flow between components.
  */
 public class TopologyDef {
   private static final Logger LOG = LoggerFactory.getLogger(TopologyDef.class);
@@ -45,7 +46,7 @@ public class TopologyDef {
   private List<IncludeDef> includes;
   private Map<String, Object> config = new HashMap<String, Object>();
 
-  // the following are required if we're defining a core storm topology DAG in YAML, etc.
+  // the following are required if we're defining a core Flink topology DAG in YAML, etc.
   private Map<String, OperatorDef> operatorMap = new LinkedHashMap<String, OperatorDef>();
   private Map<String, SourceDef> sourceMap = new LinkedHashMap<String, SourceDef>();
   private Map<String, SinkDef> sinkMap = new LinkedHashMap<String, SinkDef>();

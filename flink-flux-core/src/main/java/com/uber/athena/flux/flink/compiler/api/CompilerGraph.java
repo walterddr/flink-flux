@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler.impl.datastream;
+package com.uber.athena.flux.flink.compiler.api;
 
-import com.uber.athena.flux.flink.compiler.api.CompilerVertex;
+import com.uber.athena.flux.flink.compiler.impl.datastream.DataStreamCompilerImpl;
 import com.uber.athena.flux.flink.runtime.FluxTopologyImpl;
 import com.uber.athena.flux.model.EdgeDef;
 import com.uber.athena.flux.model.OperatorDef;
@@ -37,15 +37,10 @@ import java.util.Queue;
 /**
  * Object holder for compilation procedure.
  */
-public class CompilationGraph {
-  private final FluxContext fluxContext;
-  private final StreamExecutionEnvironment senv;
-  private Queue<CompilerVertex> compilationQueue = new PriorityQueue<>();
-
-  public CompilationGraph(StreamExecutionEnvironment senv, FluxContext fluxContext) {
-    this.senv = senv;
-    this.fluxContext = fluxContext;
-  }
+public abstract class CompilerGraph {
+  protected CompilerContext compilerContext;
+  protected StreamExecutionEnvironment senv;
+  protected Queue<CompilerVertex<?>> compilationQueue = new PriorityQueue<>();
 
   /**
    * Compile current graph into a {@code FluxTopology}.
@@ -53,17 +48,19 @@ public class CompilationGraph {
    * @return the topology
    */
   public FluxTopologyImpl compile() {
-    constructCompilationGraph(fluxContext);
-    compileVertexQueue(senv, fluxContext);
+    constructCompilationGraph(compilerContext);
+    compileVertexQueue(senv, compilerContext);
     JobGraph jobGraph = senv.getStreamGraph().getJobGraph();
     FluxTopologyImpl fluxTopology = new FluxTopologyImpl(senv);
     fluxTopology.setJobGraph(jobGraph);
     return fluxTopology;
   }
 
-  private void constructCompilationGraph(FluxContext fluxContext) {
+  public abstract CompilerVertex<?> constructCompilerVertex(CompilerVertex.Builder vertexBuilder);
+
+  private void constructCompilationGraph(CompilerContext compilerContext) {
     Map<String, CompilerVertex.Builder> compilationVertexBuilders = new HashMap<>();
-    TopologyDef topologyDef = fluxContext.getTopologyDef();
+    TopologyDef topologyDef = compilerContext.getTopologyDef();
 
     // Build the Compilation Graph
     // Add all vertices
@@ -92,23 +89,23 @@ public class CompilationGraph {
     }
 
     for (Map.Entry<String, CompilerVertex.Builder> entry : compilationVertexBuilders.entrySet()) {
-      CompilerVertex vertex = entry.getValue().build();
-      this.fluxContext.putCompilationVertex(entry.getKey(), vertex);
+      CompilerVertex vertex = constructCompilerVertex(entry.getValue());
+      this.compilerContext.putCompilationVertex(entry.getKey(), vertex);
       if (vertex.readyToCompile()) {
         this.compilationQueue.add(vertex);
       }
     }
   }
 
-  private void compileVertexQueue(StreamExecutionEnvironment senv, FluxContext fluxContext) {
-    CompilerImpl compilerImpl = new CompilerImpl();
+  private void compileVertexQueue(StreamExecutionEnvironment senv, CompilerContext compilerContext) {
+    DataStreamCompilerImpl dataStreamCompilerImpl = new DataStreamCompilerImpl();
     while (this.compilationQueue.size() > 0) {
-      CompilerVertex vertex = this.compilationQueue.poll();
-      compilerImpl.compile(senv, fluxContext, vertex);
+      CompilerVertex<?> vertex = this.compilationQueue.poll();
+      dataStreamCompilerImpl.compile(senv, compilerContext, vertex);
 
       // set downstream vertex compilation flags.
       for (EdgeDef downstreamEdge : vertex.getOutgoingEdge()) {
-        CompilerVertex toVertex = this.fluxContext.getCompilationVertex(downstreamEdge.getTo());
+        CompilerVertex toVertex = this.compilerContext.getCompilationVertex(downstreamEdge.getTo());
         toVertex.addCompiledSourceCount();
         if (toVertex.readyToCompile()) {
           this.compilationQueue.add(toVertex);

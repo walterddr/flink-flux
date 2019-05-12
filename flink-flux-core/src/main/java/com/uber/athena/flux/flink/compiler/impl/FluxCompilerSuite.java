@@ -16,8 +16,11 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler.impl.datastream;
+package com.uber.athena.flux.flink.compiler.impl;
 
+import com.uber.athena.flux.flink.compiler.api.CompilerContext;
+import com.uber.athena.flux.flink.compiler.api.CompilerGraph;
+import com.uber.athena.flux.flink.compiler.impl.datastream.DataStreamCompilerGraph;
 import com.uber.athena.flux.flink.runtime.FluxTopologyImpl;
 import com.uber.athena.flux.model.TopologyDef;
 import org.apache.flink.configuration.Configuration;
@@ -36,9 +39,9 @@ public class FluxCompilerSuite {
   private final TopologyDef topologyDef;
   private final Configuration config;
   private final StreamExecutionEnvironment streamExecutionEnvironment;
-  private final FluxContext fluxContext;
+  private final CompilerContext compilerContext;
 
-  private CompilationGraph compilationGraph;
+  private CompilerGraph compilerGraph;
 
   public FluxCompilerSuite(
       TopologyDef topologyDef,
@@ -47,10 +50,12 @@ public class FluxCompilerSuite {
     this.streamExecutionEnvironment = streamExecutionEnvironment;
     this.topologyDef = topologyDef;
     this.config = new Configuration(config);
-    this.fluxContext = new FluxContext(topologyDef, config);
-    this.compilationGraph = new CompilationGraph(
+    this.compilerContext = new CompilerContext(topologyDef, config);
+    // TODO: determine compilation graph impl based on API level.
+    this.compilerGraph = new DataStreamCompilerGraph(
         this.streamExecutionEnvironment,
-        this.fluxContext);
+        this.compilerContext) {
+    };
   }
 
   /**
@@ -68,6 +73,6 @@ public class FluxCompilerSuite {
   }
 
   private FluxTopologyImpl compileInternal() {
-    return this.compilationGraph.compile();
+    return this.compilerGraph.compile();
   }
 }

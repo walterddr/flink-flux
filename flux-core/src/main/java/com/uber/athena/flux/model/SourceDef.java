@@ -19,7 +19,7 @@
 package com.uber.athena.flux.model;
 
 /**
- * Bean representation of a Storm spout.
+ * Bean representation of a Flink Source.
  */
 public class SourceDef extends VertexDef {
 }

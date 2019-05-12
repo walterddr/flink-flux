@@ -18,8 +18,9 @@
 
 package com.uber.athena.flux.flink.compiler.impl.datastream.utils;
 
+import com.uber.athena.flux.flink.compiler.api.CompilerContext;
 import com.uber.athena.flux.flink.compiler.api.CompilerVertex;
-import com.uber.athena.flux.flink.compiler.impl.datastream.FluxContext;
+import com.uber.athena.flux.flink.compiler.impl.datastream.DataStreamCompilerVertex;
 import com.uber.athena.flux.flink.compiler.utils.ReflectiveInvokeUtils;
 import com.uber.athena.flux.model.ConfigMethodDef;
 import com.uber.athena.flux.model.ObjectDef;
@@ -30,7 +31,6 @@ import com.uber.athena.flux.model.SourceDef;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.DataStreamSink;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.sink.SinkFunction;
@@ -47,45 +47,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public final class CompilationUtils {
-  private static final Logger LOG = LoggerFactory.getLogger(CompilationUtils.class);
+public final class DataStreamCompilationUtils {
+  private static final Logger LOG = LoggerFactory.getLogger(DataStreamCompilationUtils.class);
 
-  private CompilationUtils() {
+  private DataStreamCompilationUtils() {
 
   }
 
   /**
    * compile source.
    *
-   * @param fluxContext flux context
+   * @param compilerContext flux context
    * @param senv        stream execution environment to start the source definition
    * @param vertex      compilation vertex
    * @throws Exception when compilation fails.
    */
   public static void compileSource(
-      FluxContext fluxContext,
+      CompilerContext compilerContext,
       StreamExecutionEnvironment senv,
-      CompilerVertex vertex) throws Exception {
+      DataStreamCompilerVertex vertex) throws Exception {
     // Compile vertex
     SourceDef sourceDef = (SourceDef) vertex.getVertex();
-    SourceFunction sourceFunction = (SourceFunction) buildObject(sourceDef, fluxContext);
+    SourceFunction sourceFunction = (SourceFunction) buildObject(sourceDef, compilerContext);
     DataStreamSource dataStreamSource = senv.addSource(sourceFunction, sourceDef.getId());
 
     // set compilation results
-    vertex.setDataStream(dataStreamSource);
-    fluxContext.addSource(sourceDef.getId(), dataStreamSource);
+    vertex.setCompilationResult(dataStreamSource);
+    compilerContext.addSource(sourceDef.getId(), vertex);
   }
 
   /**
    * compile operator.
    *
-   * @param fluxContext flux context
+   * @param compilerContext flux context
    * @param vertex      compilation vertex
    * @throws Exception when compilation fails.
    */
   public static void compileOperator(
-      FluxContext fluxContext,
-      CompilerVertex vertex) throws Exception {
+      CompilerContext compilerContext,
+      DataStreamCompilerVertex vertex) throws Exception {
     if (vertex.getIncomingEdge().size() != 1) {
       throw new UnsupportedOperationException(
           "Cannot compile zero input or multiple input operators as this moment");
@@ -93,31 +93,31 @@ public final class CompilationUtils {
     // Fetch upstream
     OperatorDef operatorDef = (OperatorDef) vertex.getVertex();
     String sourceId = vertex.getIncomingEdge().get(0).getFrom();
-    CompilerVertex source = fluxContext.getCompilationVertex(sourceId);
-    DataStream sourceStream = source.getDataStream();
+    CompilerVertex source = compilerContext.getCompilationVertex(sourceId);
+    DataStream sourceStream = ((DataStreamCompilerVertex) source).getCompilationResult();
 
     // Compile vertex
-    OneInputStreamOperator operator = (OneInputStreamOperator) buildObject(operatorDef, fluxContext);
+    OneInputStreamOperator operator = (OneInputStreamOperator) buildObject(operatorDef, compilerContext);
     DataStream stream = sourceStream.transform(
         operatorDef.getId(),
         resolveTypeInformation(operatorDef.getTypeInformation()),
         operator);
 
     // set compilation results
-    vertex.setDataStream(stream);
-    fluxContext.addOperator(operatorDef.getId(), operator);
+    vertex.setCompilationResult(stream);
+    compilerContext.addOperator(operatorDef.getId(), vertex);
   }
 
   /**
    * compile sink.
    *
-   * @param fluxContext flux context
+   * @param compilerContext flux context
    * @param vertex      compilation vertex
    * @throws Exception when compilation fails.
    */
   public static void compileSink(
-      FluxContext fluxContext,
-      CompilerVertex vertex) throws Exception {
+      CompilerContext compilerContext,
+      DataStreamCompilerVertex vertex) throws Exception {
     if (vertex.getIncomingEdge().size() != 1) {
       throw new UnsupportedOperationException(
           "Cannot compile zero input or multiple input sink as this moment");
@@ -125,18 +125,19 @@ public final class CompilationUtils {
     // Fetch upstream
     SinkDef sinkDef = (SinkDef) vertex.getVertex();
     String sourceId = vertex.getIncomingEdge().get(0).getFrom();
-    CompilerVertex source = fluxContext.getCompilationVertex(sourceId);
-    DataStream sourceStream = source.getDataStream();
+    CompilerVertex source = compilerContext.getCompilationVertex(sourceId);
+    DataStream sourceStream = ((DataStreamCompilerVertex) source).getCompilationResult();
 
     // Compile vertex
-    SinkFunction sink = (SinkFunction) buildObject(sinkDef, fluxContext);
-    DataStreamSink streamSink = sourceStream.addSink(sink);
+    SinkFunction sink = (SinkFunction) buildObject(sinkDef, compilerContext);
+    // returned DataStreamSink is ignored
+    sourceStream.addSink(sink);
 
     // set compilation results
-    fluxContext.addSink(sinkDef.getId(), streamSink);
+    compilerContext.addSink(sinkDef.getId(), vertex);
   }
 
-  private static Object buildObject(ObjectDef def, FluxContext fluxContext) throws Exception {
+  private static Object buildObject(ObjectDef def, CompilerContext compilerContext) throws Exception {
     Class clazz = Class.forName(def.getClassName());
     Object obj = null;
     if (def.hasConstructorArgs()) {
@@ -144,7 +145,7 @@ public final class CompilationUtils {
       List<Object> cArgs = def.getConstructorArgs();
 
       if (def.hasReferences()) {
-        cArgs = ReflectiveInvokeUtils.resolveReferences(cArgs, fluxContext);
+        cArgs = ReflectiveInvokeUtils.resolveReferences(cArgs, compilerContext);
       }
 
       Constructor con = ReflectiveInvokeUtils.findCompatibleConstructor(cArgs, clazz);
@@ -162,12 +163,12 @@ public final class CompilationUtils {
     } else {
       obj = clazz.newInstance();
     }
-    applyProperties(def, obj, fluxContext);
-    invokeConfigMethods(def, obj, fluxContext);
+    applyProperties(def, obj, compilerContext);
+    invokeConfigMethods(def, obj, compilerContext);
     return obj;
   }
 
-  private static void applyProperties(ObjectDef bean, Object instance, FluxContext context)
+  private static void applyProperties(ObjectDef bean, Object instance, CompilerContext context)
       throws Exception {
     List<PropertyDef> props = bean.getProperties();
     Class clazz = instance.getClass();
@@ -191,7 +192,7 @@ public final class CompilationUtils {
     }
   }
 
-  private static void invokeConfigMethods(ObjectDef bean, Object instance, FluxContext context)
+  private static void invokeConfigMethods(ObjectDef bean, Object instance, CompilerContext context)
       throws InvocationTargetException, IllegalAccessException {
 
     List<ConfigMethodDef> methodDefs = bean.getConfigMethods();

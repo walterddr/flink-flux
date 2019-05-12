@@ -18,7 +18,7 @@
 
 package com.uber.athena.flux.flink.compiler.utils;
 
-import com.uber.athena.flux.flink.compiler.impl.datastream.FluxContext;
+import com.uber.athena.flux.flink.compiler.api.CompilerContext;
 import com.uber.athena.flux.model.ComponentReferenceDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +80,7 @@ public final class ReflectiveInvokeUtils {
    * @param context the flux compilation context used to search for reference objects.
    * @return java.lang.Method
    */
-  public static List<Object> resolveReferences(List<Object> args, FluxContext context) {
+  public static List<Object> resolveReferences(List<Object> args, CompilerContext context) {
     LOG.debug("Checking arguments for references.");
     List<Object> cArgs = new ArrayList<Object>();
     // resolve references

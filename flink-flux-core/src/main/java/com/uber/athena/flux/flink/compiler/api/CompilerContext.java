@@ -16,46 +16,42 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler.impl.datastream;
+package com.uber.athena.flux.flink.compiler.api;
 
-import com.uber.athena.flux.flink.compiler.api.CompilerVertex;
 import com.uber.athena.flux.model.TopologyDef;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.streaming.api.datastream.DataStreamSink;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.operators.StreamOperator;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FluxContext {
+public class CompilerContext {
   // parsed Topology definition
   private TopologyDef topologyDef;
 
-  // Storm config
+  // Flink config
   private Configuration config;
 
   // components required to be instantiated from classpath JARs
   private List<Object> additionalComponents;
 
   /**
-   * The following are materialized objects from the {@link TopologyDef}.
+   * The following are materialized objects from the {@code TopologyDef}.
    */
   private Map<String, Object> componentMap = new HashMap<String, Object>();
 
-  private Map<String, DataStreamSource<?>> dataStreamSourceMap = new HashMap<String, DataStreamSource<?>>();
+  private Map<String, CompilerVertex<?>> dataStreamSourceMap = new HashMap<>();
 
-  private Map<String, StreamOperator<?>> operatorMap = new HashMap<String, StreamOperator<?>>();
+  private Map<String, CompilerVertex<?>> operatorMap = new HashMap<>();
 
-  private Map<String, DataStreamSink<?>> dataStreamSinkMap = new HashMap<String, DataStreamSink<?>>();
+  private Map<String, CompilerVertex<?>> dataStreamSinkMap = new HashMap<>();
 
   /**
-   * The following is used by {@link CompilationGraph}.
+   * The following is used by {@code CompilerGraph}.
    */
-  private Map<String, CompilerVertex> compilationVertexMap = new HashMap<>();
+  private Map<String, CompilerVertex<?>> compilationVertexMap = new HashMap<>();
 
-  public FluxContext(TopologyDef topologyDef, Configuration config) {
+  public CompilerContext(TopologyDef topologyDef, Configuration config) {
     this.topologyDef = topologyDef;
     this.config = config;
   }
@@ -86,7 +82,7 @@ public class FluxContext {
    * @param id source id
    * @param source source object
    */
-  public void addSource(String id, DataStreamSource<?> source) {
+  public void addSource(String id, CompilerVertex<?> source) {
     this.dataStreamSourceMap.put(id, source);
   }
 
@@ -96,14 +92,14 @@ public class FluxContext {
    * @param id sink ID
    * @param sink sink object
    */
-  public void addSink(String id, DataStreamSink<?> sink) {
+  public void addSink(String id, CompilerVertex<?> sink) {
     this.dataStreamSinkMap.put(id, sink);
   }
 
   /**
    * add operator.
    */
-  public void addOperator(String id, StreamOperator<?> op) {
+  public void addOperator(String id, CompilerVertex<?> op) {
     this.operatorMap.put(id, op);
   }
 
@@ -132,7 +128,7 @@ public class FluxContext {
    * @param key   vertex id, identical to the ComponentDef ID
    * @param value compilation vertex.
    */
-  public void putCompilationVertex(String key, CompilerVertex value) {
+  public void putCompilationVertex(String key, CompilerVertex<?> value) {
     compilationVertexMap.put(key, value);
   }
 
@@ -142,7 +138,7 @@ public class FluxContext {
    * @param key vertex id, identical to the ComponentDef ID
    * @return compilation vertex.
    */
-  public CompilerVertex getCompilationVertex(String key) {
+  public CompilerVertex<?> getCompilationVertex(String key) {
     return compilationVertexMap.get(key);
   }
 }
