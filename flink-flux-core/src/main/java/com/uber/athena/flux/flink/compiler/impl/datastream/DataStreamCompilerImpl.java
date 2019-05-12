@@ -16,42 +16,45 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler;
+package com.uber.athena.flux.flink.compiler.impl.datastream;
 
+import com.uber.athena.flux.flink.compiler.api.Compiler;
+import com.uber.athena.flux.flink.compiler.api.CompilerContext;
+import com.uber.athena.flux.flink.compiler.api.CompilerVertex;
 import com.uber.athena.flux.model.OperatorDef;
 import com.uber.athena.flux.model.SinkDef;
 import com.uber.athena.flux.model.SourceDef;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.util.Preconditions;
 
-import static com.uber.athena.flux.flink.compiler.utils.CompilationUtils.compileOperator;
-import static com.uber.athena.flux.flink.compiler.utils.CompilationUtils.compileSink;
-import static com.uber.athena.flux.flink.compiler.utils.CompilationUtils.compileSource;
+import static com.uber.athena.flux.flink.compiler.impl.datastream.utils.DataStreamCompilationUtils.compileOperator;
+import static com.uber.athena.flux.flink.compiler.impl.datastream.utils.DataStreamCompilationUtils.compileSink;
+import static com.uber.athena.flux.flink.compiler.impl.datastream.utils.DataStreamCompilationUtils.compileSource;
 
 /**
  * Compiler implementation for operator-level Flux compilation.
  */
-public class CompilerImpl implements Compiler {
+public class DataStreamCompilerImpl implements Compiler {
 
-  public CompilerImpl() {
+  public DataStreamCompilerImpl() {
   }
 
   /**
    * Compile a single vertex into chaining datastream.
    * @param senv        stream execution environment
-   * @param fluxContext flux context
+   * @param compilerContext flux context
    * @param vertex      compilation vertex.
    */
   @Override
-  public void compile(StreamExecutionEnvironment senv, FluxContext fluxContext, CompilationVertex vertex) {
+  public void compile(StreamExecutionEnvironment senv, CompilerContext compilerContext, CompilerVertex vertex) {
     Preconditions.checkArgument(vertex.readyToCompile());
     try {
       if (vertex.getVertex() instanceof SourceDef) {
-        compileSource(fluxContext, senv, vertex);
+        compileSource(compilerContext, senv, (DataStreamCompilerVertex) vertex);
       } else if (vertex.getVertex() instanceof OperatorDef) {
-        compileOperator(fluxContext, vertex);
+        compileOperator(compilerContext, (DataStreamCompilerVertex) vertex);
       } else if (vertex.getVertex() instanceof SinkDef) {
-        compileSink(fluxContext, vertex);
+        compileSink(compilerContext, (DataStreamCompilerVertex) vertex);
       }
     } catch (Exception e) {
       throw new RuntimeException("Cannot compile vertex: " + vertex.getVertex().getId(), e);

@@ -16,30 +16,26 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler;
+package com.uber.athena.flux.flink.compiler.api;
 
 import com.uber.athena.flux.model.EdgeDef;
 import com.uber.athena.flux.model.VertexDef;
-import org.apache.flink.streaming.api.datastream.DataStream;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompilationVertex {
+/**
+ * Compiler vertex used within a Flux compilation context.
+ *
+ * @param <T> type of the compilation results generated.
+ */
+public abstract class CompilerVertex<T> {
 
-  private final VertexDef vertex;
-  private final List<EdgeDef> incomingEdge;
-  private final List<EdgeDef> outgoingEdge;
+  protected VertexDef vertex;
+  protected List<EdgeDef> incomingEdge;
+  protected List<EdgeDef> outgoingEdge;
 
-  private int compiledSourceCount;
-  private DataStream dataStream = null;
-
-  CompilationVertex(VertexDef vertex, List<EdgeDef> incomingEdge, List<EdgeDef> outgoingEdge) {
-    this.vertex = vertex;
-    this.incomingEdge = incomingEdge;
-    this.outgoingEdge = outgoingEdge;
-    this.compiledSourceCount = 0;
-  }
+  protected int compiledSourceCount;
 
   /**
    * Increase compilation flag by one. Used after an upstream vertex has been compiled.
@@ -57,6 +53,20 @@ public class CompilationVertex {
     return this.compiledSourceCount == incomingEdge.size();
   }
 
+  /**
+   * Setting the result of the compilation.
+   *
+   * @param compilationResult the compilation result.
+   */
+  public abstract void setCompilationResult(T compilationResult);
+
+  /**
+   * Getting the result of the compilation, return null if not compiled.
+   *
+   * @return the compilation result.
+   */
+  public abstract T getCompilationResult();
+
   //-------------------------------------------------------------------------
   // Getters
   //-------------------------------------------------------------------------
@@ -72,15 +82,6 @@ public class CompilationVertex {
   public List<EdgeDef> getOutgoingEdge() {
     return outgoingEdge;
   }
-
-  public DataStream getDataStream() {
-    return dataStream;
-  }
-
-  public void setDataStream(DataStream dataStream) {
-    this.dataStream = dataStream;
-  }
-
 
   // ------------------------------------------------------------------------
   // Builder pattern
@@ -112,11 +113,16 @@ public class CompilationVertex {
       return this;
     }
 
-    public CompilationVertex build() {
-      return new CompilationVertex(
-          vertex,
-          incomingEdge,
-          outgoingEdge);
+    public VertexDef getVertex() {
+      return vertex;
+    }
+
+    public List<EdgeDef> getIncomingEdge() {
+      return incomingEdge;
+    }
+
+    public List<EdgeDef> getOutgoingEdge() {
+      return outgoingEdge;
     }
   }
 }

@@ -16,20 +16,23 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.api.topology;
+package com.uber.athena.flux.flink.runtime;
 
-/**
- * Flux topology that can be self convert into Execution job graph.
- *
- * <p>Specific Flux Topology execution framework should implement this interface
- * and the concrete implementation should be executable within the framework.
- */
-public interface FluxTopology {
+import com.uber.athena.flux.api.topology.FluxExecutionResult;
+import org.apache.flink.api.common.JobExecutionResult;
 
-  /**
-   * Execute the flux topology and generate {@code FluxExecutionResult}.
-   *
-   * @return the execution result.
-   */
-  FluxExecutionResult execute() throws Exception;
+public class FluxExecutionResultImpl implements FluxExecutionResult {
+  private transient JobExecutionResult executionResult;
+
+  public FluxExecutionResultImpl(JobExecutionResult jobExecutionResult) {
+    this.executionResult = jobExecutionResult;
+  }
+
+  public JobExecutionResult getExecutionResult() {
+    return executionResult;
+  }
+
+  public void setExecutionResult(JobExecutionResult executionResult) {
+    this.executionResult = executionResult;
+  }
 }

@@ -52,6 +52,12 @@ under the License.
 				<version>${project.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>com.uber.athena</groupId>
+				<artifactId>flink-flux-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
 			<!-- core dependencies -->
 			<dependency>
 				<groupId>org.yaml</groupId>

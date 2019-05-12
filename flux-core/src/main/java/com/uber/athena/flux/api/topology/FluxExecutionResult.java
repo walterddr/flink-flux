@@ -18,5 +18,11 @@
 
 package com.uber.athena.flux.api.topology;
 
-public interface FluxTopologyExecutionResult {
+/**
+ * Execution results from a Flux topology execution.
+ *
+ * <p>Specific Flux Topology execution framework should implement this to construct
+ * result.
+ */
+public interface FluxExecutionResult {
 }

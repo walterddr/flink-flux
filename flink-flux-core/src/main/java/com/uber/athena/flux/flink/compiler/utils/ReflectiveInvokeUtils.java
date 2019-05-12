@@ -18,7 +18,7 @@
 
 package com.uber.athena.flux.flink.compiler.utils;
 
-import com.uber.athena.flux.flink.compiler.FluxContext;
+import com.uber.athena.flux.flink.compiler.api.CompilerContext;
 import com.uber.athena.flux.model.ComponentReferenceDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-final class ReflectiveInvokeUtils {
+public final class ReflectiveInvokeUtils {
   private static final Logger LOG = LoggerFactory.getLogger(ReflectiveInvokeUtils.class);
 
   private ReflectiveInvokeUtils() {
@@ -44,7 +44,7 @@ final class ReflectiveInvokeUtils {
    * @return constructor method
    * @throws NoSuchMethodException cannot be found
    */
-  static Constructor findCompatibleConstructor(List<Object> args, Class target)
+  public static Constructor findCompatibleConstructor(List<Object> args, Class target)
       throws NoSuchMethodException {
     Constructor retval = null;
     int eligibleCount = 0;
@@ -80,7 +80,7 @@ final class ReflectiveInvokeUtils {
    * @param context the flux compilation context used to search for reference objects.
    * @return java.lang.Method
    */
-  static List<Object> resolveReferences(List<Object> args, FluxContext context) {
+  public static List<Object> resolveReferences(List<Object> args, CompilerContext context) {
     LOG.debug("Checking arguments for references.");
     List<Object> cArgs = new ArrayList<Object>();
     // resolve references
@@ -102,7 +102,7 @@ final class ReflectiveInvokeUtils {
    * @param methodName method name
    * @return java.lang.Method
    */
-  static Method findCompatibleMethod(List<Object> args, Class target, String methodName) {
+  public static Method findCompatibleMethod(List<Object> args, Class target, String methodName) {
     Method retval = null;
     int eligibleCount = 0;
 
@@ -194,7 +194,7 @@ final class ReflectiveInvokeUtils {
    * @param parameterTypes list of parameter types
    * @return argument object list.
    */
-  static Object[] getArgsWithListCoercian(List<Object> args, Class[] parameterTypes) {
+  public static Object[] getArgsWithListCoercian(List<Object> args, Class[] parameterTypes) {
     if (parameterTypes.length != args.size()) {
       throw new IllegalArgumentException("Contructor parameter count does not egual argument size.");
     }

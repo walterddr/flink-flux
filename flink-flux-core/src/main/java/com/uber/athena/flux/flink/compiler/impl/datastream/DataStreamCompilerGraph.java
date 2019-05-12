@@ -16,26 +16,28 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler;
+package com.uber.athena.flux.flink.compiler.impl.datastream;
 
+import com.uber.athena.flux.flink.compiler.api.CompilerContext;
+import com.uber.athena.flux.flink.compiler.api.CompilerGraph;
+import com.uber.athena.flux.flink.compiler.api.CompilerVertex;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 /**
- * Compile a specific component into executable DataStream elements.
- *
- * <p>This compiler main interface does not provide any concrete compilation interface
- * as the actual compilation result varies depends on the API level selected.
- *
- * <p>This interface is only used as the based component of all compilation extensions.
+ * Object holder for compilation procedure specific for DataStream.
  */
-public interface Compiler {
+public abstract class DataStreamCompilerGraph extends CompilerGraph {
 
-  /**
-   * Compile the thing.
-   *
-   * @param senv        stream execution environment
-   * @param fluxContext flux context
-   * @param vertex      compilation vertex.
-   */
-  void compile(StreamExecutionEnvironment senv, FluxContext fluxContext, CompilationVertex vertex);
+  public DataStreamCompilerGraph(StreamExecutionEnvironment senv, CompilerContext compilerContext) {
+    super.senv = senv;
+    super.compilerContext = compilerContext;
+  }
+
+  public CompilerVertex<?> constructCompilerVertex(CompilerVertex.Builder vertexBuilder) {
+    return new DataStreamCompilerVertex(
+        vertexBuilder.getVertex(),
+        vertexBuilder.getIncomingEdge(),
+        vertexBuilder.getOutgoingEdge()
+    );
+  }
 }

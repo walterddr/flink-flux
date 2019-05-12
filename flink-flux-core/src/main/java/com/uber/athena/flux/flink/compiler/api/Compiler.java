@@ -16,22 +16,26 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.runtime;
+package com.uber.athena.flux.flink.compiler.api;
 
-import com.uber.athena.flux.api.topology.FluxTopologyExecutionResult;
-import org.apache.flink.api.common.JobExecutionResult;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-public class FluxTopologyExecutionResultImpl implements FluxTopologyExecutionResult {
-  private transient JobExecutionResult executionResult;
+/**
+ * Compile a specific component into executable DataStream elements.
+ *
+ * <p>This compiler main interface does not provide any concrete compilation interface
+ * as the actual compilation result varies depends on the API level selected.
+ *
+ * <p>This interface is only used as the based component of all compilation extensions.
+ */
+public interface Compiler {
 
-  public FluxTopologyExecutionResultImpl() {
-  }
-
-  public JobExecutionResult getExecutionResult() {
-    return executionResult;
-  }
-
-  public void setExecutionResult(JobExecutionResult executionResult) {
-    this.executionResult = executionResult;
-  }
+  /**
+   * Compile the thing.
+   *
+   * @param senv        stream execution environment
+   * @param compilerContext flux context
+   * @param vertex      compilation vertex.
+   */
+  void compile(StreamExecutionEnvironment senv, CompilerContext compilerContext, CompilerVertex vertex);
 }
