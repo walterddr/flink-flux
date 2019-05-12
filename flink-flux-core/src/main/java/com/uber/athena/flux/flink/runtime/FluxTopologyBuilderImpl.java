@@ -18,9 +18,8 @@
 
 package com.uber.athena.flux.flink.runtime;
 
-import com.uber.athena.flux.api.topology.FluxTopology;
 import com.uber.athena.flux.api.topology.FluxTopologyBuilder;
-import com.uber.athena.flux.flink.compiler.FluxCompilerSuite;
+import com.uber.athena.flux.flink.compiler.impl.datastream.FluxCompilerSuite;
 import com.uber.athena.flux.model.TopologyDef;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.TimeCharacteristic;
@@ -52,7 +51,7 @@ public class FluxTopologyBuilderImpl implements FluxTopologyBuilder {
   }
 
   /**
-   * Create {@link FluxTopology} that is used by Flink to execute in runtime.
+   * Create {@code FluxTopology} that is used by Flink to execute in runtime.
    *
    * @param topologyDef YAML compiled topology definition
    * @param conf        extra global configuration
@@ -84,7 +83,7 @@ public class FluxTopologyBuilderImpl implements FluxTopologyBuilder {
   }
 
   /**
-   * Compile into a {@link FluxTopology}.
+   * Compile into a {@code FluxTopology}.
    *
    * @param topologyDef topology def
    * @param config global config
@@ -92,7 +91,7 @@ public class FluxTopologyBuilderImpl implements FluxTopologyBuilder {
    * @throws IOException when compilation fails
    */
   @Override
-  public FluxTopologyImpl getTopology(
+  public FluxTopologyImpl createTopology(
       TopologyDef topologyDef,
       Map<String, Object> config) throws IOException {
 
@@ -104,23 +103,6 @@ public class FluxTopologyBuilderImpl implements FluxTopologyBuilder {
     } catch (Exception e) {
       throw wrapAsIOException(e);
     }
-  }
-
-  /**
-   * Execute the topology, must compile first.
-   * <p>
-   * Execution will happen in the current defined stream execution environment.
-   * </p>
-   *
-   * @param fluxTopology the flux topology
-   * @return execution results.
-   * @throws Exception when execution fails.
-   */
-  @Override
-  public FluxTopologyExecutionResultImpl execute(FluxTopology fluxTopology) throws Exception {
-    FluxTopologyExecutionResultImpl executionResult = new FluxTopologyExecutionResultImpl();
-    executionResult.setExecutionResult(this.senv.execute());
-    return executionResult;
   }
 }
 

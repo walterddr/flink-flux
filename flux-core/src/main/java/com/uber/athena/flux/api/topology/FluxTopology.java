@@ -21,6 +21,15 @@ package com.uber.athena.flux.api.topology;
 /**
  * Flux topology that can be self convert into Execution job graph.
  *
+ * <p>Specific Flux Topology execution framework should implement this interface
+ * and the concrete implementation should be executable within the framework.
  */
 public interface FluxTopology {
+
+  /**
+   * Execute the flux topology and generate {@code FluxExecutionResult}.
+   *
+   * @return the execution result.
+   */
+  FluxExecutionResult execute() throws Exception;
 }

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler;
+package com.uber.athena.flux.flink.compiler.api;
 
 import com.uber.athena.flux.model.EdgeDef;
 import com.uber.athena.flux.model.VertexDef;
@@ -25,7 +25,7 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompilationVertex {
+public class CompilerVertex {
 
   private final VertexDef vertex;
   private final List<EdgeDef> incomingEdge;
@@ -34,7 +34,7 @@ public class CompilationVertex {
   private int compiledSourceCount;
   private DataStream dataStream = null;
 
-  CompilationVertex(VertexDef vertex, List<EdgeDef> incomingEdge, List<EdgeDef> outgoingEdge) {
+  CompilerVertex(VertexDef vertex, List<EdgeDef> incomingEdge, List<EdgeDef> outgoingEdge) {
     this.vertex = vertex;
     this.incomingEdge = incomingEdge;
     this.outgoingEdge = outgoingEdge;
@@ -112,8 +112,8 @@ public class CompilationVertex {
       return this;
     }
 
-    public CompilationVertex build() {
-      return new CompilationVertex(
+    public CompilerVertex build() {
+      return new CompilerVertex(
           vertex,
           incomingEdge,
           outgoingEdge);

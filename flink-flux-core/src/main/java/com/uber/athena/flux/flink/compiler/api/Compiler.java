@@ -16,8 +16,9 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler;
+package com.uber.athena.flux.flink.compiler.api;
 
+import com.uber.athena.flux.flink.compiler.impl.datastream.FluxContext;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 /**
@@ -37,5 +38,5 @@ public interface Compiler {
    * @param fluxContext flux context
    * @param vertex      compilation vertex.
    */
-  void compile(StreamExecutionEnvironment senv, FluxContext fluxContext, CompilationVertex vertex);
+  void compile(StreamExecutionEnvironment senv, FluxContext fluxContext, CompilerVertex vertex);
 }

@@ -16,10 +16,11 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler.utils;
+package com.uber.athena.flux.flink.compiler.impl.datastream.utils;
 
-import com.uber.athena.flux.flink.compiler.CompilationVertex;
-import com.uber.athena.flux.flink.compiler.FluxContext;
+import com.uber.athena.flux.flink.compiler.api.CompilerVertex;
+import com.uber.athena.flux.flink.compiler.impl.datastream.FluxContext;
+import com.uber.athena.flux.flink.compiler.utils.ReflectiveInvokeUtils;
 import com.uber.athena.flux.model.ConfigMethodDef;
 import com.uber.athena.flux.model.ObjectDef;
 import com.uber.athena.flux.model.OperatorDef;
@@ -64,7 +65,7 @@ public final class CompilationUtils {
   public static void compileSource(
       FluxContext fluxContext,
       StreamExecutionEnvironment senv,
-      CompilationVertex vertex) throws Exception {
+      CompilerVertex vertex) throws Exception {
     // Compile vertex
     SourceDef sourceDef = (SourceDef) vertex.getVertex();
     SourceFunction sourceFunction = (SourceFunction) buildObject(sourceDef, fluxContext);
@@ -84,7 +85,7 @@ public final class CompilationUtils {
    */
   public static void compileOperator(
       FluxContext fluxContext,
-      CompilationVertex vertex) throws Exception {
+      CompilerVertex vertex) throws Exception {
     if (vertex.getIncomingEdge().size() != 1) {
       throw new UnsupportedOperationException(
           "Cannot compile zero input or multiple input operators as this moment");
@@ -92,7 +93,7 @@ public final class CompilationUtils {
     // Fetch upstream
     OperatorDef operatorDef = (OperatorDef) vertex.getVertex();
     String sourceId = vertex.getIncomingEdge().get(0).getFrom();
-    CompilationVertex source = fluxContext.getCompilationVertex(sourceId);
+    CompilerVertex source = fluxContext.getCompilationVertex(sourceId);
     DataStream sourceStream = source.getDataStream();
 
     // Compile vertex
@@ -116,7 +117,7 @@ public final class CompilationUtils {
    */
   public static void compileSink(
       FluxContext fluxContext,
-      CompilationVertex vertex) throws Exception {
+      CompilerVertex vertex) throws Exception {
     if (vertex.getIncomingEdge().size() != 1) {
       throw new UnsupportedOperationException(
           "Cannot compile zero input or multiple input sink as this moment");
@@ -124,7 +125,7 @@ public final class CompilationUtils {
     // Fetch upstream
     SinkDef sinkDef = (SinkDef) vertex.getVertex();
     String sourceId = vertex.getIncomingEdge().get(0).getFrom();
-    CompilationVertex source = fluxContext.getCompilationVertex(sourceId);
+    CompilerVertex source = fluxContext.getCompilationVertex(sourceId);
     DataStream sourceStream = source.getDataStream();
 
     // Compile vertex

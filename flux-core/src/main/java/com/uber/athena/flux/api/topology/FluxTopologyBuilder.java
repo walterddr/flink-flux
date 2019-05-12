@@ -26,13 +26,11 @@ import java.util.Map;
 /**
  * Marker interface for objects that can produce `StormTopology` objects.
  *
- * <p>If a `topology-source` class implements the `getTopology()` method, Flux will
- * call that method. Otherwise, it will introspect the given class and look for a
- * similar method that produces a `StormTopology` instance.
+ * <p>If a `topology-source` class implements the `createTopology()` method, Flux will
+ * call that method.
  *
- * <p>Note that it is not strictly necessary for a class to implement this interface.
- * If a class defines a method with a similar signature, Flux should be able to find
- * and invoke it.
+ * <p>A specific Flux execution framework should implement this interface and produce
+ * concrete {@code FluxTopology} implementations that can be executed within the framework.
  */
 public interface FluxTopologyBuilder {
 
@@ -43,13 +41,5 @@ public interface FluxTopologyBuilder {
    * @param config      configuration global map
    * @return topology
    */
-  FluxTopology getTopology(TopologyDef topologyDef, Map<String, Object> config) throws IOException;
-
-  /**
-   * Execute the topology in current Builder environment.
-   *
-   * @param fluxTopology the flux topology
-   * @return execution result
-   */
-  FluxTopologyExecutionResult execute(FluxTopology fluxTopology) throws Exception;
+  FluxTopology createTopology(TopologyDef topologyDef, Map<String, Object> config) throws IOException;
 }

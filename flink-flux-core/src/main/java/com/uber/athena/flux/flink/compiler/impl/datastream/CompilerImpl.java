@@ -16,17 +16,19 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler;
+package com.uber.athena.flux.flink.compiler.impl.datastream;
 
+import com.uber.athena.flux.flink.compiler.api.Compiler;
+import com.uber.athena.flux.flink.compiler.api.CompilerVertex;
 import com.uber.athena.flux.model.OperatorDef;
 import com.uber.athena.flux.model.SinkDef;
 import com.uber.athena.flux.model.SourceDef;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.util.Preconditions;
 
-import static com.uber.athena.flux.flink.compiler.utils.CompilationUtils.compileOperator;
-import static com.uber.athena.flux.flink.compiler.utils.CompilationUtils.compileSink;
-import static com.uber.athena.flux.flink.compiler.utils.CompilationUtils.compileSource;
+import static com.uber.athena.flux.flink.compiler.impl.datastream.utils.CompilationUtils.compileOperator;
+import static com.uber.athena.flux.flink.compiler.impl.datastream.utils.CompilationUtils.compileSink;
+import static com.uber.athena.flux.flink.compiler.impl.datastream.utils.CompilationUtils.compileSource;
 
 /**
  * Compiler implementation for operator-level Flux compilation.
@@ -43,7 +45,7 @@ public class CompilerImpl implements Compiler {
    * @param vertex      compilation vertex.
    */
   @Override
-  public void compile(StreamExecutionEnvironment senv, FluxContext fluxContext, CompilationVertex vertex) {
+  public void compile(StreamExecutionEnvironment senv, FluxContext fluxContext, CompilerVertex vertex) {
     Preconditions.checkArgument(vertex.readyToCompile());
     try {
       if (vertex.getVertex() instanceof SourceDef) {

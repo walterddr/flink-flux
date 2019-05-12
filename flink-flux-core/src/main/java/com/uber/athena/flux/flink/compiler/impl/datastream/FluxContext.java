@@ -16,8 +16,9 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler;
+package com.uber.athena.flux.flink.compiler.impl.datastream;
 
+import com.uber.athena.flux.flink.compiler.api.CompilerVertex;
 import com.uber.athena.flux.model.TopologyDef;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
@@ -52,7 +53,7 @@ public class FluxContext {
   /**
    * The following is used by {@link CompilationGraph}.
    */
-  private Map<String, CompilationVertex> compilationVertexMap = new HashMap<>();
+  private Map<String, CompilerVertex> compilationVertexMap = new HashMap<>();
 
   public FluxContext(TopologyDef topologyDef, Configuration config) {
     this.topologyDef = topologyDef;
@@ -131,7 +132,7 @@ public class FluxContext {
    * @param key   vertex id, identical to the ComponentDef ID
    * @param value compilation vertex.
    */
-  public void putCompilationVertex(String key, CompilationVertex value) {
+  public void putCompilationVertex(String key, CompilerVertex value) {
     compilationVertexMap.put(key, value);
   }
 
@@ -141,7 +142,7 @@ public class FluxContext {
    * @param key vertex id, identical to the ComponentDef ID
    * @return compilation vertex.
    */
-  public CompilationVertex getCompilationVertex(String key) {
+  public CompilerVertex getCompilationVertex(String key) {
     return compilationVertexMap.get(key);
   }
 }

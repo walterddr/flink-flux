@@ -31,8 +31,8 @@ public class TopologyRuntimeITCase {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/basic_topology.yaml", false, true, null, false);
     topologyDef.validate();
     FluxTopologyBuilderImpl fluxBuilder = FluxTopologyBuilderImpl.createFluxBuilder();
-    FluxTopology topology = fluxBuilder.getTopology(topologyDef, null);
-    fluxBuilder.execute(topology);
+    FluxTopology topology = fluxBuilder.createTopology(topologyDef, null);
+    topology.execute();
   }
 
   @Test
@@ -40,8 +40,8 @@ public class TopologyRuntimeITCase {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/repartition_topology.yaml", false, true, null, false);
     topologyDef.validate();
     FluxTopologyBuilderImpl fluxBuilder = FluxTopologyBuilderImpl.createFluxBuilder();
-    FluxTopology topology = fluxBuilder.getTopology(topologyDef, null);
-    fluxBuilder.execute(topology);
+    FluxTopology topology = fluxBuilder.createTopology(topologyDef, null);
+    topology.execute();
   }
 
   @Test
@@ -50,7 +50,7 @@ public class TopologyRuntimeITCase {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/kafka_topology.yaml", false, true, null, false);
     topologyDef.validate();
     FluxTopologyBuilderImpl fluxBuilder = FluxTopologyBuilderImpl.createFluxBuilder();
-    FluxTopology topology = fluxBuilder.getTopology(topologyDef, null);
-    fluxBuilder.execute(topology);
+    FluxTopology topology = fluxBuilder.createTopology(topologyDef, null);
+    topology.execute();
   }
 }

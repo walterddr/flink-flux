@@ -16,22 +16,13 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.runtime;
+package com.uber.athena.flux.api.topology;
 
-import com.uber.athena.flux.api.topology.FluxTopologyExecutionResult;
-import org.apache.flink.api.common.JobExecutionResult;
-
-public class FluxTopologyExecutionResultImpl implements FluxTopologyExecutionResult {
-  private transient JobExecutionResult executionResult;
-
-  public FluxTopologyExecutionResultImpl() {
-  }
-
-  public JobExecutionResult getExecutionResult() {
-    return executionResult;
-  }
-
-  public void setExecutionResult(JobExecutionResult executionResult) {
-    this.executionResult = executionResult;
-  }
+/**
+ * Execution results from a Flux topology execution.
+ *
+ * <p>Specific Flux Topology execution framework should implement this to construct
+ * result.
+ */
+public interface FluxExecutionResult {
 }

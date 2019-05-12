@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler;
+package com.uber.athena.flux.flink.compiler.impl.datastream;
 
 import com.uber.athena.flux.flink.runtime.FluxTopologyImpl;
 import com.uber.athena.flux.model.TopologyDef;
@@ -26,6 +26,10 @@ import org.apache.flink.util.Preconditions;
 
 /**
  * Compilation framework for the flux topology.
+ *
+ * <p>Based on the topology definition type, and the supported compiler,
+ * this compiler suite will find the appropriate compilation framework
+ * to construct the Flink topology job graph.
  */
 public class FluxCompilerSuite {
 
@@ -52,7 +56,10 @@ public class FluxCompilerSuite {
   /**
    * compile topology definition to {@code FluxTopology}.
    *
-   * @return flux topology.
+   * <p>The compilation should invoke the compilation framework based on
+   * constructed settings.
+   *
+   * @return a flux topology, different compilation suits might return different implementations.
    */
   public FluxTopologyImpl compile() {
     Preconditions.checkNotNull(topologyDef, "topology cannot be null!");
