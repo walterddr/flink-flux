@@ -21,10 +21,10 @@ package com.uber.athena.flux.flink.runtime;
 import com.uber.athena.flux.api.topology.FluxExecutionResult;
 import org.apache.flink.api.common.JobExecutionResult;
 
-public class FluxExecutionResultImpl implements FluxExecutionResult {
+public class FlinkFluxExecutionResult implements FluxExecutionResult {
   private transient JobExecutionResult executionResult;
 
-  public FluxExecutionResultImpl(JobExecutionResult jobExecutionResult) {
+  public FlinkFluxExecutionResult(JobExecutionResult jobExecutionResult) {
     this.executionResult = jobExecutionResult;
   }
 

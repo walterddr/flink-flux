@@ -34,13 +34,13 @@ import java.util.List;
  * and the jar path(s) represents the additional user jar dependencies required for
  * execution.
  */
-public class FluxTopologyImpl implements FluxTopology {
+public class FlinkFluxTopology implements FluxTopology {
 
   private transient StreamExecutionEnvironment senv;
   private transient JobGraph jobGraph;
   private transient List<Path> additionalJars;
 
-  public FluxTopologyImpl(StreamExecutionEnvironment senv) {
+  public FlinkFluxTopology(StreamExecutionEnvironment senv) {
     this.senv = senv;
   }
 
@@ -72,7 +72,7 @@ public class FluxTopologyImpl implements FluxTopology {
    */
   @Override
   public FluxExecutionResult execute() throws Exception {
-    return new FluxExecutionResultImpl(senv.execute());
+    return new FlinkFluxExecutionResult(senv.execute());
   }
 }
 

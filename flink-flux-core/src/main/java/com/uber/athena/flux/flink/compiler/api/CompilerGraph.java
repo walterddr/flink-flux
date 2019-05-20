@@ -19,7 +19,7 @@
 package com.uber.athena.flux.flink.compiler.api;
 
 import com.uber.athena.flux.flink.compiler.impl.datastream.DataStreamCompilerImpl;
-import com.uber.athena.flux.flink.runtime.FluxTopologyImpl;
+import com.uber.athena.flux.flink.runtime.FlinkFluxTopology;
 import com.uber.athena.flux.model.EdgeDef;
 import com.uber.athena.flux.model.OperatorDef;
 import com.uber.athena.flux.model.SinkDef;
@@ -47,11 +47,11 @@ public abstract class CompilerGraph {
    *
    * @return the topology
    */
-  public FluxTopologyImpl compile() {
+  public FlinkFluxTopology compile() {
     constructCompilationGraph(compilerContext);
     compileVertexQueue(senv, compilerContext);
     JobGraph jobGraph = senv.getStreamGraph().getJobGraph();
-    FluxTopologyImpl fluxTopology = new FluxTopologyImpl(senv);
+    FlinkFluxTopology fluxTopology = new FlinkFluxTopology(senv);
     fluxTopology.setJobGraph(jobGraph);
     return fluxTopology;
   }

@@ -21,7 +21,7 @@ package com.uber.athena.flux.flink.compiler.impl;
 import com.uber.athena.flux.flink.compiler.api.CompilerContext;
 import com.uber.athena.flux.flink.compiler.api.CompilerGraph;
 import com.uber.athena.flux.flink.compiler.impl.datastream.DataStreamCompilerGraph;
-import com.uber.athena.flux.flink.runtime.FluxTopologyImpl;
+import com.uber.athena.flux.flink.runtime.FlinkFluxTopology;
 import com.uber.athena.flux.model.TopologyDef;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -66,13 +66,13 @@ public class FluxCompilerSuite {
    *
    * @return a flux topology, different compilation suits might return different implementations.
    */
-  public FluxTopologyImpl compile() {
+  public FlinkFluxTopology compile() {
     Preconditions.checkNotNull(topologyDef, "topology cannot be null!");
     Preconditions.checkNotNull(streamExecutionEnvironment, "execution environment cannot be null!");
     return this.compileInternal();
   }
 
-  private FluxTopologyImpl compileInternal() {
+  private FlinkFluxTopology compileInternal() {
     return this.compilerGraph.compile();
   }
 }

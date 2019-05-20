@@ -34,19 +34,19 @@ import static com.uber.athena.flux.utils.Utils.wrapAsIOException;
 /**
  * Default topology builder.
  */
-public class FluxTopologyBuilderImpl implements FluxTopologyBuilder {
+public class FlinkFluxTopologyBuilder implements FluxTopologyBuilder {
 
   private StreamExecutionEnvironment senv;
   private TimeCharacteristic timeCharacteristic;
 
-  FluxTopologyBuilderImpl(Configuration flinkConf) {
+  FlinkFluxTopologyBuilder(Configuration flinkConf) {
     senv = StreamExecutionEnvironment.getExecutionEnvironment();
     // TODO fix time characteristic setting
     timeCharacteristic = TimeCharacteristic.ProcessingTime;
   }
 
-  public static FluxTopologyBuilderImpl createFluxBuilder() {
-    FluxTopologyBuilderImpl builder = new FluxTopologyBuilderImpl(new Configuration());
+  public static FlinkFluxTopologyBuilder createFluxBuilder() {
+    FlinkFluxTopologyBuilder builder = new FlinkFluxTopologyBuilder(new Configuration());
     return builder;
   }
 
@@ -55,9 +55,9 @@ public class FluxTopologyBuilderImpl implements FluxTopologyBuilder {
    *
    * @param topologyDef YAML compiled topology definition
    * @param conf        extra global configuration
-   * @return a {@code FluxTopologyImpl} class that contains all required components.
+   * @return a {@code FlinkFluxTopology} class that contains all required components.
    */
-  private FluxTopologyImpl compileTopologyDef(
+  private FlinkFluxTopology compileTopologyDef(
       StreamExecutionEnvironment senv,
       TopologyDef topologyDef,
       Map<String, Object> conf) {
@@ -91,7 +91,7 @@ public class FluxTopologyBuilderImpl implements FluxTopologyBuilder {
    * @throws IOException when compilation fails
    */
   @Override
-  public FluxTopologyImpl createTopology(
+  public FlinkFluxTopology createTopology(
       TopologyDef topologyDef,
       Map<String, Object> config) throws IOException {
 
