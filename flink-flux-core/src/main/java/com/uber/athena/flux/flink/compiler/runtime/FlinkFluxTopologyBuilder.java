@@ -16,23 +16,28 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.runtime;
+package com.uber.athena.flux.flink.compiler.runtime;
 
-import com.uber.athena.flux.api.topology.FluxExecutionResult;
-import org.apache.flink.api.common.JobExecutionResult;
+import com.uber.athena.flux.api.topology.FluxTopologyBuilder;
+import org.apache.flink.configuration.Configuration;
 
-public class FlinkFluxExecutionResult implements FluxExecutionResult {
-  private transient JobExecutionResult executionResult;
+import java.util.Map;
+import java.util.Properties;
 
-  public FlinkFluxExecutionResult(JobExecutionResult jobExecutionResult) {
-    this.executionResult = jobExecutionResult;
-  }
+/**
+ * Default topology builder for Flink.
+ */
+public abstract class FlinkFluxTopologyBuilder implements FluxTopologyBuilder {
 
-  public JobExecutionResult getExecutionResult() {
-    return executionResult;
-  }
-
-  public void setExecutionResult(JobExecutionResult executionResult) {
-    this.executionResult = executionResult;
+  protected static Configuration generateFlinkConfiguration(Map<String, Object> conf) {
+    // parse configurations
+    Properties props = new Properties();
+    if (conf != null) {
+      props.putAll(conf);
+    }
+    Configuration config = new Configuration();
+    config.addAllToProperties(props);
+    return config;
   }
 }
+

@@ -18,31 +18,32 @@
 
 package com.uber.athena.flux.flink.compiler.api;
 
-import com.uber.athena.flux.flink.compiler.context.CompilerContext;
 import com.uber.athena.flux.flink.compiler.context.CompilerVertex;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.util.Map;
 
 /**
+ * The compiler factory that finds and creates appropriate compiler.
  *
- * Compile a specific component into executable DataStream elements.
- *
- * <p>This compiler main interface does not provide any concrete compilation interface
- * as the actual compilation result varies depends on the API level selected.
- *
- * <p>This interface is only used as the based component of all compilation extensions.
- *
- * @param <T> the type of materialized job graph this compiler is targeted at.
+ * <p>Usually they are associated with a specific {@link CompilerVertex}.
  */
-public interface Compiler<T> {
+public interface CompilerFactory {
 
   /**
-   * Compile the thing.
+   * create a compiler based on provided object classes defined in Flux.
    *
-   * @param compilerContext the compiler context
-   * @param properties required additional properties for compilation
-   * @param vertex the target compilation vertex
+   * <p>Additional properties can be provided to identify the proper
+   * compiler associated with the class.
+   *
+   * @param ObjectClass the target object class defined in the Flux topology
+   * @param properties additional properties.
+   * @return the compiler for the object.
    */
-  void compile(CompilerContext compilerContext, Map<String, Object> properties, CompilerVertex vertex);
+  Compiler<?> getCompiler(
+      Class<?> ObjectClass,
+      Map<String, String> properties);
+
+  Compiler<?> getCompiler(
+      String className,
+      Map<String, String> properties);
 }

@@ -27,7 +27,7 @@ public class ConsoleOutputSink implements SinkFunction<String> {
   }
 
   @Override
-  public void invoke(String value, SinkFunction.Context context) throws Exception {
+  public void invoke(String value, Context context) throws Exception {
     System.out.println(value);
   }
 }

@@ -16,20 +16,20 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler.impl.datastream;
+package com.uber.athena.flux.flink.compiler.impl.test;
 
-import com.uber.athena.flux.flink.compiler.api.CompilerVertex;
+import com.uber.athena.flux.flink.compiler.context.CompilerVertex;
 import com.uber.athena.flux.model.EdgeDef;
 import com.uber.athena.flux.model.VertexDef;
 import org.apache.flink.streaming.api.datastream.DataStream;
 
 import java.util.List;
 
-public class DataStreamCompilerVertex extends CompilerVertex<DataStream> {
+public class TestCompilerVertex extends CompilerVertex<DataStream> {
 
   private DataStream dataStream;
 
-  DataStreamCompilerVertex(VertexDef vertex, List<EdgeDef> incomingEdge, List<EdgeDef> outgoingEdge) {
+  TestCompilerVertex(VertexDef vertex, List<EdgeDef> incomingEdge, List<EdgeDef> outgoingEdge) {
     this.vertex = vertex;
     this.incomingEdge = incomingEdge;
     this.outgoingEdge = outgoingEdge;

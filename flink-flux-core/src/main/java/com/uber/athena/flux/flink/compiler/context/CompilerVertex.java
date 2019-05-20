@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler.api;
+package com.uber.athena.flux.flink.compiler.context;
 
 import com.uber.athena.flux.model.EdgeDef;
 import com.uber.athena.flux.model.VertexDef;

@@ -26,10 +26,4 @@ package com.uber.athena.flux.api.topology;
  */
 public interface FluxTopology {
 
-  /**
-   * Execute the flux topology and generate {@code FluxExecutionResult}.
-   *
-   * @return the execution result.
-   */
-  FluxExecutionResult execute() throws Exception;
 }
