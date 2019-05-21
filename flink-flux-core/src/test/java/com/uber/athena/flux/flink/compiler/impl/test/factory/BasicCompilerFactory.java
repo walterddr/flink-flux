@@ -16,32 +16,26 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler.api;
+package com.uber.athena.flux.flink.compiler.impl.test.factory;
+
+import com.uber.athena.flux.flink.compiler.api.Compiler;
+import com.uber.athena.flux.flink.compiler.api.CompilerFactory;
+import com.uber.athena.flux.flink.compiler.impl.test.BasicCompilerImpl;
+import org.apache.flink.streaming.api.datastream.DataStream;
 
 import java.util.Map;
 
-/**
- * The compiler factory that finds and creates appropriate compiler.
- *
- * <p>Usually they are associated with a specific {@code CompilerVertex}.
- */
-public interface CompilerFactory {
+public class BasicCompilerFactory implements CompilerFactory {
 
-  /**
-   * create a compiler based on provided object classes defined in Flux.
-   *
-   * <p>Additional properties can be provided to identify the proper
-   * compiler associated with the class.
-   *
-   * @param objectClass the target object class defined in the Flux topology
-   * @param properties additional properties.
-   * @return the compiler for the object.
-   */
-  Compiler<?> getCompiler(
-      Class<?> objectClass,
-      Map<String, String> properties);
+  private static final Compiler<DataStream> COMPILER = new BasicCompilerImpl();
 
-  Compiler<?> getCompiler(
-      String className,
-      Map<String, String> properties);
+  @Override
+  public Compiler<?> getCompiler(Class<?> objectClass, Map<String, String> properties) {
+    return COMPILER;
+  }
+
+  @Override
+  public Compiler<?> getCompiler(String className, Map<String, String> properties) {
+    return COMPILER;
+  }
 }

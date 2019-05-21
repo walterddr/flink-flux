@@ -37,9 +37,9 @@ import java.util.Queue;
  * Object holder for compilation procedure.
  */
 public abstract class CompilerGraph {
-  protected Map<String, Object> staticProperties;
-  protected CompilerContext compilerContext;
-  protected Queue<CompilerVertex<?>> compilationQueue = new PriorityQueue<>();
+  private Map<String, Object> staticProperties;
+  private CompilerContext compilerContext;
+  private Queue<CompilerVertex<?>> compilationQueue = new PriorityQueue<>();
 
   /**
    * Compile current graph into a {@code FluxTopology}.
@@ -59,7 +59,8 @@ public abstract class CompilerGraph {
 
   protected abstract JobGraph constructJobGraphFromCompilerContext();
 
-  protected abstract Map<? extends String,?> findDynamicCompilerProperties(CompilerContext compilerContext, CompilerVertex<?> vertex);
+  protected abstract Map<? extends String, ?> findDynamicCompilerProperties(
+      CompilerContext compilerContext, CompilerVertex<?> vertex);
 
   protected abstract Compiler findCompilerForVertex(CompilerVertex<?> vertex);
 
@@ -120,5 +121,13 @@ public abstract class CompilerGraph {
         }
       }
     }
+  }
+
+  public void setStaticProperties(Map<String, Object> staticProperties) {
+    this.staticProperties = staticProperties;
+  }
+
+  public void setCompilerContext(CompilerContext compilerContext) {
+    this.compilerContext = compilerContext;
   }
 }

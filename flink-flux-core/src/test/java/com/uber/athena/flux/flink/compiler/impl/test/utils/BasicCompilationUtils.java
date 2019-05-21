@@ -20,7 +20,7 @@ package com.uber.athena.flux.flink.compiler.impl.test.utils;
 
 import com.uber.athena.flux.flink.compiler.context.CompilerContext;
 import com.uber.athena.flux.flink.compiler.context.CompilerVertex;
-import com.uber.athena.flux.flink.compiler.impl.test.TestCompilerVertex;
+import com.uber.athena.flux.flink.compiler.impl.test.BasicCompilerVertex;
 import com.uber.athena.flux.model.ConfigMethodDef;
 import com.uber.athena.flux.model.ObjectDef;
 import com.uber.athena.flux.model.OperatorDef;
@@ -46,10 +46,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public final class TestCompilationUtils {
-  private static final Logger LOG = LoggerFactory.getLogger(TestCompilationUtils.class);
+public final class BasicCompilationUtils {
+  private static final Logger LOG = LoggerFactory.getLogger(BasicCompilationUtils.class);
 
-  private TestCompilationUtils() {
+  private BasicCompilationUtils() {
 
   }
 
@@ -91,9 +91,9 @@ public final class TestCompilationUtils {
     }
     // Fetch upstream
     OperatorDef operatorDef = (OperatorDef) vertex.getVertex();
-    String sourceId = ((TestCompilerVertex) vertex).getIncomingEdge().get(0).getFrom();
+    String sourceId = ((BasicCompilerVertex) vertex).getIncomingEdge().get(0).getFrom();
     CompilerVertex source = compilerContext.getCompilationVertex(sourceId);
-    DataStream sourceStream = ((TestCompilerVertex) source).getCompilationResult();
+    DataStream sourceStream = ((BasicCompilerVertex) source).getCompilationResult();
 
     // Compile vertex
     OneInputStreamOperator operator = (OneInputStreamOperator) buildObject(operatorDef, compilerContext);
@@ -123,9 +123,9 @@ public final class TestCompilationUtils {
     }
     // Fetch upstream
     SinkDef sinkDef = (SinkDef) vertex.getVertex();
-    String sourceId = ((TestCompilerVertex) vertex).getIncomingEdge().get(0).getFrom();
+    String sourceId = ((BasicCompilerVertex) vertex).getIncomingEdge().get(0).getFrom();
     CompilerVertex source = compilerContext.getCompilationVertex(sourceId);
-    DataStream sourceStream = ((TestCompilerVertex) source).getCompilationResult();
+    DataStream sourceStream = ((BasicCompilerVertex) source).getCompilationResult();
 
     // Compile vertex
     SinkFunction sink = (SinkFunction) buildObject(sinkDef, compilerContext);

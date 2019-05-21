@@ -25,15 +25,15 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 
 import java.util.List;
 
-public class TestCompilerVertex extends CompilerVertex<DataStream> {
+public class BasicCompilerVertex extends CompilerVertex<DataStream> {
 
   private DataStream dataStream;
 
-  TestCompilerVertex(VertexDef vertex, List<EdgeDef> incomingEdge, List<EdgeDef> outgoingEdge) {
-    this.vertex = vertex;
-    this.incomingEdge = incomingEdge;
-    this.outgoingEdge = outgoingEdge;
-    this.compiledSourceCount = 0;
+  BasicCompilerVertex(VertexDef vertex, List<EdgeDef> incomingEdge, List<EdgeDef> outgoingEdge) {
+    this.setVertex(vertex);
+    this.setIncomingEdge(incomingEdge);
+    this.setOutgoingEdge(outgoingEdge);
+    this.setCompiledSourceCount(0);
   }
 
   @Override

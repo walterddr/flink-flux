@@ -30,17 +30,17 @@ import org.apache.flink.util.Preconditions;
 
 import java.util.Map;
 
-import static com.uber.athena.flux.flink.compiler.impl.test.TestCompilerGraphImpl.STREAM_EXEC_ENV;
-import static com.uber.athena.flux.flink.compiler.impl.test.utils.TestCompilationUtils.compileOperator;
-import static com.uber.athena.flux.flink.compiler.impl.test.utils.TestCompilationUtils.compileSink;
-import static com.uber.athena.flux.flink.compiler.impl.test.utils.TestCompilationUtils.compileSource;
+import static com.uber.athena.flux.flink.compiler.impl.test.BasicCompilerGraphImpl.STREAM_EXEC_ENV;
+import static com.uber.athena.flux.flink.compiler.impl.test.utils.BasicCompilationUtils.compileOperator;
+import static com.uber.athena.flux.flink.compiler.impl.test.utils.BasicCompilationUtils.compileSink;
+import static com.uber.athena.flux.flink.compiler.impl.test.utils.BasicCompilationUtils.compileSource;
 
 /**
  * Compiler implementation for operator-level Flux compilation.
  */
-public class TestCompilerImpl implements Compiler<DataStream> {
+public class BasicCompilerImpl implements Compiler<DataStream> {
 
-  public TestCompilerImpl() {
+  public BasicCompilerImpl() {
   }
 
   /**

@@ -20,12 +20,10 @@ package com.uber.athena.flux.flink.compiler.api;
 
 import com.uber.athena.flux.flink.compiler.context.CompilerContext;
 import com.uber.athena.flux.flink.compiler.context.CompilerVertex;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.util.Map;
 
 /**
- *
  * Compile a specific component into executable DataStream elements.
  *
  * <p>This compiler main interface does not provide any concrete compilation interface

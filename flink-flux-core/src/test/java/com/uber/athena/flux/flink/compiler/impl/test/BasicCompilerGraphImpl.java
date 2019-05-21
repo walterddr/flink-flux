@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.uber.athena.flux.flink.compiler.impl.test;
 
 import com.uber.athena.flux.flink.compiler.api.Compiler;
@@ -15,21 +33,20 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.Map;
 
-public class TestCompilerGraphImpl extends CompilerGraph {
-  private static final Logger LOG = LoggerFactory.getLogger(TestCompilerGraphImpl.class);
-
+public class BasicCompilerGraphImpl extends CompilerGraph {
   public static final String STREAM_EXEC_ENV = "stream_exec_env";
+  private static final Logger LOG = LoggerFactory.getLogger(BasicCompilerGraphImpl.class);
 
   private StreamExecutionEnvironment sEnv;
   private CompilerFactory compilerFactory;
 
-  public TestCompilerGraphImpl(
+  public BasicCompilerGraphImpl(
       StreamExecutionEnvironment sEnv,
       CompilerContext compilerContext,
       Class<?> compilerFactoryClass) {
     this.sEnv = sEnv;
-    super.compilerContext = compilerContext;
-    super.staticProperties = Collections.emptyMap();
+    this.setCompilerContext(compilerContext);
+    this.setStaticProperties(Collections.emptyMap());
     try {
       this.compilerFactory = (CompilerFactory) CompilerFactoryService.find(compilerFactoryClass);
     } catch (ClassNotFoundException e) {
@@ -39,7 +56,7 @@ public class TestCompilerGraphImpl extends CompilerGraph {
 
   @Override
   protected CompilerVertex<?> constructCompilerVertex(CompilerVertex.Builder vertexBuilder) {
-    return new TestCompilerVertex(
+    return new BasicCompilerVertex(
         vertexBuilder.getVertex(),
         vertexBuilder.getIncomingEdge(),
         vertexBuilder.getOutgoingEdge()
@@ -52,7 +69,8 @@ public class TestCompilerGraphImpl extends CompilerGraph {
   }
 
   @Override
-  protected Map<? extends String, ?> findDynamicCompilerProperties(CompilerContext compilerContext, CompilerVertex<?> vertex) {
+  protected Map<? extends String, ?> findDynamicCompilerProperties(
+      CompilerContext compilerContext, CompilerVertex<?> vertex) {
     return ImmutableMap.of(STREAM_EXEC_ENV, sEnv);
   }
 
