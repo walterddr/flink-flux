@@ -18,7 +18,10 @@
 
 package com.uber.athena.flux.flink.compiler.api;
 
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import com.uber.athena.flux.flink.compiler.context.CompilerContext;
+import com.uber.athena.flux.flink.compiler.context.CompilerVertex;
+
+import java.util.Map;
 
 /**
  * Compile a specific component into executable DataStream elements.
@@ -27,15 +30,17 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  * as the actual compilation result varies depends on the API level selected.
  *
  * <p>This interface is only used as the based component of all compilation extensions.
+ *
+ * @param <T> the type of materialized job graph this compiler is targeted at.
  */
-public interface Compiler {
+public interface Compiler<T> {
 
   /**
    * Compile the thing.
    *
-   * @param senv        stream execution environment
-   * @param compilerContext flux context
-   * @param vertex      compilation vertex.
+   * @param compilerContext the compiler context
+   * @param properties required additional properties for compilation
+   * @param vertex the target compilation vertex
    */
-  void compile(StreamExecutionEnvironment senv, CompilerContext compilerContext, CompilerVertex vertex);
+  void compile(CompilerContext compilerContext, Map<String, Object> properties, CompilerVertex vertex);
 }

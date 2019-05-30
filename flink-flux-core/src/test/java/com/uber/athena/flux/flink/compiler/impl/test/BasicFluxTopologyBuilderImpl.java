@@ -16,45 +16,47 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler.impl;
+package com.uber.athena.flux.flink.compiler.impl.test;
 
-import com.uber.athena.flux.flink.compiler.api.CompilerContext;
-import com.uber.athena.flux.flink.compiler.api.CompilerGraph;
-import com.uber.athena.flux.flink.compiler.impl.datastream.DataStreamCompilerGraph;
-import com.uber.athena.flux.flink.runtime.FluxTopologyImpl;
+import com.uber.athena.flux.flink.compiler.context.CompilerContext;
+import com.uber.athena.flux.flink.compiler.context.CompilerGraph;
+import com.uber.athena.flux.flink.compiler.impl.test.factory.BasicCompilerFactory;
+import com.uber.athena.flux.flink.compiler.runtime.FlinkFluxTopology;
+import com.uber.athena.flux.flink.compiler.runtime.FlinkFluxTopologyBuilder;
 import com.uber.athena.flux.model.TopologyDef;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.util.Preconditions;
 
-/**
- * Compilation framework for the flux topology.
- *
- * <p>Based on the topology definition type, and the supported compiler,
- * this compiler suite will find the appropriate compilation framework
- * to construct the Flink topology job graph.
- */
-public class FluxCompilerSuite {
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
+
+public class BasicFluxTopologyBuilderImpl extends FlinkFluxTopologyBuilder {
 
   private final TopologyDef topologyDef;
-  private final Configuration config;
   private final StreamExecutionEnvironment streamExecutionEnvironment;
   private final CompilerContext compilerContext;
-
   private CompilerGraph compilerGraph;
 
-  public FluxCompilerSuite(
+  public BasicFluxTopologyBuilderImpl(
       TopologyDef topologyDef,
-      Configuration config,
       StreamExecutionEnvironment streamExecutionEnvironment) {
+    this(topologyDef, streamExecutionEnvironment,
+        generateFlinkConfiguration(Collections.emptyMap()));
+  }
+
+  public BasicFluxTopologyBuilderImpl(
+      TopologyDef topologyDef,
+      StreamExecutionEnvironment streamExecutionEnvironment,
+      Configuration config) {
     this.streamExecutionEnvironment = streamExecutionEnvironment;
     this.topologyDef = topologyDef;
-    this.config = new Configuration(config);
     this.compilerContext = new CompilerContext(topologyDef, config);
-    // TODO: determine compilation graph impl based on API level.
-    this.compilerGraph = new DataStreamCompilerGraph(
+    this.compilerGraph = new BasicCompilerGraphImpl(
         this.streamExecutionEnvironment,
-        this.compilerContext) {
+        this.compilerContext,
+        BasicCompilerFactory.class) {
     };
   }
 
@@ -66,13 +68,14 @@ public class FluxCompilerSuite {
    *
    * @return a flux topology, different compilation suits might return different implementations.
    */
-  public FluxTopologyImpl compile() {
+  @Override
+  public FlinkFluxTopology createTopology(TopologyDef topologyDef, Map<String, Object> config) throws IOException {
     Preconditions.checkNotNull(topologyDef, "topology cannot be null!");
     Preconditions.checkNotNull(streamExecutionEnvironment, "execution environment cannot be null!");
     return this.compileInternal();
   }
 
-  private FluxTopologyImpl compileInternal() {
+  private FlinkFluxTopology compileInternal() {
     return this.compilerGraph.compile();
   }
 }

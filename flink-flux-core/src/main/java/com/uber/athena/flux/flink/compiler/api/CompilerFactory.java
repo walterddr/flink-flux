@@ -16,13 +16,32 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.api.topology;
+package com.uber.athena.flux.flink.compiler.api;
+
+import java.util.Map;
 
 /**
- * Execution results from a Flux topology execution.
+ * The compiler factory that finds and creates appropriate compiler.
  *
- * <p>Specific Flux Topology execution framework should implement this to construct
- * result.
+ * <p>Usually they are associated with a specific {@code CompilerVertex}.
  */
-public interface FluxExecutionResult {
+public interface CompilerFactory {
+
+  /**
+   * create a compiler based on provided object classes defined in Flux.
+   *
+   * <p>Additional properties can be provided to identify the proper
+   * compiler associated with the class.
+   *
+   * @param objectClass the target object class defined in the Flux topology
+   * @param properties additional properties.
+   * @return the compiler for the object.
+   */
+  Compiler<?> getCompiler(
+      Class<?> objectClass,
+      Map<String, String> properties);
+
+  Compiler<?> getCompiler(
+      String className,
+      Map<String, String> properties);
 }

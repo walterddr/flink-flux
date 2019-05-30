@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler.api;
+package com.uber.athena.flux.flink.compiler.context;
 
 import com.uber.athena.flux.model.EdgeDef;
 import com.uber.athena.flux.model.VertexDef;
@@ -30,12 +30,11 @@ import java.util.List;
  * @param <T> type of the compilation results generated.
  */
 public abstract class CompilerVertex<T> {
+  private VertexDef vertex;
+  private List<EdgeDef> incomingEdge;
+  private List<EdgeDef> outgoingEdge;
 
-  protected VertexDef vertex;
-  protected List<EdgeDef> incomingEdge;
-  protected List<EdgeDef> outgoingEdge;
-
-  protected int compiledSourceCount;
+  private int compiledSourceCount;
 
   /**
    * Increase compilation flag by one. Used after an upstream vertex has been compiled.
@@ -81,6 +80,26 @@ public abstract class CompilerVertex<T> {
 
   public List<EdgeDef> getOutgoingEdge() {
     return outgoingEdge;
+  }
+
+  public void setVertex(VertexDef vertex) {
+    this.vertex = vertex;
+  }
+
+  public void setIncomingEdge(List<EdgeDef> incomingEdge) {
+    this.incomingEdge = incomingEdge;
+  }
+
+  public void setOutgoingEdge(List<EdgeDef> outgoingEdge) {
+    this.outgoingEdge = outgoingEdge;
+  }
+
+  public int getCompiledSourceCount() {
+    return compiledSourceCount;
+  }
+
+  public void setCompiledSourceCount(int compiledSourceCount) {
+    this.compiledSourceCount = compiledSourceCount;
   }
 
   // ------------------------------------------------------------------------

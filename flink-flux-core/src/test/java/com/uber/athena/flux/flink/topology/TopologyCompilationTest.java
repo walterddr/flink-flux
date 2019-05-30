@@ -18,10 +18,11 @@
 
 package com.uber.athena.flux.flink.topology;
 
-import com.uber.athena.flux.flink.runtime.FluxTopologyBuilderImpl;
-import com.uber.athena.flux.flink.runtime.FluxTopologyImpl;
+import com.uber.athena.flux.flink.compiler.impl.test.BasicFluxTopologyBuilderImpl;
+import com.uber.athena.flux.flink.compiler.runtime.FlinkFluxTopology;
 import com.uber.athena.flux.model.TopologyDef;
 import com.uber.athena.flux.parser.FluxParser;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
@@ -32,8 +33,9 @@ public class TopologyCompilationTest {
   public void testBasicTopologyCompilation() throws Exception {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/basic_topology.yaml", false, true, null, false);
     topologyDef.validate();
-    FluxTopologyBuilderImpl fluxBuilder = FluxTopologyBuilderImpl.createFluxBuilder();
-    FluxTopologyImpl topology = fluxBuilder.createTopology(topologyDef, null);
+    BasicFluxTopologyBuilderImpl fluxBuilder = new BasicFluxTopologyBuilderImpl(topologyDef,
+        StreamExecutionEnvironment.getExecutionEnvironment());
+    FlinkFluxTopology topology = fluxBuilder.createTopology(topologyDef, null);
     assertNotNull(topology.getJobGraph());
   }
 
@@ -41,8 +43,9 @@ public class TopologyCompilationTest {
   public void testRepartitionTopologyCompilation() throws Exception {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/repartition_topology.yaml", false, true, null, false);
     topologyDef.validate();
-    FluxTopologyBuilderImpl fluxBuilder = FluxTopologyBuilderImpl.createFluxBuilder();
-    FluxTopologyImpl topology = fluxBuilder.createTopology(topologyDef, null);
+    BasicFluxTopologyBuilderImpl fluxBuilder = new BasicFluxTopologyBuilderImpl(topologyDef,
+        StreamExecutionEnvironment.getExecutionEnvironment());
+    FlinkFluxTopology topology = fluxBuilder.createTopology(topologyDef, null);
     assertNotNull(topology.getJobGraph());
   }
 
@@ -50,8 +53,9 @@ public class TopologyCompilationTest {
   public void testKafkaTopologyCompilation() throws Exception {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/kafka_topology.yaml", false, true, null, false);
     topologyDef.validate();
-    FluxTopologyBuilderImpl fluxBuilder = FluxTopologyBuilderImpl.createFluxBuilder();
-    FluxTopologyImpl topology = fluxBuilder.createTopology(topologyDef, null);
+    BasicFluxTopologyBuilderImpl fluxBuilder = new BasicFluxTopologyBuilderImpl(topologyDef,
+        StreamExecutionEnvironment.getExecutionEnvironment());
+    FlinkFluxTopology topology = fluxBuilder.createTopology(topologyDef, null);
     assertNotNull(topology.getJobGraph());
   }
 }

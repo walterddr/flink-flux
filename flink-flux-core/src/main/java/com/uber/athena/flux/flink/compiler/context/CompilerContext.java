@@ -16,35 +16,41 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler.api;
+package com.uber.athena.flux.flink.compiler.context;
 
 import com.uber.athena.flux.model.TopologyDef;
 import org.apache.flink.configuration.Configuration;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+/**
+ * The compilation context any compiler will rely on during compilation.
+ *
+ * <p>This is used with the {@link CompilerGraph} to formulate a BST-based
+ * compiling mechanism.
+ */
 public class CompilerContext {
-  // parsed Topology definition
+
+  /**
+   * The following are basic definitions of the compiler context.
+   */
   private TopologyDef topologyDef;
 
-  // Flink config
   private Configuration config;
-
-  // components required to be instantiated from classpath JARs
-  private List<Object> additionalComponents;
 
   /**
    * The following are materialized objects from the {@code TopologyDef}.
+   *
+   * <p>Depending on the materialization mechanism, they surface different types of results.
    */
-  private Map<String, Object> componentMap = new HashMap<String, Object>();
+  private Map<String, Object> componentMap = new HashMap<>();
 
-  private Map<String, CompilerVertex<?>> dataStreamSourceMap = new HashMap<>();
+  private Map<String, CompilerVertex<?>> sourceMap = new HashMap<>();
 
   private Map<String, CompilerVertex<?>> operatorMap = new HashMap<>();
 
-  private Map<String, CompilerVertex<?>> dataStreamSinkMap = new HashMap<>();
+  private Map<String, CompilerVertex<?>> sinkMap = new HashMap<>();
 
   /**
    * The following is used by {@code CompilerGraph}.
@@ -58,14 +64,6 @@ public class CompilerContext {
 
   public TopologyDef getTopologyDef() {
     return this.topologyDef;
-  }
-
-  public List<Object> getAdditionalComponents() {
-    return additionalComponents;
-  }
-
-  public void setAdditionalComponents(List<Object> additionalComponents) {
-    this.additionalComponents = additionalComponents;
   }
 
   public Configuration getConfig() {
@@ -83,7 +81,11 @@ public class CompilerContext {
    * @param source source object
    */
   public void addSource(String id, CompilerVertex<?> source) {
-    this.dataStreamSourceMap.put(id, source);
+    this.sourceMap.put(id, source);
+  }
+
+  public CompilerVertex<?> getSourcevertex(String key) {
+    return sourceMap.get(key);
   }
 
   /**
@@ -93,14 +95,25 @@ public class CompilerContext {
    * @param sink sink object
    */
   public void addSink(String id, CompilerVertex<?> sink) {
-    this.dataStreamSinkMap.put(id, sink);
+    this.sinkMap.put(id, sink);
+  }
+
+  public CompilerVertex<?> getSinkVertex(String key) {
+    return sinkMap.get(key);
   }
 
   /**
    * add operator.
+   *
+   * @param id operator ID
+   * @param op operator object
    */
   public void addOperator(String id, CompilerVertex<?> op) {
     this.operatorMap.put(id, op);
+  }
+
+  public CompilerVertex<?> geOperatorVertex(String key) {
+    return operatorMap.get(key);
   }
 
   /**

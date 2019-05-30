@@ -16,12 +16,11 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler.impl.datastream.utils;
+package com.uber.athena.flux.flink.compiler.impl.test.utils;
 
-import com.uber.athena.flux.flink.compiler.api.CompilerContext;
-import com.uber.athena.flux.flink.compiler.api.CompilerVertex;
-import com.uber.athena.flux.flink.compiler.impl.datastream.DataStreamCompilerVertex;
-import com.uber.athena.flux.flink.compiler.utils.ReflectiveInvokeUtils;
+import com.uber.athena.flux.flink.compiler.context.CompilerContext;
+import com.uber.athena.flux.flink.compiler.context.CompilerVertex;
+import com.uber.athena.flux.flink.compiler.impl.test.BasicCompilerVertex;
 import com.uber.athena.flux.model.ConfigMethodDef;
 import com.uber.athena.flux.model.ObjectDef;
 import com.uber.athena.flux.model.OperatorDef;
@@ -47,10 +46,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public final class DataStreamCompilationUtils {
-  private static final Logger LOG = LoggerFactory.getLogger(DataStreamCompilationUtils.class);
+public final class BasicCompilationUtils {
+  private static final Logger LOG = LoggerFactory.getLogger(BasicCompilationUtils.class);
 
-  private DataStreamCompilationUtils() {
+  private BasicCompilationUtils() {
 
   }
 
@@ -65,7 +64,7 @@ public final class DataStreamCompilationUtils {
   public static void compileSource(
       CompilerContext compilerContext,
       StreamExecutionEnvironment senv,
-      DataStreamCompilerVertex vertex) throws Exception {
+      CompilerVertex vertex) throws Exception {
     // Compile vertex
     SourceDef sourceDef = (SourceDef) vertex.getVertex();
     SourceFunction sourceFunction = (SourceFunction) buildObject(sourceDef, compilerContext);
@@ -85,16 +84,16 @@ public final class DataStreamCompilationUtils {
    */
   public static void compileOperator(
       CompilerContext compilerContext,
-      DataStreamCompilerVertex vertex) throws Exception {
+      CompilerVertex vertex) throws Exception {
     if (vertex.getIncomingEdge().size() != 1) {
       throw new UnsupportedOperationException(
           "Cannot compile zero input or multiple input operators as this moment");
     }
     // Fetch upstream
     OperatorDef operatorDef = (OperatorDef) vertex.getVertex();
-    String sourceId = vertex.getIncomingEdge().get(0).getFrom();
+    String sourceId = ((BasicCompilerVertex) vertex).getIncomingEdge().get(0).getFrom();
     CompilerVertex source = compilerContext.getCompilationVertex(sourceId);
-    DataStream sourceStream = ((DataStreamCompilerVertex) source).getCompilationResult();
+    DataStream sourceStream = ((BasicCompilerVertex) source).getCompilationResult();
 
     // Compile vertex
     OneInputStreamOperator operator = (OneInputStreamOperator) buildObject(operatorDef, compilerContext);
@@ -117,16 +116,16 @@ public final class DataStreamCompilationUtils {
    */
   public static void compileSink(
       CompilerContext compilerContext,
-      DataStreamCompilerVertex vertex) throws Exception {
+      CompilerVertex vertex) throws Exception {
     if (vertex.getIncomingEdge().size() != 1) {
       throw new UnsupportedOperationException(
           "Cannot compile zero input or multiple input sink as this moment");
     }
     // Fetch upstream
     SinkDef sinkDef = (SinkDef) vertex.getVertex();
-    String sourceId = vertex.getIncomingEdge().get(0).getFrom();
+    String sourceId = ((BasicCompilerVertex) vertex).getIncomingEdge().get(0).getFrom();
     CompilerVertex source = compilerContext.getCompilationVertex(sourceId);
-    DataStream sourceStream = ((DataStreamCompilerVertex) source).getCompilationResult();
+    DataStream sourceStream = ((BasicCompilerVertex) source).getCompilationResult();
 
     // Compile vertex
     SinkFunction sink = (SinkFunction) buildObject(sinkDef, compilerContext);

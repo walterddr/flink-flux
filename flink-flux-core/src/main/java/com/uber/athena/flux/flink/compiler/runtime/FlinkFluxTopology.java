@@ -16,13 +16,11 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.runtime;
+package com.uber.athena.flux.flink.compiler.runtime;
 
-import com.uber.athena.flux.api.topology.FluxExecutionResult;
 import com.uber.athena.flux.api.topology.FluxTopology;
 import org.apache.flink.core.fs.Path;
 import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.util.List;
 
@@ -34,14 +32,12 @@ import java.util.List;
  * and the jar path(s) represents the additional user jar dependencies required for
  * execution.
  */
-public class FluxTopologyImpl implements FluxTopology {
+public class FlinkFluxTopology implements FluxTopology {
 
-  private transient StreamExecutionEnvironment senv;
   private transient JobGraph jobGraph;
   private transient List<Path> additionalJars;
 
-  public FluxTopologyImpl(StreamExecutionEnvironment senv) {
-    this.senv = senv;
+  public FlinkFluxTopology() {
   }
 
   public List<Path> getAdditionalJars() {
@@ -58,21 +54,6 @@ public class FluxTopologyImpl implements FluxTopology {
 
   public void setJobGraph(JobGraph jobGraph) {
     this.jobGraph = jobGraph;
-  }
-
-
-
-  /**
-   * Execute the topology.
-   *
-   * <p>Execution will happen in the current defined stream execution environment.
-   *
-   * @return execution results.
-   * @throws Exception when execution fails.
-   */
-  @Override
-  public FluxExecutionResult execute() throws Exception {
-    return new FluxExecutionResultImpl(senv.execute());
   }
 }
 

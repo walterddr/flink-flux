@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler.utils;
+package com.uber.athena.flux.flink.compiler.impl.test.utils;
 
-import com.uber.athena.flux.flink.compiler.api.CompilerContext;
+import com.uber.athena.flux.flink.compiler.context.CompilerContext;
 import com.uber.athena.flux.model.ComponentReferenceDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

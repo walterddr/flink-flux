@@ -16,14 +16,26 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.api.topology;
+package com.uber.athena.flux.flink.compiler.impl.test.factory;
 
-/**
- * Flux topology that can be self convert into Execution job graph.
- *
- * <p>Specific Flux Topology execution framework should implement this interface
- * and the concrete implementation should be executable within the framework.
- */
-public interface FluxTopology {
+import com.uber.athena.flux.flink.compiler.api.Compiler;
+import com.uber.athena.flux.flink.compiler.api.CompilerFactory;
+import com.uber.athena.flux.flink.compiler.impl.test.BasicCompilerImpl;
+import org.apache.flink.streaming.api.datastream.DataStream;
 
+import java.util.Map;
+
+public class BasicCompilerFactory implements CompilerFactory {
+
+  private static final Compiler<DataStream> COMPILER = new BasicCompilerImpl();
+
+  @Override
+  public Compiler<?> getCompiler(Class<?> objectClass, Map<String, String> properties) {
+    return COMPILER;
+  }
+
+  @Override
+  public Compiler<?> getCompiler(String className, Map<String, String> properties) {
+    return COMPILER;
+  }
 }

@@ -16,45 +16,54 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.flink.compiler.impl.datastream;
+package com.uber.athena.flux.flink.compiler.impl.test;
 
 import com.uber.athena.flux.flink.compiler.api.Compiler;
-import com.uber.athena.flux.flink.compiler.api.CompilerContext;
-import com.uber.athena.flux.flink.compiler.api.CompilerVertex;
+import com.uber.athena.flux.flink.compiler.context.CompilerContext;
+import com.uber.athena.flux.flink.compiler.context.CompilerVertex;
 import com.uber.athena.flux.model.OperatorDef;
 import com.uber.athena.flux.model.SinkDef;
 import com.uber.athena.flux.model.SourceDef;
+import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.util.Preconditions;
 
-import static com.uber.athena.flux.flink.compiler.impl.datastream.utils.DataStreamCompilationUtils.compileOperator;
-import static com.uber.athena.flux.flink.compiler.impl.datastream.utils.DataStreamCompilationUtils.compileSink;
-import static com.uber.athena.flux.flink.compiler.impl.datastream.utils.DataStreamCompilationUtils.compileSource;
+import java.util.Map;
+
+import static com.uber.athena.flux.flink.compiler.impl.test.BasicCompilerGraphImpl.STREAM_EXEC_ENV;
+import static com.uber.athena.flux.flink.compiler.impl.test.utils.BasicCompilationUtils.compileOperator;
+import static com.uber.athena.flux.flink.compiler.impl.test.utils.BasicCompilationUtils.compileSink;
+import static com.uber.athena.flux.flink.compiler.impl.test.utils.BasicCompilationUtils.compileSource;
 
 /**
  * Compiler implementation for operator-level Flux compilation.
  */
-public class DataStreamCompilerImpl implements Compiler {
+public class BasicCompilerImpl implements Compiler<DataStream> {
 
-  public DataStreamCompilerImpl() {
+  public BasicCompilerImpl() {
   }
 
   /**
    * Compile a single vertex into chaining datastream.
-   * @param senv        stream execution environment
    * @param compilerContext flux context
-   * @param vertex      compilation vertex.
+   * @param properties additional properties required for compilation
+   * @param vertex compilation vertex
    */
   @Override
-  public void compile(StreamExecutionEnvironment senv, CompilerContext compilerContext, CompilerVertex vertex) {
+  public void compile(
+      CompilerContext compilerContext,
+      Map<String, Object> properties,
+      CompilerVertex vertex) {
     Preconditions.checkArgument(vertex.readyToCompile());
+    StreamExecutionEnvironment sEnv = (StreamExecutionEnvironment)
+        Preconditions.checkNotNull(properties.get(STREAM_EXEC_ENV));
     try {
       if (vertex.getVertex() instanceof SourceDef) {
-        compileSource(compilerContext, senv, (DataStreamCompilerVertex) vertex);
+        compileSource(compilerContext, sEnv, vertex);
       } else if (vertex.getVertex() instanceof OperatorDef) {
-        compileOperator(compilerContext, (DataStreamCompilerVertex) vertex);
+        compileOperator(compilerContext, vertex);
       } else if (vertex.getVertex() instanceof SinkDef) {
-        compileSink(compilerContext, (DataStreamCompilerVertex) vertex);
+        compileSink(compilerContext, vertex);
       }
     } catch (Exception e) {
       throw new RuntimeException("Cannot compile vertex: " + vertex.getVertex().getId(), e);
