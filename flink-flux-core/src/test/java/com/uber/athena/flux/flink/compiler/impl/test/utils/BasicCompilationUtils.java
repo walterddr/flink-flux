@@ -27,7 +27,7 @@ import com.uber.athena.flux.model.OperatorDef;
 import com.uber.athena.flux.model.PropertyDef;
 import com.uber.athena.flux.model.SinkDef;
 import com.uber.athena.flux.model.SourceDef;
-import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
+import com.uber.athena.flux.model.VertexDef;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -91,7 +91,7 @@ public final class BasicCompilationUtils {
     }
     // Fetch upstream
     OperatorDef operatorDef = (OperatorDef) vertex.getVertex();
-    String sourceId = ((BasicCompilerVertex) vertex).getIncomingEdge().get(0).getFrom();
+    String sourceId = ((BasicCompilerVertex) vertex).getIncomingEdge().get(0).getFromVertex();
     CompilerVertex source = compilerContext.getCompilationVertex(sourceId);
     DataStream sourceStream = ((BasicCompilerVertex) source).getCompilationResult();
 
@@ -99,7 +99,7 @@ public final class BasicCompilationUtils {
     OneInputStreamOperator operator = (OneInputStreamOperator) buildObject(operatorDef, compilerContext);
     DataStream stream = sourceStream.transform(
         operatorDef.getId(),
-        resolveTypeInformation(operatorDef.getTypeInformation()),
+        resolveTypeInformation(operatorDef),
         operator);
 
     // set compilation results
@@ -123,7 +123,7 @@ public final class BasicCompilationUtils {
     }
     // Fetch upstream
     SinkDef sinkDef = (SinkDef) vertex.getVertex();
-    String sourceId = ((BasicCompilerVertex) vertex).getIncomingEdge().get(0).getFrom();
+    String sourceId = ((BasicCompilerVertex) vertex).getIncomingEdge().get(0).getFromVertex();
     CompilerVertex source = compilerContext.getCompilationVertex(sourceId);
     DataStream sourceStream = ((BasicCompilerVertex) source).getCompilationResult();
 
@@ -139,11 +139,11 @@ public final class BasicCompilationUtils {
   private static Object buildObject(ObjectDef def, CompilerContext compilerContext) throws Exception {
     Class clazz = Class.forName(def.getClassName());
     Object obj = null;
-    if (def.hasConstructorArgs()) {
+    if (def.getConstructorArgs() != null && def.getConstructorArgs().size() > 0) {
       LOG.debug("Found constructor arguments in definition: " + def.getConstructorArgs().getClass().getName());
       List<Object> cArgs = def.getConstructorArgs();
 
-      if (def.hasReferences()) {
+      if (def.getHasReferenceInArgs()) {
         cArgs = ReflectiveInvokeUtils.resolveReferences(cArgs, compilerContext);
       }
 
@@ -169,11 +169,12 @@ public final class BasicCompilationUtils {
 
   private static void applyProperties(ObjectDef bean, Object instance, CompilerContext context)
       throws Exception {
-    List<PropertyDef> props = bean.getProperties();
+    List<PropertyDef> props = bean.getPropertyList();
     Class clazz = instance.getClass();
     if (props != null) {
       for (PropertyDef prop : props) {
-        Object value = prop.isReference() ? context.getComponent(prop.getRef()) : prop.getValue();
+        Object value = prop.getReference() != null
+            ? context.getComponent(prop.getReference()) : prop.getValue();
         Method setter = findSetter(clazz, prop.getName(), value);
         if (setter != null) {
           LOG.debug("found setter, attempting to invoke");
@@ -200,11 +201,11 @@ public final class BasicCompilationUtils {
     }
     Class clazz = instance.getClass();
     for (ConfigMethodDef methodDef : methodDefs) {
-      List<Object> args = methodDef.getArgs();
+      List<Object> args = methodDef.getConfigArgs();
       if (args == null) {
         args = new ArrayList<>();
       }
-      if (methodDef.hasReferences()) {
+      if (methodDef.getHasReferenceInArgs()) {
         args = ReflectiveInvokeUtils.resolveReferences(args, context);
       }
       String methodName = methodDef.getName();
@@ -226,7 +227,8 @@ public final class BasicCompilationUtils {
   // Type utilities
   // ------------------------------------------------------------------------
 
-  private static TypeInformation resolveTypeInformation(String typeInformation) {
+  private static TypeInformation resolveTypeInformation(VertexDef vertexDef) {
+    /*
     switch (typeInformation.toLowerCase()) {
       case "string":
         return BasicTypeInfo.STRING_TYPE_INFO;
@@ -253,6 +255,8 @@ public final class BasicCompilationUtils {
       default:
         throw new IllegalArgumentException("operator type info is not supported: " + typeInformation);
     }
+    */
+    return null;
   }
 
   // ------------------------------------------------------------------------

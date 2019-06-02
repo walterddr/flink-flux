@@ -19,7 +19,7 @@
 package com.uber.athena.flux.flink.compiler.impl.test.utils;
 
 import com.uber.athena.flux.flink.compiler.context.CompilerContext;
-import com.uber.athena.flux.model.ComponentReferenceDef;
+import com.uber.athena.flux.model.ComponentRefDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,8 +85,8 @@ public final class ReflectiveInvokeUtils {
     List<Object> cArgs = new ArrayList<Object>();
     // resolve references
     for (Object arg : args) {
-      if (arg instanceof ComponentReferenceDef) {
-        cArgs.add(context.getComponent(((ComponentReferenceDef) arg).getId()));
+      if (arg instanceof ComponentRefDef) {
+        cArgs.add(context.getComponent(((ComponentRefDef) arg).getId()));
       } else {
         cArgs.add(arg);
       }

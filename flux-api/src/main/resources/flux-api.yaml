@@ -1,0 +1,211 @@
+################################################################################
+#  Licensed to the Apache Software Foundation (ASF) under one
+#  or more contributor license agreements.  See the NOTICE file
+#  distributed with this work for additional information
+#  regarding copyright ownership.  The ASF licenses this file
+#  to you under the Apache License, Version 2.0 (the
+#  "License"); you may not use this file except in compliance
+#  with the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################
+
+swagger: '2.0'
+info:
+  description: Flux DSL API
+  version: '0.0.1'
+  title: Flux DSL API
+  contact:
+    email: athena-dev@uber.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: localhost
+paths: {}
+schemes:
+  - http
+definitions:
+# -----------------------------------------------------------------------------
+# Basic object definitions
+# -----------------------------------------------------------------------------
+  IncludeDef:
+    type: object
+    properties:
+      resourceName:
+        type: string
+        description: the name of the resource to be included
+      isOverride:
+        type: boolean
+        description: indicator on whether this resource should override any existing defaults
+      resourceType:
+        type: string
+        description: the type of the resource
+        enum:
+          - RESOURCE
+          - FILE
+        default: FILE
+  PropertyDef:
+    type: object
+    properties:
+      name:
+        type: string
+        description: the property identifier
+      value:
+        type: object
+        description: the property content
+      reference:
+        type: string
+        description: if this is a reference type, describe the base reference
+  ConfigMethodDef:
+    type: object
+    properties:
+      name:
+        type: string
+        description: the configuration method/function name
+      configArgs:
+        type: array
+        items:
+          type: object
+        description: the function call arguments defined in order
+      hasReferenceInArgs:
+        type: boolean
+        description: describe whether this list of arguments has reference
+        default: false
+  ComponentRefDef:
+    type: object
+    properties:
+      id:
+        type: string
+        description: the identifier of the component it is referring to
+# -----------------------------------------------------------------------------
+# Component Definitions
+# -----------------------------------------------------------------------------
+  ObjectDef:
+    type: object
+    properties:
+      className:
+        type: string
+        description: the fully qualified class name of the object
+      constructorArgs:
+        type: array
+        items:
+          type: object
+        description: the constructor arguments defined in order
+      hasReferenceInArgs:
+        type: boolean
+        description: describe whether this list of arguments has reference
+        default: false
+      propertyList:
+        type: array
+        items:
+          $ref: '#/definitions/PropertyDef'
+        description: the optional properties accepted by this object for construct/config
+      configMethods:
+        type: array
+        items:
+          $ref: '#/definitions/ConfigMethodDef'
+        description: the optional method provided by this object for configuration
+  ComponentDef:
+    allOf:
+      - $ref: '#/definitions/ObjectDef'
+      - type: object
+        properties:
+          id:
+            type: string
+            description: the identifier of this component
+  VertexDef:
+    allOf:
+      - $ref: '#/definitions/ComponentDef'
+      - type: object
+        properties:
+          parallelism:
+            type: integer
+            description: the parallelism of the vertex in the job graph
+  SourceDef:
+    allOf:
+      - $ref: '#/definitions/VertexDef'
+  SinkDef:
+    allOf:
+      - $ref: '#/definitions/VertexDef'
+  OperatorDef:
+    allOf:
+      - $ref: '#/definitions/VertexDef'
+  EdgeDef:
+    allOf:
+      - $ref: '#/definitions/ComponentDef'
+      - type: object
+        properties:
+          fromVertex:
+            type: string
+            description: the ID of the start vertex of this edge
+          toVertex:
+            type: string
+            description: the ID of the end vertex of this edge
+  StreamDef:
+    allOf:
+      - $ref: '#/definitions/EdgeDef'
+      - type: object
+        properties:
+          streamType:
+            type: string
+            description: the type of stream it represents
+# -----------------------------------------------------------------------------
+# Topology Definition
+# -----------------------------------------------------------------------------
+  TopologyDef:
+    type: object
+    properties:
+      name:
+        type: string
+        description: the identifier name for this topology
+      components:
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/ComponentDef'
+        description: the mapping from component identifiers to component definitions
+      sources:
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/SourceDef'
+        description: the mapping from source identifiers to source definitions
+      sinks:
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/SinkDef'
+        description: the mapping from sink identifiers to sink definitions
+      operators:
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/OperatorDef'
+        description: the mapping from operator identifiers to operator definitions
+      includes:
+        type: array
+        items:
+          $ref: '#/definitions/IncludeDef'
+        description: the included resource list
+      streams:
+        type: array
+        items:
+          $ref: '#/definitions/StreamDef'
+        description: list for all stream/edge defintiions
+      configMethods:
+        type: array
+        items:
+          $ref: '#/definitions/ConfigMethodDef'
+        description: the optional method provided by this object for configuration
+      config:
+        type: object
+        additionalProperties:
+          typ: object
+        description: the additional metadata configuration for the topology
+      propertyMap:
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/PropertyDef'
+        description: the mapping of all the additional properties

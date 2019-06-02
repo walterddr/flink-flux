@@ -45,7 +45,8 @@ config:
 
 # source definitions
 sources:
-  - id: "source-1"
+  source-1:
+    id: "source-1"
     className: "com.uber.athena.flux.flink.test.utils.source.RandomSource"
     parallelism: 1
     constructorArgs:
@@ -54,31 +55,31 @@ sources:
 
 # operator definitions
 operators:
-  - id: "operator-1"
-    type: "operator"
+  operator-1:
+    id: "operator-1"
     className: "com.uber.athena.flux.flink.test.utils.operator.BasicPassThroughOperator"
     parallelism: 1
-    typeInformation: "string"
     # ...
 
 # sink definitions
 sinks:
-  - id: "sink-1"
+  sink-1:
+    id: "sink-1"
     className: "com.uber.athena.flux.flink.test.utils.sink.ConsoleOutputSink"
     parallelism: 1
     # ...
 
 #stream definitions
-# stream definitions define connections between spouts and bolts.
+# stream definitions define connections between sources, operator and sinks.
 # note that such connections can be cyclical
 streams:
-  - name: "source-1 --> operator-1"
-    from: "source-1"
-    to: "operator-1"
+  - id: "source-1 --> operator-1"
+    fromVertex: "source-1"
+    toVertex: "operator-1"
 
-  - name: "operator-1 --> sink-1"
-    from: "operator-1"
-    to: "sink-1"
+  - id: "operator-1 --> sink-1"
+    fromVertex: "operator-1"
+    toVertex: "sink-1"
 
 
 

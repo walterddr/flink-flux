@@ -22,6 +22,7 @@ import com.uber.athena.flux.flink.compiler.impl.test.BasicFluxTopologyBuilderImp
 import com.uber.athena.flux.flink.compiler.runtime.FlinkFluxTopology;
 import com.uber.athena.flux.model.TopologyDef;
 import com.uber.athena.flux.parser.FluxParser;
+import com.uber.athena.flux.utils.TopologyUtils;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ public class TopologyCompilationTest {
   @Test
   public void testBasicTopologyCompilation() throws Exception {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/basic_topology.yaml", false, true, null, false);
-    topologyDef.validate();
+    TopologyUtils.validate(topologyDef);
     BasicFluxTopologyBuilderImpl fluxBuilder = new BasicFluxTopologyBuilderImpl(topologyDef,
         StreamExecutionEnvironment.getExecutionEnvironment());
     FlinkFluxTopology topology = fluxBuilder.createTopology(topologyDef, null);
@@ -42,7 +43,7 @@ public class TopologyCompilationTest {
   @Test
   public void testRepartitionTopologyCompilation() throws Exception {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/repartition_topology.yaml", false, true, null, false);
-    topologyDef.validate();
+    TopologyUtils.validate(topologyDef);
     BasicFluxTopologyBuilderImpl fluxBuilder = new BasicFluxTopologyBuilderImpl(topologyDef,
         StreamExecutionEnvironment.getExecutionEnvironment());
     FlinkFluxTopology topology = fluxBuilder.createTopology(topologyDef, null);
@@ -52,7 +53,7 @@ public class TopologyCompilationTest {
   @Test
   public void testKafkaTopologyCompilation() throws Exception {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/kafka_topology.yaml", false, true, null, false);
-    topologyDef.validate();
+    TopologyUtils.validate(topologyDef);
     BasicFluxTopologyBuilderImpl fluxBuilder = new BasicFluxTopologyBuilderImpl(topologyDef,
         StreamExecutionEnvironment.getExecutionEnvironment());
     FlinkFluxTopology topology = fluxBuilder.createTopology(topologyDef, null);

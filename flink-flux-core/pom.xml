@@ -42,6 +42,11 @@ under the License.
 
 		<dependency>
 			<groupId>com.uber.athena</groupId>
+			<artifactId>flux-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.uber.athena</groupId>
 			<artifactId>flux-core</artifactId>
 		</dependency>
 

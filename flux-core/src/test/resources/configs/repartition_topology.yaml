@@ -45,7 +45,8 @@ config:
 
 # source definitions
 sources:
-  - id: "source-1"
+  source-1:
+    id: "source-1"
     className: "com.uber.athena.flux.utils.source.BasicSource"
     parallelism: 4
     constructorArgs:
@@ -56,18 +57,19 @@ sources:
 
 # sink definitions
 sinks:
-  - id: "sink-1"
+  sink-1:
+    id: "sink-1"
     className: "com.uber.athena.flux.utils.sink.BasicSink"
     parallelism: 16
     # ...
 
 #stream definitions
-# stream definitions define connections between spouts and bolts.
+# stream definitions define connections between sources, operator and sinks.
 # note that such connections can be cyclical
 streams:
-  - name: "source-1 --> sink-1"
-    from: "source-1"
-    to: "sink-1"
+  - id: "source-1 --> sink-1"
+    fromVertex: "source-1"
+    toVertex: "sink-1"
 
 
 
