@@ -32,6 +32,7 @@ import org.apache.flink.runtime.jobgraph.JobGraph;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Properties;
 import java.util.Queue;
 
 /**
@@ -108,10 +109,10 @@ public abstract class CompilerGraph {
     while (this.compilationQueue.size() > 0) {
       CompilerVertex<?> vertex = this.compilationQueue.poll();
       Compiler<?> compiler = findCompilerForVertex(vertex);
-      Map<String, Object> properties = new HashMap<>();
+      Properties properties = new Properties();
       properties.putAll(staticProperties);
       properties.putAll(findDynamicCompilerProperties(compilerContext, vertex));
-      compiler.compile(compilerContext, properties, vertex);
+      compiler.compile(compilerContext, vertex, properties);
 
       // set downstream vertex compilation flags.
       for (EdgeDef downstreamEdge : vertex.getOutgoingEdge()) {

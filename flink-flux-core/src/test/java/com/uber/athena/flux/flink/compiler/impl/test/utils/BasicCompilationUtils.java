@@ -27,8 +27,7 @@ import com.uber.athena.flux.model.OperatorDef;
 import com.uber.athena.flux.model.PropertyDef;
 import com.uber.athena.flux.model.SinkDef;
 import com.uber.athena.flux.model.SourceDef;
-import com.uber.athena.flux.model.VertexDef;
-import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -96,10 +95,11 @@ public final class BasicCompilationUtils {
     DataStream sourceStream = ((BasicCompilerVertex) source).getCompilationResult();
 
     // Compile vertex
+    // TODO: this example only processes operator that produces string type
     OneInputStreamOperator operator = (OneInputStreamOperator) buildObject(operatorDef, compilerContext);
     DataStream stream = sourceStream.transform(
         operatorDef.getId(),
-        resolveTypeInformation(operatorDef),
+        BasicTypeInfo.STRING_TYPE_INFO,
         operator);
 
     // set compilation results
@@ -221,42 +221,6 @@ public final class BasicCompilationUtils {
         throw new IllegalArgumentException(msg);
       }
     }
-  }
-
-  // ------------------------------------------------------------------------
-  // Type utilities
-  // ------------------------------------------------------------------------
-
-  private static TypeInformation resolveTypeInformation(VertexDef vertexDef) {
-    /*
-    switch (typeInformation.toLowerCase()) {
-      case "string":
-        return BasicTypeInfo.STRING_TYPE_INFO;
-      case "boolean":
-        return BasicTypeInfo.BOOLEAN_TYPE_INFO;
-      case "byte":
-        return BasicTypeInfo.BYTE_TYPE_INFO;
-      case "short":
-        return BasicTypeInfo.SHORT_TYPE_INFO;
-      case "int":
-        return BasicTypeInfo.INT_TYPE_INFO;
-      case "long":
-        return BasicTypeInfo.LONG_TYPE_INFO;
-      case "float":
-        return BasicTypeInfo.FLOAT_TYPE_INFO;
-      case "double":
-        return BasicTypeInfo.DOUBLE_TYPE_INFO;
-      case "char":
-        return BasicTypeInfo.CHAR_TYPE_INFO;
-      case "date":
-        return BasicTypeInfo.DATE_TYPE_INFO;
-      case "void":
-        return BasicTypeInfo.VOID_TYPE_INFO;
-      default:
-        throw new IllegalArgumentException("operator type info is not supported: " + typeInformation);
-    }
-    */
-    return null;
   }
 
   // ------------------------------------------------------------------------

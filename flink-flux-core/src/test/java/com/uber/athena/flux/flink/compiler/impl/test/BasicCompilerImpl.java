@@ -29,6 +29,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.util.Preconditions;
 
 import java.util.Map;
+import java.util.Properties;
 
 import static com.uber.athena.flux.flink.compiler.impl.test.BasicCompilerGraphImpl.STREAM_EXEC_ENV;
 import static com.uber.athena.flux.flink.compiler.impl.test.utils.BasicCompilationUtils.compileOperator;
@@ -52,8 +53,8 @@ public class BasicCompilerImpl implements Compiler<DataStream> {
   @Override
   public void compile(
       CompilerContext compilerContext,
-      Map<String, Object> properties,
-      CompilerVertex vertex) {
+      CompilerVertex vertex,
+      Properties properties) {
     Preconditions.checkArgument(vertex.readyToCompile());
     StreamExecutionEnvironment sEnv = (StreamExecutionEnvironment)
         Preconditions.checkNotNull(properties.get(STREAM_EXEC_ENV));

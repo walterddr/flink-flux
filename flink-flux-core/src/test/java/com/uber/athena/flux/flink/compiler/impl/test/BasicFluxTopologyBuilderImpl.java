@@ -18,11 +18,11 @@
 
 package com.uber.athena.flux.flink.compiler.impl.test;
 
+import com.uber.athena.flux.api.topology.FluxTopologyBuilder;
 import com.uber.athena.flux.flink.compiler.context.CompilerContext;
 import com.uber.athena.flux.flink.compiler.context.CompilerGraph;
 import com.uber.athena.flux.flink.compiler.impl.test.factory.BasicCompilerFactory;
 import com.uber.athena.flux.flink.compiler.runtime.FlinkFluxTopology;
-import com.uber.athena.flux.flink.compiler.runtime.FlinkFluxTopologyBuilder;
 import com.uber.athena.flux.model.TopologyDef;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -31,8 +31,9 @@ import org.apache.flink.util.Preconditions;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Properties;
 
-public class BasicFluxTopologyBuilderImpl extends FlinkFluxTopologyBuilder {
+public class BasicFluxTopologyBuilderImpl implements FluxTopologyBuilder {
 
   private final TopologyDef topologyDef;
   private final StreamExecutionEnvironment streamExecutionEnvironment;
@@ -77,5 +78,16 @@ public class BasicFluxTopologyBuilderImpl extends FlinkFluxTopologyBuilder {
 
   private FlinkFluxTopology compileInternal() {
     return this.compilerGraph.compile();
+  }
+
+  private static Configuration generateFlinkConfiguration(Map<String, Object> conf) {
+    // parse configurations
+    Properties props = new Properties();
+    if (conf != null) {
+      props.putAll(conf);
+    }
+    Configuration config = new Configuration();
+    config.addAllToProperties(props);
+    return config;
   }
 }
