@@ -43,7 +43,7 @@ under the License.
 		<module>flux-api</module>
 		<module>flux-core</module>
 		<module>flink-flux-core</module>
-		<!--module>flink-flux-runner</module-->
+		<module>flink-flux-runner</module>
 	</modules>
 
 	<dependencyManagement>
