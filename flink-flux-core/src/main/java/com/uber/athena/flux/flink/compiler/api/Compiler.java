@@ -21,7 +21,6 @@ package com.uber.athena.flux.flink.compiler.api;
 import com.uber.athena.flux.flink.compiler.context.CompilerContext;
 import com.uber.athena.flux.flink.compiler.context.CompilerVertex;
 
-import java.util.Map;
 import java.util.Properties;
 
 /**

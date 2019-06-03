@@ -28,7 +28,6 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.util.Preconditions;
 
-import java.util.Map;
 import java.util.Properties;
 
 import static com.uber.athena.flux.flink.compiler.impl.test.BasicCompilerGraphImpl.STREAM_EXEC_ENV;
