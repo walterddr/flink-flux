@@ -24,6 +24,7 @@ import com.uber.athena.flux.flink.compiler.api.CompilerFactoryService;
 import com.uber.athena.flux.flink.compiler.context.CompilerContext;
 import com.uber.athena.flux.flink.compiler.context.CompilerGraph;
 import com.uber.athena.flux.flink.compiler.context.CompilerVertex;
+import com.uber.athena.flux.model.VertexDef;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.shaded.guava18.com.google.common.collect.ImmutableMap;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -76,6 +77,10 @@ public class BasicCompilerGraphImpl extends CompilerGraph {
 
   @Override
   protected Compiler findCompilerForVertex(CompilerVertex<?> vertex) {
-    return compilerFactory.getCompiler(vertex.getVertex().getClassName(), Collections.emptyMap());
+    return compilerFactory.getCompiler(resolveVertexType(vertex.getVertex()), Collections.emptyMap());
+  }
+
+  private static Class<?> resolveVertexType(VertexDef vertex) {
+    return null;
   }
 }

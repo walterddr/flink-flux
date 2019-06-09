@@ -19,6 +19,7 @@
 package com.uber.athena.flux.parser;
 
 import com.uber.athena.flux.model.TopologyDef;
+import com.uber.athena.flux.utils.TopologyUtils;
 import org.junit.Test;
 
 public class TopologyParsingTest {
@@ -26,13 +27,13 @@ public class TopologyParsingTest {
   @Test
   public void testBasicTopologyGen() throws Exception {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/basic_topology.yaml", false, true, null, false);
-    topologyDef.validate();
+    TopologyUtils.validate(topologyDef);
   }
 
   @Test
   public void testRepartitionTopologyGen() throws Exception {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/repartition_topology.yaml", false, true, null, false);
-    topologyDef.validate();
+    TopologyUtils.validate(topologyDef);
   }
 
 }

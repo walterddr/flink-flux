@@ -21,7 +21,7 @@ package com.uber.athena.flux.flink.compiler.api;
 import com.uber.athena.flux.flink.compiler.context.CompilerContext;
 import com.uber.athena.flux.flink.compiler.context.CompilerVertex;
 
-import java.util.Map;
+import java.util.Properties;
 
 /**
  * Compile a specific component into executable DataStream elements.
@@ -42,5 +42,5 @@ public interface Compiler<T> {
    * @param properties required additional properties for compilation
    * @param vertex the target compilation vertex
    */
-  void compile(CompilerContext compilerContext, Map<String, Object> properties, CompilerVertex vertex);
+  void compile(CompilerContext compilerContext, CompilerVertex vertex, Properties properties);
 }

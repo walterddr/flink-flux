@@ -35,6 +35,10 @@ under the License.
 
     <dependencies>
         <dependency>
+            <groupId>com.uber.athena</groupId>
+            <artifactId>flux-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
         </dependency>

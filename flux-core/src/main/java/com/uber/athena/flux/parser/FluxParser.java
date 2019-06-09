@@ -20,8 +20,10 @@ package com.uber.athena.flux.parser;
 
 import com.uber.athena.flux.model.IncludeDef;
 import com.uber.athena.flux.model.OperatorDef;
+import com.uber.athena.flux.model.SinkDef;
 import com.uber.athena.flux.model.SourceDef;
 import com.uber.athena.flux.model.TopologyDef;
+import com.uber.athena.flux.utils.TopologyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.TypeDescription;
@@ -151,8 +153,9 @@ public final class FluxParser {
 
   private static Yaml yaml() {
     TypeDescription topologyDescription = new TypeDescription(TopologyDef.class);
-    topologyDescription.putListPropertyType("spouts", SourceDef.class);
-    topologyDescription.putListPropertyType("bolts", OperatorDef.class);
+    topologyDescription.putListPropertyType("source", SourceDef.class);
+    topologyDescription.putListPropertyType("sink", SinkDef.class);
+    topologyDescription.putListPropertyType("operator", OperatorDef.class);
     topologyDescription.putListPropertyType("includes", IncludeDef.class);
 
     Constructor constructor = new Constructor(TopologyDef.class);
@@ -177,20 +180,22 @@ public final class FluxParser {
     if (topologyDef.getIncludes() != null) {
       for (IncludeDef include : topologyDef.getIncludes()) {
         TopologyDef includeTopologyDef = null;
-        if (include.isResource()) {
-          LOG.info("Loading includes from resource: {}", include.getFile());
-          includeTopologyDef = parseResource(include.getFile(), true, false, propsFile, envSub);
+        if (include.getResourceType() == IncludeDef.ResourceTypeEnum.RESOURCE) {
+          LOG.info("Loading includes from resource: {}", include.getResourceName());
+          includeTopologyDef = parseResource(
+              include.getResourceName(), true, false, propsFile, envSub);
+        } else if (include.getResourceType() == IncludeDef.ResourceTypeEnum.FILE) {
+          LOG.info("Loading includes from file: {}", include.getResourceName());
+          includeTopologyDef = parseFile(
+              include.getResourceName(), true, false, propsFile, envSub);
         } else {
-          LOG.info("Loading includes from file: {}", include.getFile());
-          includeTopologyDef = parseFile(include.getFile(), true, false, propsFile, envSub);
+          LOG.warn("Cannot load includes from: {}, unkonwn resource type: {}",
+              include.getResourceName(), include.getResourceType());
+          throw new IllegalArgumentException("Cannot loa includes!");
         }
 
         // if overrides are disabled, we won't replace anything that already exists
-        boolean override = include.isOverride();
-        // name
-        if (includeTopologyDef.getName() != null) {
-          topologyDef.setName(includeTopologyDef.getName(), override);
-        }
+        boolean override = include.getIsOverride();
 
         // config
         if (includeTopologyDef.getConfig() != null) {
@@ -213,22 +218,30 @@ public final class FluxParser {
 
         //component overrides
         if (includeTopologyDef.getComponents() != null) {
-          topologyDef.addAllComponents(includeTopologyDef.getComponents(), override);
+          TopologyUtils.addAllComponents(
+              topologyDef, includeTopologyDef.getComponents().values(), override);
         }
-        //bolt overrides
+        //operator overrides
         if (includeTopologyDef.getOperators() != null) {
-          topologyDef.addAllOperators(includeTopologyDef.getOperators(), override);
+          TopologyUtils.addAllOperators(
+              topologyDef, includeTopologyDef.getOperators().values(), override);
         }
-        //spout overrides
+        //source overrides
         if (includeTopologyDef.getSources() != null) {
-          topologyDef.addAllSources(includeTopologyDef.getSources(), override);
+          TopologyUtils.addAllSources(
+              topologyDef, includeTopologyDef.getSources().values(), override);
+        }
+        //sinks overrides
+        if (includeTopologyDef.getSinks() != null) {
+          TopologyUtils.addAllSinks(
+              topologyDef, includeTopologyDef.getSinks().values(), override);
         }
         //stream overrides
         //TODO streams should be uniquely identifiable
         if (includeTopologyDef.getStreams() != null) {
-          topologyDef.addAllStreams(includeTopologyDef.getStreams(), override);
+          TopologyUtils.addAllStreams(topologyDef, includeTopologyDef.getStreams(), override);
         }
-      } // end include processing
+      }
     }
     return topologyDef;
   }

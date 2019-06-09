@@ -26,11 +26,13 @@ import com.uber.athena.flux.model.SinkDef;
 import com.uber.athena.flux.model.SourceDef;
 import com.uber.athena.flux.model.StreamDef;
 import com.uber.athena.flux.model.TopologyDef;
+import com.uber.athena.flux.utils.TopologyUtils;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Properties;
 import java.util.Queue;
 
 /**
@@ -70,17 +72,17 @@ public abstract class CompilerGraph {
 
     // Build the Compilation Graph
     // Add all vertices
-    for (SourceDef sourceDef : topologyDef.getSources()) {
+    for (SourceDef sourceDef : TopologyUtils.getSourceList(topologyDef)) {
       compilationVertexBuilders.put(
           sourceDef.getId(),
           new CompilerVertex.Builder().setVertex(sourceDef));
     }
-    for (SinkDef sinkDef : topologyDef.getSinks()) {
+    for (SinkDef sinkDef : TopologyUtils.getSinkList(topologyDef)) {
       compilationVertexBuilders.put(
           sinkDef.getId(),
           new CompilerVertex.Builder().setVertex(sinkDef));
     }
-    for (OperatorDef operatorDef : topologyDef.getOperators()) {
+    for (OperatorDef operatorDef : TopologyUtils.getOperatorList(topologyDef)) {
       compilationVertexBuilders.put(
           operatorDef.getId(),
           new CompilerVertex.Builder().setVertex(operatorDef));
@@ -88,9 +90,9 @@ public abstract class CompilerGraph {
 
     // Add all edges
     for (StreamDef streamDef : topologyDef.getStreams()) {
-      compilationVertexBuilders.get(streamDef.getFrom())
+      compilationVertexBuilders.get(streamDef.getFromVertex())
           .addOutgoingEdge(streamDef);
-      compilationVertexBuilders.get(streamDef.getTo())
+      compilationVertexBuilders.get(streamDef.getToVertex())
           .addIncomingEdge(streamDef);
     }
 
@@ -107,14 +109,14 @@ public abstract class CompilerGraph {
     while (this.compilationQueue.size() > 0) {
       CompilerVertex<?> vertex = this.compilationQueue.poll();
       Compiler<?> compiler = findCompilerForVertex(vertex);
-      Map<String, Object> properties = new HashMap<>();
+      Properties properties = new Properties();
       properties.putAll(staticProperties);
       properties.putAll(findDynamicCompilerProperties(compilerContext, vertex));
-      compiler.compile(compilerContext, properties, vertex);
+      compiler.compile(compilerContext, vertex, properties);
 
       // set downstream vertex compilation flags.
       for (EdgeDef downstreamEdge : vertex.getOutgoingEdge()) {
-        CompilerVertex toVertex = this.compilerContext.getCompilationVertex(downstreamEdge.getTo());
+        CompilerVertex toVertex = this.compilerContext.getCompilationVertex(downstreamEdge.getToVertex());
         toVertex.addCompiledSourceCount();
         if (toVertex.readyToCompile()) {
           this.compilationQueue.add(toVertex);
