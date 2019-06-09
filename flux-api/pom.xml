@@ -52,7 +52,7 @@ under the License.
                 <version>3.3.4</version>
                 <executions>
                     <execution>
-                        <id>generate-java</id>
+                        <id>generate-source</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -70,6 +70,18 @@ under the License.
                                 <sourceFolder>src/gen/java</sourceFolder>
                             </configOptions>
                             <addCompileSourceRoot>false</addCompileSourceRoot>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-doc</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/flux-api.yaml</inputSpec>
+                            <generatorName>html</generatorName>
+                            <output>target/generated-docs</output>
+                            <ignoreFileOverride>${project.basedir}/src/main/resources/.openapi-codegen-ignore</ignoreFileOverride>
                         </configuration>
                     </execution>
                 </executions>
