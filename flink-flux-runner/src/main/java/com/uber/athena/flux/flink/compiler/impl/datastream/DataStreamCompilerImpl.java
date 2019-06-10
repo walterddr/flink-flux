@@ -29,20 +29,24 @@ import org.apache.flink.util.Preconditions;
 
 import java.util.Properties;
 
+import static com.uber.athena.flux.flink.compiler.impl.datastream.DataStreamFluxTopologyBuilder.STREAM_EXEC_ENV;
 import static com.uber.athena.flux.flink.compiler.impl.datastream.utils.DataStreamCompilationUtils.compileOperator;
 import static com.uber.athena.flux.flink.compiler.impl.datastream.utils.DataStreamCompilationUtils.compileSink;
 import static com.uber.athena.flux.flink.compiler.impl.datastream.utils.DataStreamCompilationUtils.compileSource;
-import static com.uber.athena.flux.flink.compiler.impl.datastream.DataStreamFluxTopologyBuilder.STREAM_EXEC_ENV;
 
 /**
  * Compiler implementation for operator-level Flux compilation.
  */
 public class DataStreamCompilerImpl implements Compiler {
 
-  public static DataStreamCompilerImpl INSTANCE = new DataStreamCompilerImpl();
+  private static final DataStreamCompilerImpl INSTANCE = new DataStreamCompilerImpl();
 
   public DataStreamCompilerImpl() {
 
+  }
+
+  public static DataStreamCompilerImpl getInstance() {
+    return INSTANCE;
   }
 
   /**

@@ -64,12 +64,14 @@ public class DataStreamCompilerGraph extends CompilerGraph {
   }
 
   @Override
-  protected Map<? extends String, ?> findDynamicCompilerProperties(CompilerContext compilerContext, CompilerVertex<?> vertex) {
+  protected Map<? extends String, ?> findDynamicCompilerProperties(
+      CompilerContext compilerContext,
+      CompilerVertex<?> vertex) {
     return ImmutableMap.of(STREAM_EXEC_ENV, sEnv);
   }
 
   @Override
   protected Compiler findCompilerForVertex(CompilerVertex<?> vertex) {
-    return DataStreamCompilerImpl.INSTANCE;
+    return DataStreamCompilerImpl.getInstance();
   }
 }

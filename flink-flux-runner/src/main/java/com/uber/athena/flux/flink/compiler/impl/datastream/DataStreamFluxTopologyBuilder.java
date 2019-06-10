@@ -21,7 +21,6 @@ package com.uber.athena.flux.flink.compiler.impl.datastream;
 import com.uber.athena.flux.api.topology.FluxTopologyBuilder;
 import com.uber.athena.flux.flink.compiler.context.CompilerContext;
 import com.uber.athena.flux.flink.compiler.context.CompilerGraph;
-import com.uber.athena.flux.flink.compiler.impl.datastream.DataStreamCompilerGraph;
 import com.uber.athena.flux.flink.compiler.runtime.FlinkFluxTopology;
 import com.uber.athena.flux.model.TopologyDef;
 import org.apache.flink.configuration.Configuration;
