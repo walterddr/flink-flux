@@ -43,7 +43,7 @@ under the License.
 		<module>flux-api</module>
 		<module>flux-core</module>
 		<module>flink-flux-core</module>
-		<!--module>flink-flux-runner</module-->
+		<module>flink-flux-runner</module>
 	</modules>
 
 	<dependencyManagement>
@@ -66,11 +66,11 @@ under the License.
 				<version>${project.version}</version>
 			</dependency>
 
-			<!--dependency>
+			<dependency>
 				<groupId>com.uber.athena</groupId>
 				<artifactId>flink-flux-runner</artifactId>
 				<version>${project.version}</version>
-			</dependency-->
+			</dependency>
 
 			<!-- core dependencies -->
 
