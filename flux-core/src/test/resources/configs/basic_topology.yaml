@@ -47,7 +47,7 @@ config:
 sources:
   source-1:
     id: "source-1"
-    className: "com.uber.athena.flux.utils.source.BasicSource"
+    className: "com.uber.athena.flux.utils.source.DummySource"
     parallelism: 1
     constructorArgs:
       - 10 # limit
@@ -57,7 +57,7 @@ sources:
 operators:
   operator-1:
     id: "operator-1"
-    className: "com.uber.athena.flux.utils.operator.BasicOperator"
+    className: "com.uber.athena.flux.utils.operator.DummyOperator"
     parallelism: 1
     # ...
 
@@ -65,7 +65,7 @@ operators:
 sinks:
   sink-1:
     id: "sink-1"
-    className: "com.uber.athena.flux.utils.sink.BasicSink"
+    className: "com.uber.athena.flux.utils.sink.DummySink"
     parallelism: 1
     # ...
 

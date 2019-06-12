@@ -83,8 +83,35 @@ definitions:
       id:
         type: string
         description: the identifier of the component it is referring to
+  InputSpecDef:
+    type: object
+    properties:
+      streamIds:
+        type: array
+        items:
+          type: string
+      streamSpecs:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/StreamSpecDef'
+  StreamSpecDef:
+    type: object
+    properties:
+      streamType:
+        type: string
+        description: the type of the stream
+        enum:
+          - DATA_STREAM
+          - KEYED_STREAM
+          - LEADING_CO_STREAM
+          - FOLLOWING_CO_STREAM
+          - BROADCAST_STREAM
+          - TABLE_STREAM
+        default: DATA_STREAM
+
 # -----------------------------------------------------------------------------
-# Component Definitions
+# Topology Component Definitions
 # -----------------------------------------------------------------------------
   ObjectDef:
     type: object
@@ -127,6 +154,9 @@ definitions:
           parallelism:
             type: integer
             description: the parallelism of the vertex in the job graph
+          inputSpec:
+            type: object
+            $ref: '#definitions/InputSpecDef'
   SourceDef:
     allOf:
       - $ref: '#/definitions/VertexDef'
@@ -136,6 +166,7 @@ definitions:
   OperatorDef:
     allOf:
       - $ref: '#/definitions/VertexDef'
+
   EdgeDef:
     allOf:
       - $ref: '#/definitions/ComponentDef'
@@ -150,11 +181,7 @@ definitions:
   StreamDef:
     allOf:
       - $ref: '#/definitions/EdgeDef'
-      - type: object
-        properties:
-          streamType:
-            type: string
-            description: the type of stream it represents
+
 # -----------------------------------------------------------------------------
 # Topology Definition
 # -----------------------------------------------------------------------------

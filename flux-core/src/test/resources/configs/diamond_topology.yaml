@@ -47,28 +47,60 @@ config:
 sources:
   source-1:
     id: "source-1"
-    className: "com.uber.athena.flux.utils.source.BasicSource"
+    className: "com.uber.athena.flux.utils.source.DummySource"
     parallelism: 4
     constructorArgs:
       - 10 # limit
     # ...
 
 # operator definitions
+operators:
+  operator-1:
+    id: "operator-1"
+    className: "com.uber.athena.flux.utils.operator.DummyOperator"
+    parallelism: 1
+    # ...
+  operator-2:
+    id: "operator-2"
+    className: "com.uber.athena.flux.utils.operator.DummyOperator"
+    parallelism: 1
+    # ...
+  operator-merge:
+    id: "operator-merge"
+    className: "com.uber.athena.flux.utils.operator.DummyOperator"
+    parallelism: 1
+    # ...
 
 # sink definitions
 sinks:
   sink-1:
     id: "sink-1"
-    className: "com.uber.athena.flux.utils.sink.BasicSink"
+    className: "com.uber.athena.flux.utils.sink.DummySink"
     parallelism: 16
+    inputSpec:
+      streamIds:
+        - "operator-1 --> sink-1"
+        - "operator-2 --> sink-1"
+      streamSpecs:
+        - streamType: "LEADING_CO_STREAM"
+        - streamType: "FOLLOWING_CO_STREAM"
     # ...
 
 #stream definitions
 # stream definitions define connections between sources, operator and sinks.
 # note that such connections can be cyclical
 streams:
-  - id: "source-1 --> sink-1"
+  - id: "source-1 --> operator-1"
     fromVertex: "source-1"
+    toVertex: "operator-1"
+  - id: "source-1 --> operator-2"
+    fromVertex: "source-1"
+    toVertex: "operator-2"
+  - id: "operator-1 --> sink-1"
+    fromVertex: "operator-1"
+    toVertex: "sink-1"
+  - id: "operator-2 --> sink-1"
+    fromVertex: "operator-2"
     toVertex: "sink-1"
 
 

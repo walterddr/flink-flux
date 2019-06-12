@@ -16,10 +16,13 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.utils.operator;
+package com.uber.athena.flux.utils.source;
 
-public class BasicOperator {
+public class DummySource {
 
-  public BasicOperator() {
+  private final int limit;
+
+  public DummySource(int limit) {
+    this.limit = limit;
   }
 }
