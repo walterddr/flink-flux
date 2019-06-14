@@ -19,7 +19,7 @@
 package com.uber.athena.flux.flink.compiler.impl.datastream;
 
 import com.uber.athena.flux.flink.compiler.context.CompilerVertex;
-import com.uber.athena.flux.model.EdgeDef;
+import com.uber.athena.flux.model.StreamDef;
 import com.uber.athena.flux.model.VertexDef;
 import org.apache.flink.streaming.api.datastream.DataStream;
 
@@ -29,7 +29,7 @@ public class DataStreamCompilerVertex extends CompilerVertex<DataStream> {
 
   private DataStream dataStream;
 
-  DataStreamCompilerVertex(VertexDef vertex, List<EdgeDef> incomingEdge, List<EdgeDef> outgoingEdge) {
+  DataStreamCompilerVertex(VertexDef vertex, List<StreamDef> incomingEdge, List<StreamDef> outgoingEdge) {
     super.setVertex(vertex);
     super.setIncomingEdge(incomingEdge);
     super.setOutgoingEdge(outgoingEdge);

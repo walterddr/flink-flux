@@ -85,16 +85,8 @@ definitions:
         description: the identifier of the component it is referring to
   InputSpecDef:
     type: object
-    properties:
-      streamIds:
-        type: array
-        items:
-          type: string
-      streamSpecs:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/StreamSpecDef'
+    additionalProperties:
+      $ref: '#/definitions/StreamSpecDef'
   StreamSpecDef:
     type: object
     properties:
@@ -181,6 +173,11 @@ definitions:
   StreamDef:
     allOf:
       - $ref: '#/definitions/EdgeDef'
+      - type: object
+        properties:
+          streamSpec:
+            type: object
+            $ref: '#definitions/StreamSpecDef'
 
 # -----------------------------------------------------------------------------
 # Topology Definition

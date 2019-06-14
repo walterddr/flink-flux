@@ -78,12 +78,10 @@ sinks:
     className: "com.uber.athena.flux.utils.sink.DummySink"
     parallelism: 16
     inputSpec:
-      streamIds:
-        - "operator-1 --> sink-1"
-        - "operator-2 --> sink-1"
-      streamSpecs:
-        - streamType: "LEADING_CO_STREAM"
-        - streamType: "FOLLOWING_CO_STREAM"
+      "operator-1 --> sink-1":
+        streamType: "LEADING_CO_STREAM"
+      "operator-2 --> sink-1":
+        streamType: "FOLLOWING_CO_STREAM"
     # ...
 
 #stream definitions

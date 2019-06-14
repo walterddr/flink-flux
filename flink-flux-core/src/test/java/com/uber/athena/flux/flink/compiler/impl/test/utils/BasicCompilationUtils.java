@@ -27,6 +27,8 @@ import com.uber.athena.flux.model.OperatorDef;
 import com.uber.athena.flux.model.PropertyDef;
 import com.uber.athena.flux.model.SinkDef;
 import com.uber.athena.flux.model.SourceDef;
+import com.uber.athena.flux.model.StreamDef;
+import com.uber.athena.flux.model.StreamSpecDef;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -104,30 +106,23 @@ public final class BasicCompilationUtils {
       vertex.setCompilationResult(stream);
       compilerContext.addOperator(operatorDef.getId(), vertex);
     } else if (vertex.getIncomingEdge().size() == 2) {
-      OperatorDef operatorDef = (OperatorDef) vertex.getVertex();
       // Fetch stream info
-      String sourceId0 = ((BasicCompilerVertex) vertex).getIncomingEdge().get(0).getFromVertex();
-      String sourceId1 = ((BasicCompilerVertex) vertex).getIncomingEdge().get(1).getFromVertex();
       String leadSourceId = null, followSourceId = null;
-      switch (operatorDef.getInputSpec().getStreamSpecs().get(0).getStreamType()) {
-        case LEADING_CO_STREAM:
-          leadSourceId = sourceId0;
-          break;
-        case FOLLOWING_CO_STREAM:
-          followSourceId = sourceId0;
-          break;
-        default:
-          throw new IllegalArgumentException("incorrect co-stream input spec!");
+      StreamDef stream0 = ((BasicCompilerVertex) vertex).getIncomingEdge().get(0);
+      StreamDef stream1 = ((BasicCompilerVertex) vertex).getIncomingEdge().get(1);
+      if ((stream0.getStreamSpec().getStreamType()
+          .equals(StreamSpecDef.StreamTypeEnum.LEADING_CO_STREAM))
+          && (stream1.getStreamSpec().getStreamType()
+          .equals(StreamSpecDef.StreamTypeEnum.FOLLOWING_CO_STREAM))) {
+        leadSourceId = stream0.getFromVertex();
+        followSourceId = stream1.getFromVertex();
       }
-      switch (operatorDef.getInputSpec().getStreamSpecs().get(1).getStreamType()) {
-        case LEADING_CO_STREAM:
-          leadSourceId = sourceId1;
-          break;
-        case FOLLOWING_CO_STREAM:
-          followSourceId = sourceId1;
-          break;
-        default:
-          throw new IllegalArgumentException("incorrect co-stream input spec!");
+      if ((stream1.getStreamSpec().getStreamType()
+          .equals(StreamSpecDef.StreamTypeEnum.LEADING_CO_STREAM))
+          && (stream0.getStreamSpec().getStreamType()
+          .equals(StreamSpecDef.StreamTypeEnum.FOLLOWING_CO_STREAM))) {
+        leadSourceId = stream1.getFromVertex();
+        followSourceId = stream0.getFromVertex();
       }
       if (leadSourceId == null || followSourceId == null) {
         throw new IllegalArgumentException("incorrect co-stream input spec!");
@@ -141,6 +136,7 @@ public final class BasicCompilationUtils {
 
       // Compile vertex
       // TODO: this example only processes operator that produces string type
+      OperatorDef operatorDef = (OperatorDef) vertex.getVertex();
       TwoInputStreamOperator operator = (TwoInputStreamOperator) buildObject(operatorDef, compilerContext);
       DataStream stream = leadSourceStream
           .connect(followSourceStream)
