@@ -16,13 +16,11 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.utils.source;
+package com.uber.athena.flux.utils.sink;
 
-public class BasicSource  {
+public class DummySink {
 
-  private final int limit;
+  public DummySink() {
 
-  public BasicSource(int limit) {
-    this.limit = limit;
   }
 }

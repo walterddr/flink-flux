@@ -16,11 +16,10 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.utils.sink;
+package com.uber.athena.flux.utils.operator;
 
-public class BasicSink {
+public class DummyOperator {
 
-  public BasicSink() {
-
+  public DummyOperator() {
   }
 }

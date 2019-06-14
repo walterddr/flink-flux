@@ -47,8 +47,8 @@ config:
 sources:
   source-1:
     id: "source-1"
-    className: "com.uber.athena.flux.utils.source.DummySource"
-    parallelism: 1
+    className: "com.uber.athena.flux.flink.test.utils.source.RandomSource"
+    parallelism: 4
     constructorArgs:
       - 10 # limit
     # ...
@@ -57,16 +57,29 @@ sources:
 operators:
   operator-1:
     id: "operator-1"
-    className: "com.uber.athena.flux.utils.operator.DummyOperator"
+    className: "com.uber.athena.flux.flink.test.utils.operator.BasicPassThroughOperator"
     parallelism: 1
+  operator-2:
+    id: "operator-2"
+    className: "com.uber.athena.flux.flink.test.utils.operator.BasicPassThroughOperator"
+    parallelism: 1
+  operator-merge:
+    id: "operator-merge"
+    className: "com.uber.athena.flux.flink.test.utils.operator.BasicCoStreamMergeOperator"
+    parallelism: 1
+    inputSpec:
+      "operator-1 --> operator-merge":
+        streamType: "LEADING_CO_STREAM"
+      "operator-2 --> operator-merge":
+        streamType: "FOLLOWING_CO_STREAM"
     # ...
 
 # sink definitions
 sinks:
   sink-1:
     id: "sink-1"
-    className: "com.uber.athena.flux.utils.sink.DummySink"
-    parallelism: 1
+    className: "com.uber.athena.flux.flink.test.utils.sink.ConsoleOutputSink"
+    parallelism: 16
     # ...
 
 #stream definitions
@@ -76,9 +89,19 @@ streams:
   - id: "source-1 --> operator-1"
     fromVertex: "source-1"
     toVertex: "operator-1"
-  - id: "operator-1 --> sink-1"
+  - id: "source-1 --> operator-2"
+    fromVertex: "source-1"
+    toVertex: "operator-2"
+  - id: "operator-1 --> operator-merge"
     fromVertex: "operator-1"
+    toVertex: "operator-merge"
+  - id: "operator-2 --> operator-merge"
+    fromVertex: "operator-2"
+    toVertex: "operator-merge"
+  - id: "operator-merge --> sink-1"
+    fromVertex: "operator-merge"
     toVertex: "sink-1"
+
 
 
 

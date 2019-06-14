@@ -48,7 +48,7 @@ sources:
   source-1:
     id: "source-1"
     className: "com.uber.athena.flux.utils.source.DummySource"
-    parallelism: 1
+    parallelism: 4
     constructorArgs:
       - 10 # limit
     # ...
@@ -60,13 +60,28 @@ operators:
     className: "com.uber.athena.flux.utils.operator.DummyOperator"
     parallelism: 1
     # ...
+  operator-2:
+    id: "operator-2"
+    className: "com.uber.athena.flux.utils.operator.DummyOperator"
+    parallelism: 1
+    # ...
+  operator-merge:
+    id: "operator-merge"
+    className: "com.uber.athena.flux.utils.operator.DummyOperator"
+    parallelism: 1
+    # ...
 
 # sink definitions
 sinks:
   sink-1:
     id: "sink-1"
     className: "com.uber.athena.flux.utils.sink.DummySink"
-    parallelism: 1
+    parallelism: 16
+    inputSpec:
+      "operator-1 --> sink-1":
+        streamType: "LEADING_CO_STREAM"
+      "operator-2 --> sink-1":
+        streamType: "FOLLOWING_CO_STREAM"
     # ...
 
 #stream definitions
@@ -76,9 +91,16 @@ streams:
   - id: "source-1 --> operator-1"
     fromVertex: "source-1"
     toVertex: "operator-1"
+  - id: "source-1 --> operator-2"
+    fromVertex: "source-1"
+    toVertex: "operator-2"
   - id: "operator-1 --> sink-1"
     fromVertex: "operator-1"
     toVertex: "sink-1"
+  - id: "operator-2 --> sink-1"
+    fromVertex: "operator-2"
+    toVertex: "sink-1"
+
 
 
 

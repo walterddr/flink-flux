@@ -43,6 +43,18 @@ public class TopologyRuntimeITCase {
   }
 
   @Test
+  public void testDiamondTopologyRuntime() throws Exception {
+    TopologyDef topologyDef = FluxParser.parseResource("/configs/diamond_topology.yaml", false, true, null, false);
+    TopologyUtils.validate(topologyDef);
+
+    StreamExecutionEnvironment sEnv = StreamExecutionEnvironment.getExecutionEnvironment();
+    DataStreamFluxTopologyBuilder fluxBuilder = new DataStreamFluxTopologyBuilder(
+        topologyDef, new Configuration(), sEnv);
+    FluxTopology topology = fluxBuilder.createTopology(topologyDef, null);
+    sEnv.execute();
+  }
+
+  @Test
   public void testRepartitionTopologyRuntime() throws Exception {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/repartition_topology.yaml", false, true, null, false);
     TopologyUtils.validate(topologyDef);

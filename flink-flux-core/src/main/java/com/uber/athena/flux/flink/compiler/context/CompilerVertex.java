@@ -18,7 +18,7 @@
 
 package com.uber.athena.flux.flink.compiler.context;
 
-import com.uber.athena.flux.model.EdgeDef;
+import com.uber.athena.flux.model.StreamDef;
 import com.uber.athena.flux.model.VertexDef;
 
 import java.util.ArrayList;
@@ -29,10 +29,10 @@ import java.util.List;
  *
  * @param <T> type of the compilation results generated.
  */
-public abstract class CompilerVertex<T> {
+public abstract class CompilerVertex<T> implements Comparable<CompilerVertex> {
   private VertexDef vertex;
-  private List<EdgeDef> incomingEdge;
-  private List<EdgeDef> outgoingEdge;
+  private List<StreamDef> incomingEdge;
+  private List<StreamDef> outgoingEdge;
 
   private int compiledSourceCount;
 
@@ -74,11 +74,11 @@ public abstract class CompilerVertex<T> {
     return vertex;
   }
 
-  public List<EdgeDef> getIncomingEdge() {
+  public List<StreamDef> getIncomingEdge() {
     return incomingEdge;
   }
 
-  public List<EdgeDef> getOutgoingEdge() {
+  public List<StreamDef> getOutgoingEdge() {
     return outgoingEdge;
   }
 
@@ -86,11 +86,11 @@ public abstract class CompilerVertex<T> {
     this.vertex = vertex;
   }
 
-  public void setIncomingEdge(List<EdgeDef> incomingEdge) {
+  public void setIncomingEdge(List<StreamDef> incomingEdge) {
     this.incomingEdge = incomingEdge;
   }
 
-  public void setOutgoingEdge(List<EdgeDef> outgoingEdge) {
+  public void setOutgoingEdge(List<StreamDef> outgoingEdge) {
     this.outgoingEdge = outgoingEdge;
   }
 
@@ -102,6 +102,11 @@ public abstract class CompilerVertex<T> {
     this.compiledSourceCount = compiledSourceCount;
   }
 
+  @Override
+  public int compareTo(CompilerVertex that) {
+    return this.getCompiledSourceCount() - that.getCompiledSourceCount();
+  }
+
   // ------------------------------------------------------------------------
   // Builder pattern
   // ------------------------------------------------------------------------
@@ -111,8 +116,8 @@ public abstract class CompilerVertex<T> {
    */
   public static class Builder {
     private VertexDef vertex;
-    private List<EdgeDef> incomingEdge = new ArrayList<>();
-    private List<EdgeDef> outgoingEdge = new ArrayList<>();
+    private List<StreamDef> incomingEdge = new ArrayList<>();
+    private List<StreamDef> outgoingEdge = new ArrayList<>();
 
     public Builder() {
     }
@@ -122,13 +127,13 @@ public abstract class CompilerVertex<T> {
       return this;
     }
 
-    public Builder addIncomingEdge(EdgeDef edgeDef) {
-      this.incomingEdge.add(edgeDef);
+    public Builder addIncomingEdge(StreamDef streamDef) {
+      this.incomingEdge.add(streamDef);
       return this;
     }
 
-    public Builder addOutgoingEdge(EdgeDef edgeDef) {
-      this.outgoingEdge.add(edgeDef);
+    public Builder addOutgoingEdge(StreamDef streamDef) {
+      this.outgoingEdge.add(streamDef);
       return this;
     }
 
@@ -136,11 +141,11 @@ public abstract class CompilerVertex<T> {
       return vertex;
     }
 
-    public List<EdgeDef> getIncomingEdge() {
+    public List<StreamDef> getIncomingEdge() {
       return incomingEdge;
     }
 
-    public List<EdgeDef> getOutgoingEdge() {
+    public List<StreamDef> getOutgoingEdge() {
       return outgoingEdge;
     }
   }

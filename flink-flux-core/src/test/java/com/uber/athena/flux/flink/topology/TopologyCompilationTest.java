@@ -41,6 +41,16 @@ public class TopologyCompilationTest {
   }
 
   @Test
+  public void testDiamondTopologyCompilation() throws Exception {
+    TopologyDef topologyDef = FluxParser.parseResource("/configs/diamond_topology.yaml", false, true, null, false);
+    TopologyUtils.validate(topologyDef);
+    BasicFluxTopologyBuilderImpl fluxBuilder = new BasicFluxTopologyBuilderImpl(topologyDef,
+        StreamExecutionEnvironment.getExecutionEnvironment());
+    FlinkFluxTopology topology = fluxBuilder.createTopology(topologyDef, null);
+    assertNotNull(topology.getJobGraph());
+  }
+
+  @Test
   public void testRepartitionTopologyCompilation() throws Exception {
     TopologyDef topologyDef = FluxParser.parseResource("/configs/repartition_topology.yaml", false, true, null, false);
     TopologyUtils.validate(topologyDef);

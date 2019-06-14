@@ -25,6 +25,7 @@ import com.uber.athena.flux.model.OperatorDef;
 import com.uber.athena.flux.model.SinkDef;
 import com.uber.athena.flux.model.SourceDef;
 import com.uber.athena.flux.model.StreamDef;
+import com.uber.athena.flux.model.StreamSpecDef;
 import com.uber.athena.flux.model.TopologyDef;
 import com.uber.athena.flux.utils.TopologyUtils;
 import org.apache.flink.runtime.jobgraph.JobGraph;
@@ -68,6 +69,8 @@ public abstract class CompilerGraph {
 
   private void constructCompilationGraph(CompilerContext compilerContext) {
     Map<String, CompilerVertex.Builder> compilationVertexBuilders = new HashMap<>();
+    Map<String, StreamSpecDef> streamSpecDefMap = new HashMap<>();
+
     TopologyDef topologyDef = compilerContext.getTopologyDef();
 
     // Build the Compilation Graph
@@ -81,15 +84,25 @@ public abstract class CompilerGraph {
       compilationVertexBuilders.put(
           sinkDef.getId(),
           new CompilerVertex.Builder().setVertex(sinkDef));
+      if (sinkDef.getInputSpec() != null) {
+        streamSpecDefMap.putAll(sinkDef.getInputSpec());
+      }
     }
     for (OperatorDef operatorDef : TopologyUtils.getOperatorList(topologyDef)) {
       compilationVertexBuilders.put(
           operatorDef.getId(),
           new CompilerVertex.Builder().setVertex(operatorDef));
+      if (operatorDef.getInputSpec() != null) {
+        streamSpecDefMap.putAll(operatorDef.getInputSpec());
+      }
     }
 
     // Add all edges
     for (StreamDef streamDef : topologyDef.getStreams()) {
+      StreamSpecDef spec = streamSpecDefMap.get(streamDef.getId());
+      if (spec != null) {
+        streamDef.setStreamSpec(spec);
+      }
       compilationVertexBuilders.get(streamDef.getFromVertex())
           .addOutgoingEdge(streamDef);
       compilationVertexBuilders.get(streamDef.getToVertex())

@@ -32,7 +32,7 @@ public class TopologyParsingTest {
 
   @Test
   public void testRepartitionTopologyGen() throws Exception {
-    TopologyDef topologyDef = FluxParser.parseResource("/configs/repartition_topology.yaml", false, true, null, false);
+    TopologyDef topologyDef = FluxParser.parseResource("/configs/diamond_topology.yaml", false, true, null, false);
     TopologyUtils.validate(topologyDef);
   }
 
