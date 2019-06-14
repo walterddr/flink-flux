@@ -34,6 +34,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
 import org.apache.flink.streaming.api.operators.OneInputStreamOperator;
+import org.apache.flink.streaming.api.operators.TwoInputStreamOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,27 +85,77 @@ public final class BasicCompilationUtils {
   public static void compileOperator(
       CompilerContext compilerContext,
       CompilerVertex vertex) throws Exception {
-    if (vertex.getIncomingEdge().size() != 1) {
+    if (vertex.getIncomingEdge().size() == 1) {
+      // Fetch upstream
+      OperatorDef operatorDef = (OperatorDef) vertex.getVertex();
+      String sourceId = ((BasicCompilerVertex) vertex).getIncomingEdge().get(0).getFromVertex();
+      CompilerVertex source = compilerContext.getCompilationVertex(sourceId);
+      DataStream sourceStream = ((BasicCompilerVertex) source).getCompilationResult();
+
+      // Compile vertex
+      // TODO: this example only processes operator that produces string type
+      OneInputStreamOperator operator = (OneInputStreamOperator) buildObject(operatorDef, compilerContext);
+      DataStream stream = sourceStream.transform(
+          operatorDef.getId(),
+          BasicTypeInfo.STRING_TYPE_INFO,
+          operator);
+
+      // set compilation results
+      vertex.setCompilationResult(stream);
+      compilerContext.addOperator(operatorDef.getId(), vertex);
+    } else if (vertex.getIncomingEdge().size() == 2) {
+      OperatorDef operatorDef = (OperatorDef) vertex.getVertex();
+      // Fetch stream info
+      String sourceId0 = ((BasicCompilerVertex) vertex).getIncomingEdge().get(0).getFromVertex();
+      String sourceId1 = ((BasicCompilerVertex) vertex).getIncomingEdge().get(1).getFromVertex();
+      String leadSourceId = null, followSourceId = null;
+      switch (operatorDef.getInputSpec().getStreamSpecs().get(0).getStreamType()) {
+        case LEADING_CO_STREAM:
+          leadSourceId = sourceId0;
+          break;
+        case FOLLOWING_CO_STREAM:
+          followSourceId = sourceId0;
+          break;
+        default:
+          throw new IllegalArgumentException("incorrect co-stream input spec!");
+      }
+      switch (operatorDef.getInputSpec().getStreamSpecs().get(1).getStreamType()) {
+        case LEADING_CO_STREAM:
+          leadSourceId = sourceId1;
+          break;
+        case FOLLOWING_CO_STREAM:
+          followSourceId = sourceId1;
+          break;
+        default:
+          throw new IllegalArgumentException("incorrect co-stream input spec!");
+      }
+      if (leadSourceId == null || followSourceId == null) {
+        throw new IllegalArgumentException("incorrect co-stream input spec!");
+      }
+
+      CompilerVertex leadSource = compilerContext.getCompilationVertex(leadSourceId);
+      CompilerVertex followSource = compilerContext.getCompilationVertex(followSourceId);
+
+      DataStream leadSourceStream = ((BasicCompilerVertex) leadSource).getCompilationResult();
+      DataStream followSourceStream = ((BasicCompilerVertex) followSource).getCompilationResult();
+
+      // Compile vertex
+      // TODO: this example only processes operator that produces string type
+      TwoInputStreamOperator operator = (TwoInputStreamOperator) buildObject(operatorDef, compilerContext);
+      DataStream stream = leadSourceStream
+          .connect(followSourceStream)
+          .transform(
+              operatorDef.getId(),
+              BasicTypeInfo.STRING_TYPE_INFO,
+              operator);
+
+      // set compilation results
+      vertex.setCompilationResult(stream);
+      compilerContext.addOperator(operatorDef.getId(), vertex);
+    } else {
       throw new UnsupportedOperationException(
-          "Cannot compile zero input or multiple input operators as this moment");
+          "Cannot compile zero input or more than 2 inputs as this moment");
     }
-    // Fetch upstream
-    OperatorDef operatorDef = (OperatorDef) vertex.getVertex();
-    String sourceId = ((BasicCompilerVertex) vertex).getIncomingEdge().get(0).getFromVertex();
-    CompilerVertex source = compilerContext.getCompilationVertex(sourceId);
-    DataStream sourceStream = ((BasicCompilerVertex) source).getCompilationResult();
-
-    // Compile vertex
-    // TODO: this example only processes operator that produces string type
-    OneInputStreamOperator operator = (OneInputStreamOperator) buildObject(operatorDef, compilerContext);
-    DataStream stream = sourceStream.transform(
-        operatorDef.getId(),
-        BasicTypeInfo.STRING_TYPE_INFO,
-        operator);
-
-    // set compilation results
-    vertex.setCompilationResult(stream);
-    compilerContext.addOperator(operatorDef.getId(), vertex);
   }
 
   /**

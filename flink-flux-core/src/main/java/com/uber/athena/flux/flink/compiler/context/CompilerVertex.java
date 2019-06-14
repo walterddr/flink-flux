@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @param <T> type of the compilation results generated.
  */
-public abstract class CompilerVertex<T> {
+public abstract class CompilerVertex<T> implements Comparable<CompilerVertex> {
   private VertexDef vertex;
   private List<EdgeDef> incomingEdge;
   private List<EdgeDef> outgoingEdge;
@@ -100,6 +100,11 @@ public abstract class CompilerVertex<T> {
 
   public void setCompiledSourceCount(int compiledSourceCount) {
     this.compiledSourceCount = compiledSourceCount;
+  }
+
+  @Override
+  public int compareTo(CompilerVertex that) {
+    return this.getCompiledSourceCount() - that.getCompiledSourceCount();
   }
 
   // ------------------------------------------------------------------------
