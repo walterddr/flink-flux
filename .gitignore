@@ -32,6 +32,7 @@ out/
 /docs/ruby2/.bundle
 /docs/ruby2/.rubydeps
 /docs/.jekyll-metadata
+env/
 *.ipr
 *.iws
 tools/flink
