@@ -331,11 +331,15 @@ under the License.
 						<exclude>**/*.prefs</exclude>
 						<exclude>**/*.log</exclude>
 						<!-- External web libraries. -->
+						<exclude>docs/**</exclude>
 						<exclude>docs/**/jquery*</exclude>
 						<exclude>docs/**/bootstrap*</exclude>
 						<exclude>docs/Gemfile.lock</exclude>
 						<exclude>docs/ruby2/Gemfile.lock</exclude>
 						<exclude>docs/img/*.svg</exclude>
+						<exclude>docs/content/**</exclude>
+						<exclude>docs/theme/**</exclude>
+						<exclude>docs/images/**</exclude>
 						<exclude>**/docs/page/font-awesome/**</exclude>
 						<exclude>**/resources/**/font-awesome/**</exclude>
 						<exclude>**/resources/**/jquery*</exclude>
@@ -348,7 +352,6 @@ under the License.
 						<!-- Generated content -->
 						<exclude>out/**</exclude>
 						<exclude>**/target/**</exclude>
-						<exclude>docs/content/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
