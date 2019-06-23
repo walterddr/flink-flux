@@ -16,7 +16,7 @@
 # limitations under the License.
 ################################################################################
 
-swagger: '2.0'
+openapi: '3.0'
 info:
   description: Flux DSL API
   version: '0.0.1'
@@ -26,210 +26,210 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-host: localhost
+servers:
+  - url: http://localhost/ws/v1
 paths: {}
-schemes:
-  - http
-definitions:
-# -----------------------------------------------------------------------------
-# Basic object definitions
-# -----------------------------------------------------------------------------
-  IncludeDef:
-    type: object
-    properties:
-      resourceName:
-        type: string
-        description: the name of the resource to be included
-      isOverride:
-        type: boolean
-        description: indicator on whether this resource should override any existing defaults
-      resourceType:
-        type: string
-        description: the type of the resource
-        enum:
-          - RESOURCE
-          - FILE
-        default: FILE
-  PropertyDef:
-    type: object
-    properties:
-      name:
-        type: string
-        description: the property identifier
-      value:
-        type: object
-        description: the property content
-      reference:
-        type: string
-        description: if this is a reference type, describe the base reference
-  ConfigMethodDef:
-    type: object
-    properties:
-      name:
-        type: string
-        description: the configuration method/function name
-      configArgs:
-        type: array
-        items:
+components:
+  schemas:
+  # -----------------------------------------------------------------------------
+  # Basic object definitions
+  # -----------------------------------------------------------------------------
+    IncludeDef:
+      type: object
+      properties:
+        resourceName:
+          type: string
+          description: the name of the resource to be included
+        isOverride:
+          type: boolean
+          description: indicator on whether this resource should override any existing defaults
+        resourceType:
+          type: string
+          description: the type of the resource
+          enum:
+            - RESOURCE
+            - FILE
+          default: FILE
+    PropertyDef:
+      type: object
+      properties:
+        name:
+          type: string
+          description: the property identifier
+        value:
           type: object
-        description: the function call arguments defined in order
-      hasReferenceInArgs:
-        type: boolean
-        description: describe whether this list of arguments has reference
-        default: false
-  ComponentRefDef:
-    type: object
-    properties:
-      id:
-        type: string
-        description: the identifier of the component it is referring to
-  InputSpecDef:
-    type: object
-    additionalProperties:
-      $ref: '#/definitions/StreamSpecDef'
-  StreamSpecDef:
-    type: object
-    properties:
-      streamType:
-        type: string
-        description: the type of the stream
-        enum:
-          - DATA_STREAM
-          - KEYED_STREAM
-          - LEADING_CO_STREAM
-          - FOLLOWING_CO_STREAM
-          - BROADCAST_STREAM
-          - TABLE_STREAM
-        default: DATA_STREAM
+          description: the property content
+        reference:
+          type: string
+          description: if this is a reference type, describe the base reference
+    ConfigMethodDef:
+      type: object
+      properties:
+        name:
+          type: string
+          description: the configuration method/function name
+        configArgs:
+          type: array
+          items:
+            type: object
+          description: the function call arguments defined in order
+        hasReferenceInArgs:
+          type: boolean
+          description: describe whether this list of arguments has reference
+          default: false
+    ComponentRefDef:
+      type: object
+      properties:
+        id:
+          type: string
+          description: the identifier of the component it is referring to
+    InputSpecDef:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/StreamSpecDef'
+    StreamSpecDef:
+      type: object
+      properties:
+        streamType:
+          type: string
+          description: the type of the stream
+          enum:
+            - DATA_STREAM
+            - KEYED_STREAM
+            - LEADING_CO_STREAM
+            - FOLLOWING_CO_STREAM
+            - BROADCAST_STREAM
+            - TABLE_STREAM
+          default: DATA_STREAM
 
-# -----------------------------------------------------------------------------
-# Topology Component Definitions
-# -----------------------------------------------------------------------------
-  ObjectDef:
-    type: object
-    properties:
-      className:
-        type: string
-        description: the fully qualified class name of the object
-      constructorArgs:
-        type: array
-        items:
+  # -----------------------------------------------------------------------------
+  # Topology Component Definitions
+  # -----------------------------------------------------------------------------
+    ObjectDef:
+      type: object
+      properties:
+        className:
+          type: string
+          description: the fully qualified class name of the object
+        constructorArgs:
+          type: array
+          items:
+            type: object
+          description: the constructor arguments defined in order
+        hasReferenceInArgs:
+          type: boolean
+          description: describe whether this list of arguments has reference
+          default: false
+        propertyList:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDef'
+          description: the optional properties accepted by this object for construct/config
+        configMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfigMethodDef'
+          description: the optional method provided by this object for configuration
+    ComponentDef:
+      allOf:
+        - $ref: '#/components/schemas/ObjectDef'
+        - type: object
+          properties:
+            id:
+              type: string
+              description: the identifier of this component
+    VertexDef:
+      allOf:
+        - $ref: '#/components/schemas/ComponentDef'
+        - type: object
+          properties:
+            parallelism:
+              type: integer
+              description: the parallelism of the vertex in the job graph
+            inputSpec:
+              type: object
+              $ref: '#/components/schemas//InputSpecDef'
+    SourceDef:
+      allOf:
+        - $ref: '#/components/schemas/VertexDef'
+    SinkDef:
+      allOf:
+        - $ref: '#/components/schemas/VertexDef'
+    OperatorDef:
+      allOf:
+        - $ref: '#/components/schemas/VertexDef'
+
+    EdgeDef:
+      allOf:
+        - $ref: '#/components/schemas/ComponentDef'
+        - type: object
+          properties:
+            fromVertex:
+              type: string
+              description: the ID of the start vertex of this edge
+            toVertex:
+              type: string
+              description: the ID of the end vertex of this edge
+    StreamDef:
+      allOf:
+        - $ref: '#/components/schemas/EdgeDef'
+        - type: object
+          properties:
+            streamSpec:
+              type: object
+              $ref: '#/components/schemas//StreamSpecDef'
+
+  # -----------------------------------------------------------------------------
+  # Topology Definition
+  # -----------------------------------------------------------------------------
+    TopologyDef:
+      type: object
+      properties:
+        name:
+          type: string
+          description: the identifier name for this topology
+        components:
           type: object
-        description: the constructor arguments defined in order
-      hasReferenceInArgs:
-        type: boolean
-        description: describe whether this list of arguments has reference
-        default: false
-      propertyList:
-        type: array
-        items:
-          $ref: '#/definitions/PropertyDef'
-        description: the optional properties accepted by this object for construct/config
-      configMethods:
-        type: array
-        items:
-          $ref: '#/definitions/ConfigMethodDef'
-        description: the optional method provided by this object for configuration
-  ComponentDef:
-    allOf:
-      - $ref: '#/definitions/ObjectDef'
-      - type: object
-        properties:
-          id:
-            type: string
-            description: the identifier of this component
-  VertexDef:
-    allOf:
-      - $ref: '#/definitions/ComponentDef'
-      - type: object
-        properties:
-          parallelism:
-            type: integer
-            description: the parallelism of the vertex in the job graph
-          inputSpec:
+          additionalProperties:
+            $ref: '#/components/schemas/ComponentDef'
+          description: the mapping from component identifiers to component definitions
+        sources:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/SourceDef'
+          description: the mapping from source identifiers to source definitions
+        sinks:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/SinkDef'
+          description: the mapping from sink identifiers to sink definitions
+        operators:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/OperatorDef'
+          description: the mapping from operator identifiers to operator definitions
+        includes:
+          type: array
+          items:
+            $ref: '#/components/schemas/IncludeDef'
+          description: the included resource list
+        streams:
+          type: array
+          items:
+            $ref: '#/components/schemas/StreamDef'
+          description: list for all stream/edge defintiions
+        configMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfigMethodDef'
+          description: the optional method provided by this object for configuration
+        config:
+          type: object
+          additionalProperties:
             type: object
-            $ref: '#definitions/InputSpecDef'
-  SourceDef:
-    allOf:
-      - $ref: '#/definitions/VertexDef'
-  SinkDef:
-    allOf:
-      - $ref: '#/definitions/VertexDef'
-  OperatorDef:
-    allOf:
-      - $ref: '#/definitions/VertexDef'
-
-  EdgeDef:
-    allOf:
-      - $ref: '#/definitions/ComponentDef'
-      - type: object
-        properties:
-          fromVertex:
-            type: string
-            description: the ID of the start vertex of this edge
-          toVertex:
-            type: string
-            description: the ID of the end vertex of this edge
-  StreamDef:
-    allOf:
-      - $ref: '#/definitions/EdgeDef'
-      - type: object
-        properties:
-          streamSpec:
-            type: object
-            $ref: '#definitions/StreamSpecDef'
-
-# -----------------------------------------------------------------------------
-# Topology Definition
-# -----------------------------------------------------------------------------
-  TopologyDef:
-    type: object
-    properties:
-      name:
-        type: string
-        description: the identifier name for this topology
-      components:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/ComponentDef'
-        description: the mapping from component identifiers to component definitions
-      sources:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/SourceDef'
-        description: the mapping from source identifiers to source definitions
-      sinks:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/SinkDef'
-        description: the mapping from sink identifiers to sink definitions
-      operators:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/OperatorDef'
-        description: the mapping from operator identifiers to operator definitions
-      includes:
-        type: array
-        items:
-          $ref: '#/definitions/IncludeDef'
-        description: the included resource list
-      streams:
-        type: array
-        items:
-          $ref: '#/definitions/StreamDef'
-        description: list for all stream/edge defintiions
-      configMethods:
-        type: array
-        items:
-          $ref: '#/definitions/ConfigMethodDef'
-        description: the optional method provided by this object for configuration
-      config:
-        type: object
-        additionalProperties:
-          typ: object
-        description: the additional metadata configuration for the topology
-      propertyMap:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/PropertyDef'
-        description: the mapping of all the additional properties
+          description: the additional metadata configuration for the topology
+        propertyMap:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/PropertyDef'
+          description: the mapping of all the additional properties

@@ -42,6 +42,7 @@ under the License.
 	<modules>
 		<module>flux-api</module>
 		<module>flux-core</module>
+		<module>flux-converter-core</module>
 		<module>flink-flux-core</module>
 		<module>flink-flux-runner</module>
 	</modules>
@@ -57,6 +58,12 @@ under the License.
 			<dependency>
 				<groupId>com.uber.athena</groupId>
 				<artifactId>flux-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.uber.athena</groupId>
+				<artifactId>flux-compiler-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
