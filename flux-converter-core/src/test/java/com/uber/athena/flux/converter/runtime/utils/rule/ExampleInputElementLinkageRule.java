@@ -16,31 +16,31 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.runtime.converter;
+package com.uber.athena.flux.converter.runtime.utils.rule;
 
-import com.uber.athena.flux.converter.api.converter.BlackBoard;
 import com.uber.athena.flux.converter.api.converter.ConverterContext;
+import com.uber.athena.flux.converter.api.node.dsl.DslNode;
+import com.uber.athena.flux.converter.api.node.element.ElementNode;
+import com.uber.athena.flux.converter.api.rule.ConverterRule;
 
-import java.util.HashMap;
-import java.util.Map;
+public class ExampleInputElementLinkageRule extends ConverterRule<DslNode, ElementNode> {
 
-public class RuleSetConverterContext<T> implements ConverterContext {
-
-  protected final Map<String, BlackBoard> blackboardMap = new HashMap<>();
-  protected final Map<String, T> convertedNodeMap = new HashMap<>();
-
-  public RuleSetConverterContext() {
+  public ExampleInputElementLinkageRule(Class<DslNode> in, Class<ElementNode> out, String description) {
+    super(in, out, description);
   }
 
-  public BlackBoard getBlackboard(String nodeBlackboardId) {
-    return blackboardMap.get(nodeBlackboardId);
+  @Override
+  public void onMatch(DslNode node, ConverterContext context) {
+
   }
 
-  public <R> R getBlackboardNode(String blackboardId, String vertexId, Class<R> nodeClass) {
-    return blackboardMap.get(blackboardId).getNode(vertexId, nodeClass);
+  @Override
+  public boolean matches(DslNode node, ConverterContext context) {
+    return false;
   }
 
-  public T getConvertedNode(String vertexId) {
-    return convertedNodeMap.get(vertexId);
+  @Override
+  public ElementNode convertNode(DslNode node, ConverterContext context) {
+    return null;
   }
 }

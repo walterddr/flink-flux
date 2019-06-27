@@ -31,5 +31,13 @@ public interface Node {
 
   List<String> getUpstreamVertexIds();
 
+  List<String> getDownstreamVertexIds();
+
   List<StreamDef> getUpstreams();
+
+  void addUpstreamVertexId(String upstreamVertexId);
+
+  void addDownstreamVertexId(String upstreamVertexId);
+
+  void addUpstream(StreamDef stream);
 }

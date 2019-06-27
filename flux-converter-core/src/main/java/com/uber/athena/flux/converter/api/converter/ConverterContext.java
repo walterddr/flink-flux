@@ -18,14 +18,10 @@
 
 package com.uber.athena.flux.converter.api.converter;
 
-import com.uber.athena.flux.converter.api.traverser.TraverserContext;
-
 /**
  * This object saves the intermediate storage context for a converter.
  *
  * <p>Intermediate results are stored for references and later invocations.
  */
 public interface ConverterContext {
-
-  TraverserContext getTraverserContext();
 }

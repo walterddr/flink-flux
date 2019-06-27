@@ -47,27 +47,26 @@ config:
 sources:
   source-1:
     id: "source-1"
-    className: "com.uber.athena.flux.flink.test.utils.source.RandomSource"
+    className: "com.uber.athena.flux.converter.runtime.utils.operators.SimpleSource"
     parallelism: 1
     constructorArgs:
       - 10 # limit
-    # ...
+    schemaSpec:
+      element: STRING_TYPE
 
 # operator definitions
 operators:
   operator-1:
     id: "operator-1"
-    className: "com.uber.athena.flux.flink.test.utils.operator.BasicPassThroughOperator"
+    className: "com.uber.athena.flux.converter.runtime.utils.operators.SimpleOperator"
     parallelism: 1
-    # ...
 
 # sink definitions
 sinks:
   sink-1:
     id: "sink-1"
-    className: "com.uber.athena.flux.flink.test.utils.sink.ConsoleOutputSink"
+    className: "com.uber.athena.flux.converter.runtime.utils.operators.SimpleSink"
     parallelism: 1
-    # ...
 
 #stream definitions
 # stream definitions define connections between sources, operator and sinks.

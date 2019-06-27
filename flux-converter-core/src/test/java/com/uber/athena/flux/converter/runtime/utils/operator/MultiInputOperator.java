@@ -16,26 +16,7 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.parser;
+package com.uber.athena.flux.converter.runtime.utils.operator;
 
-import com.uber.athena.flux.model.TopologyDef;
-import com.uber.athena.flux.utils.TopologyUtils;
-import org.junit.Test;
-
-public class TopologyParsingTest {
-
-  @Test
-  public void testBasicTopologyGen() throws Exception {
-    TopologyDef topologyDef = FluxParser.parseResource(
-        "/configs/dsl_test_optional_field_topology.yaml", false, true, null, false);
-    TopologyUtils.validate(topologyDef);
-  }
-
-  @Test
-  public void testDiamondTopologyGen() throws Exception {
-    TopologyDef topologyDef = FluxParser.parseResource(
-        "/configs/dsl_test_diamond_topology.yaml", false, true, null, false);
-    TopologyUtils.validate(topologyDef);
-  }
-
+public class MultiInputOperator {
 }

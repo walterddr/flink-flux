@@ -16,26 +16,25 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.parser;
+package com.uber.athena.flux.converter.runtime.utils.node;
 
-import com.uber.athena.flux.model.TopologyDef;
-import com.uber.athena.flux.utils.TopologyUtils;
-import org.junit.Test;
+import com.uber.athena.flux.converter.api.node.BaseNode;
+import com.uber.athena.flux.converter.api.node.element.ElementNode;
+import com.uber.athena.flux.model.VertexDef;
 
-public class TopologyParsingTest {
+public class TwoInputElementNode extends BaseNode implements ElementNode {
 
-  @Test
-  public void testBasicTopologyGen() throws Exception {
-    TopologyDef topologyDef = FluxParser.parseResource(
-        "/configs/dsl_test_optional_field_topology.yaml", false, true, null, false);
-    TopologyUtils.validate(topologyDef);
+  public TwoInputElementNode(String vertexId, VertexDef vertexDef) {
+    super(vertexId, vertexDef);
   }
 
-  @Test
-  public void testDiamondTopologyGen() throws Exception {
-    TopologyDef topologyDef = FluxParser.parseResource(
-        "/configs/dsl_test_diamond_topology.yaml", false, true, null, false);
-    TopologyUtils.validate(topologyDef);
+  @Override
+  public Class<?> getNodeObjectClass() {
+    return null;
   }
 
+  @Override
+  public Object getConstructedObject() {
+    return null;
+  }
 }

@@ -147,8 +147,11 @@ components:
               type: integer
               description: the parallelism of the vertex in the job graph
             inputSpec:
-              type: object
-              $ref: '#/components/schemas//InputSpecDef'
+              $ref: '#/components/schemas/InputSpecDef'
+            schemaSpec:
+              $ref: '#/components/schemas/SchemaDef'
+            schemaService:
+              $ref: '#/components/schemas/SchemaService'
     SourceDef:
       allOf:
         - $ref: '#/components/schemas/VertexDef'
@@ -177,7 +180,42 @@ components:
           properties:
             streamSpec:
               type: object
-              $ref: '#/components/schemas//StreamSpecDef'
+              $ref: '#/components/schemas/StreamSpecDef'
+
+    # -----------------------------------------------------------------------------
+    # Schema Definition
+    # -----------------------------------------------------------------------------
+    SchemaDef:
+      type: object
+      additionalProperties:
+        oneOf:
+          - $ref: '#/components/schemas/BasicSchemaType'
+          - $ref: '#/components/schemas/SchemaDef'
+    BasicSchemaType:
+      type: string
+      description: the primitive and basic types.
+      enum:
+        - STRING_TYPE
+        - BOOLEAN_TYPE
+        - BYTE_TYPE
+        - SHORT_TYPE
+        - INT_TYPE
+        - LONG_TYPE
+        - FLOAT_TYPE
+        - DOUBLE_TYPE
+        - CHAR_TYPE
+        - DATE_TYPE
+        - VOID_TYPE
+        - BIG_INT_TYPE
+        - BIG_DEC_TYPE
+        - INSTANT_TYPE
+    SchemaService:
+      type: string
+      description: type of schema service used to resolve the schema
+      enum:
+        - AVRO
+        - JSON
+        - OTHER
 
   # -----------------------------------------------------------------------------
   # Topology Definition

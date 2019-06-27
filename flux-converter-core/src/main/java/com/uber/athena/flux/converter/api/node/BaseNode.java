@@ -79,6 +79,7 @@ public class BaseNode implements Node {
     return upstreamVertexIds;
   }
 
+  @Override
   public List<String> getDownstreamVertexIds() {
     return downstreamVertexIds;
   }
@@ -88,14 +89,17 @@ public class BaseNode implements Node {
     return upstreams;
   }
 
+  @Override
   public void addUpstreamVertexId(String upstreamVertexId) {
     this.upstreamVertexIds.add(upstreamVertexId);
   }
 
+  @Override
   public void addDownstreamVertexId(String upstreamVertexId) {
-    this.upstreamVertexIds.add(upstreamVertexId);
+    this.downstreamVertexIds.add(upstreamVertexId);
   }
 
+  @Override
   public void addUpstream(StreamDef stream) {
     this.upstreams.add(stream);
   }

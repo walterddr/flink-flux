@@ -18,7 +18,7 @@
 
 package com.uber.athena.flux.converter.runtime.traverser;
 
-import com.uber.athena.flux.converter.api.node.BaseNode;
+import com.uber.athena.flux.converter.api.node.Node;
 import com.uber.athena.flux.converter.api.traverser.TraverserContext;
 import com.uber.athena.flux.model.OperatorDef;
 import com.uber.athena.flux.model.SinkDef;
@@ -35,12 +35,12 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * This is a bsic traverse context implementation with the {@link BaseNode}.
+ * This is a bsic traverse context implementation with the {@link Node}.
  *
  * <p>This traverse context only provides the nodes stored on the starting
  *
  */
-public abstract class BaseTraverserContext<T extends BaseNode> implements TraverserContext {
+public abstract class BaseTraverserContext<T extends Node> implements TraverserContext {
 
   private final TopologyDef topologyDef;
   private final Properties contextProperties;

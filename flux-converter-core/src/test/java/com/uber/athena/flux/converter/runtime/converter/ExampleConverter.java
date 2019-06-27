@@ -16,26 +16,28 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.parser;
+package com.uber.athena.flux.converter.runtime.converter;
 
-import com.uber.athena.flux.model.TopologyDef;
-import com.uber.athena.flux.utils.TopologyUtils;
-import org.junit.Test;
+import com.uber.athena.flux.converter.api.converter.ConverterContext;
+import com.uber.athena.flux.converter.api.node.Node;
+import com.uber.athena.flux.converter.api.rule.Rule;
+import com.uber.athena.flux.converter.api.traverser.TraverserContext;
 
-public class TopologyParsingTest {
+import static com.uber.athena.flux.converter.api.rule.ListRuleSet.ofList;
 
-  @Test
-  public void testBasicTopologyGen() throws Exception {
-    TopologyDef topologyDef = FluxParser.parseResource(
-        "/configs/dsl_test_optional_field_topology.yaml", false, true, null, false);
-    TopologyUtils.validate(topologyDef);
+public class ExampleConverter extends RuleSetConverter {
+
+  public ExampleConverter(Rule... rules) {
+    this.converterRuleSet = ofList(rules);
   }
 
-  @Test
-  public void testDiamondTopologyGen() throws Exception {
-    TopologyDef topologyDef = FluxParser.parseResource(
-        "/configs/dsl_test_diamond_topology.yaml", false, true, null, false);
-    TopologyUtils.validate(topologyDef);
+  @Override
+  public void convert(Node node, TraverserContext traverserContext, ConverterContext converterContext) {
+
   }
 
+  @Override
+  public void validate(Node node, TraverserContext traverserContext, ConverterContext converterContext) {
+
+  }
 }

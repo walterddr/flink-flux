@@ -21,7 +21,7 @@ package com.uber.athena.flux.converter.runtime.converter;
 import com.uber.athena.flux.converter.api.converter.Converter;
 import com.uber.athena.flux.converter.api.rule.RuleSet;
 
-public abstract class RuleSetConverter<IN, OUT> implements Converter<IN, OUT> {
+public abstract class RuleSetConverter implements Converter {
 
-  protected final RuleSet converterRuleSet = null;
+  protected RuleSet converterRuleSet = null;
 }

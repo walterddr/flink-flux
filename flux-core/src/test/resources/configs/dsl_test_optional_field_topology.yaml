@@ -51,7 +51,7 @@ sources:
     parallelism: 1
     constructorArgs:
       - 10 # limit
-    # ...
+    schemaService: AVRO
 
 # operator definitions
 operators:
@@ -59,7 +59,12 @@ operators:
     id: "operator-1"
     className: "com.uber.athena.flux.utils.operator.DummyOperator"
     parallelism: 1
-    # ...
+    schemaSpec:
+      a: INT_TYPE
+      b: STRING_TYPE
+      c:
+        c1: INT_TYPE
+        c2: DOUBLE_TYPE
 
 # sink definitions
 sinks:

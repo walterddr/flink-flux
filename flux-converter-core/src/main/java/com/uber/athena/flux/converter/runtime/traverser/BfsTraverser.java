@@ -19,7 +19,7 @@
 package com.uber.athena.flux.converter.runtime.traverser;
 
 import com.uber.athena.flux.converter.api.converter.Converter;
-import com.uber.athena.flux.converter.api.node.BaseNode;
+import com.uber.athena.flux.converter.api.converter.ConverterContext;
 import com.uber.athena.flux.converter.api.node.Node;
 import com.uber.athena.flux.converter.api.traverser.Traverser;
 import com.uber.athena.flux.model.SourceDef;
@@ -39,30 +39,34 @@ import java.util.Queue;
  * @param <IN> Converter input node type
  * @param <OUT> Converter output node type
  */
-public class BfsTraverser<IN extends BaseNode, OUT extends Node> implements Traverser {
+public class BfsTraverser<IN extends Node, OUT extends Node> implements Traverser {
 
-  protected final BaseTraverserContext<IN> context;
-  protected final Converter<IN, OUT> converter;
-  protected final Properties traverseProps;
+  protected final BaseTraverserContext<IN> traverserContext;
+  protected final ConverterContext converterContext;
+  protected final Converter converter;
+  protected final Properties properties;
 
   protected Queue<String> vertexTraverseQueue = new ArrayDeque<>();
   protected Map<String, Integer> upStreamConversionMap = new HashMap<>();
 
   public BfsTraverser(
-      BaseTraverserContext<IN> context,
-      Converter<IN, OUT> converter
+      BaseTraverserContext<IN> traverserContext,
+      ConverterContext converterContext,
+      Converter converter
   ) {
-    this(context, converter, null);
+    this(traverserContext, converterContext, converter, null);
   }
 
   public BfsTraverser(
-      BaseTraverserContext<IN>  context,
-      Converter<IN, OUT> converter,
-      Properties traverseProps
+      BaseTraverserContext<IN> traverserContext,
+      ConverterContext converterContext,
+      Converter converter,
+      Properties properties
   ) {
-    this.context = context;
+    this.traverserContext = traverserContext;
+    this.converterContext = converterContext;
     this.converter = converter;
-    this.traverseProps = traverseProps;
+    this.properties = properties;
   }
 
   @Override
@@ -73,12 +77,12 @@ public class BfsTraverser<IN extends BaseNode, OUT extends Node> implements Trav
   @Override
   public void run() {
     // Setting up all vertex upstream conversion count
-    for (IN node : context.getAllTraverseNodes()) {
+    for (IN node : traverserContext.getAllTraverseNodes()) {
       upStreamConversionMap.put(node.getVertexId(), node.getDownstreamVertexIds().size());
     }
 
     // Get all sources into queue.
-    for (SourceDef source : context.getTopologyDef().getSources().values()) {
+    for (SourceDef source : traverserContext.getTopologyDef().getSources().values()) {
       vertexTraverseQueue.add(source.getId());
     }
 
@@ -86,11 +90,10 @@ public class BfsTraverser<IN extends BaseNode, OUT extends Node> implements Trav
     while (!vertexTraverseQueue.isEmpty()) {
 
       // Convert the node from head of the queue.
-      String vertexId = vertexTraverseQueue.element();
-      IN node = context.getNode(vertexId);
-      OUT convertedNode = converter.convert(node);
-
-      converter.validate(convertedNode);
+      String vertexId = vertexTraverseQueue.poll();
+      IN node = traverserContext.getNode(vertexId);
+      converter.convert(node, traverserContext, converterContext);
+      converter.validate(node, traverserContext, converterContext);
 
       // Add additional nodes to the queue if they are next to be convert.
       for (String downstreamId : node.getDownstreamVertexIds()) {
