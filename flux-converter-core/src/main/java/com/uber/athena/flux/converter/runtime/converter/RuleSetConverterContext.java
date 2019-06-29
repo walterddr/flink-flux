@@ -24,7 +24,7 @@ import com.uber.athena.flux.converter.api.converter.ConverterContext;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RuleSetConverterContext<T> implements ConverterContext {
+public abstract class RuleSetConverterContext<T> implements ConverterContext {
 
   protected final Map<String, BlackBoard> blackboardMap = new HashMap<>();
   protected final Map<String, T> convertedNodeMap = new HashMap<>();

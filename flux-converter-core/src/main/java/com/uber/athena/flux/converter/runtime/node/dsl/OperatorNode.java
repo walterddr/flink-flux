@@ -27,7 +27,7 @@ public class OperatorNode extends BaseDslNode {
   }
 
   @Override
-  public Class<?> getNodeObjectClass() {
+  public Class<?> getObjectClass() {
     return OperatorNode.class;
   }
 }

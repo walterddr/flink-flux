@@ -68,6 +68,7 @@ under the License.
                                 <dateLibrary>java8</dateLibrary>
                                 <library>jersey2</library>
                                 <sourceFolder>src/gen/java</sourceFolder>
+                                <serializableModel>true</serializableModel>
                             </configOptions>
                             <addCompileSourceRoot>false</addCompileSourceRoot>
                         </configuration>

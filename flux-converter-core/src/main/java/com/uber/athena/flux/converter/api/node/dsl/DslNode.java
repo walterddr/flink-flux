@@ -24,17 +24,18 @@ import com.uber.athena.flux.converter.api.node.Node;
  * Node that represents a vertex its attributes in the DSL system.
  *
  * <p>This {code DslNode} can be considered as a vertex enriched based on
- * the topology DAG defined in the DSL model. Type of enriched attributes
- * should be platform invariant - they should only relate to the DSL model.
- * For example:
+ * the topology DAG defined in the DSL model. Mostly resolve components that
+ * are defined but not able to resolved during parsing time.
+ *
+ * <p>Type of enriched attributes should be platform invariant - they should
+ * only relate to the DSL model. For example:
  *
  * <p><ul>
  * <li>semantically-verification
+ * <li>schema-resolution
  * <li>type-checking
  * <li>...
  * </ul></p>
  */
 public interface DslNode extends Node {
-
-  Class<?> getNodeObjectClass();
 }

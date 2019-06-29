@@ -27,7 +27,7 @@ public class SourceNode extends BaseDslNode {
   }
 
   @Override
-  public Class<?> getNodeObjectClass() {
+  public Class<?> getObjectClass() {
     return SourceNode.class;
   }
 }

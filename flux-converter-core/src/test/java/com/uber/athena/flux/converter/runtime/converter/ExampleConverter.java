@@ -33,11 +33,18 @@ public class ExampleConverter extends RuleSetConverter {
 
   @Override
   public void convert(Node node, TraverserContext traverserContext, ConverterContext converterContext) {
+    // For each node, exhaust all the rules that matches (IN ORDER)
+    // until no matches, then move on to next traverse.
+    for (Rule rule: converterRuleSet) {
+      if (rule.matches(node)) {
+        rule.onMatch(node);
+      }
 
+    }
   }
 
   @Override
   public void validate(Node node, TraverserContext traverserContext, ConverterContext converterContext) {
-
+    // TODO(@walterddr) add this.
   }
 }

@@ -16,31 +16,24 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.runtime.utils.rule;
+package com.uber.athena.flux.converter.runtime.utils.node.element;
 
-import com.uber.athena.flux.converter.api.converter.ConverterContext;
-import com.uber.athena.flux.converter.api.node.dsl.DslNode;
-import com.uber.athena.flux.converter.api.node.element.ElementNode;
-import com.uber.athena.flux.converter.api.rule.ConverterRule;
+import com.uber.athena.flux.model.VertexDef;
 
-public class ExampleElementCreationRule extends ConverterRule<DslNode, ElementNode> {
+public class SourceElementNode extends BaseElementNode {
 
-  public ExampleElementCreationRule(Class<DslNode> in, Class<ElementNode> out, String description) {
-    super(in, out, description);
+  public SourceElementNode(String vertexId, VertexDef vertexDef) {
+    super(vertexId, vertexDef);
   }
 
   @Override
-  public void onMatch(DslNode node, ConverterContext context) {
-
+  public Class<?> getObjectClass() {
+    // example element node, just use basic object identifier class.
+    return Object.class;
   }
 
   @Override
-  public boolean matches(DslNode node, ConverterContext context) {
-    return false;
-  }
-
-  @Override
-  public ElementNode convertNode(DslNode node, ConverterContext context) {
+  public Object getElement() {
     return null;
   }
 }

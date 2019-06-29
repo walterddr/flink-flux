@@ -27,7 +27,7 @@ public class SinkNode extends BaseDslNode {
   }
 
   @Override
-  public Class<?> getNodeObjectClass() {
+  public Class<?> getObjectClass() {
     return SinkNode.class;
   }
 }

@@ -36,12 +36,11 @@ import java.util.Queue;
  * <p>The traverse depends on {@link BaseTraverserContext} to determine whether
  * a specific node is ready for processing or not.
  *
- * @param <IN> Converter input node type
- * @param <OUT> Converter output node type
+ * @param <T> Node type hosted in the traverser context.
  */
-public class BfsTraverser<IN extends Node, OUT extends Node> implements Traverser {
+public class BfsTraverser<T extends Node> implements Traverser {
 
-  protected final BaseTraverserContext<IN> traverserContext;
+  protected final BaseTraverserContext<T> traverserContext;
   protected final ConverterContext converterContext;
   protected final Converter converter;
   protected final Properties properties;
@@ -50,7 +49,7 @@ public class BfsTraverser<IN extends Node, OUT extends Node> implements Traverse
   protected Map<String, Integer> upStreamConversionMap = new HashMap<>();
 
   public BfsTraverser(
-      BaseTraverserContext<IN> traverserContext,
+      BaseTraverserContext<T> traverserContext,
       ConverterContext converterContext,
       Converter converter
   ) {
@@ -58,7 +57,7 @@ public class BfsTraverser<IN extends Node, OUT extends Node> implements Traverse
   }
 
   public BfsTraverser(
-      BaseTraverserContext<IN> traverserContext,
+      BaseTraverserContext<T> traverserContext,
       ConverterContext converterContext,
       Converter converter,
       Properties properties
@@ -77,7 +76,7 @@ public class BfsTraverser<IN extends Node, OUT extends Node> implements Traverse
   @Override
   public void run() {
     // Setting up all vertex upstream conversion count
-    for (IN node : traverserContext.getAllTraverseNodes()) {
+    for (T node : traverserContext.getAllTraverseNodes()) {
       upStreamConversionMap.put(node.getVertexId(), node.getDownstreamVertexIds().size());
     }
 
@@ -91,7 +90,7 @@ public class BfsTraverser<IN extends Node, OUT extends Node> implements Traverse
 
       // Convert the node from head of the queue.
       String vertexId = vertexTraverseQueue.poll();
-      IN node = traverserContext.getNode(vertexId);
+      T node = traverserContext.getNode(vertexId);
       converter.convert(node, traverserContext, converterContext);
       converter.validate(node, traverserContext, converterContext);
 

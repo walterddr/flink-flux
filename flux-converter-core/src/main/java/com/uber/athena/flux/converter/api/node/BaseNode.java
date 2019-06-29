@@ -18,10 +18,13 @@
 
 package com.uber.athena.flux.converter.api.node;
 
+import com.uber.athena.flux.converter.runtime.utils.ReflectiveInvokeUtils;
 import com.uber.athena.flux.model.StreamDef;
 import com.uber.athena.flux.model.VertexDef;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,6 +36,7 @@ import java.util.List;
  * <p><ul>
  * <li>{@link com.uber.athena.flux.converter.api.node.dsl.DslNode}
  * <li>{@link com.uber.athena.flux.converter.api.node.element.ElementNode}
+ * <li>{@link com.uber.athena.flux.converter.api.node.expression.ExpressionNode}
  * <li>... other user defined extensions
  * </ul></p>
  */
@@ -62,6 +66,11 @@ public class BaseNode implements Node {
     this.upstreamVertexIds = upstreamVertexIds;
     this.downstreamVertexIds = downstreamVertexIds;
     this.upstreams = upstreams;
+  }
+
+  @Override
+  public Class<?> getObjectClass() {
+    return BaseNode.class;
   }
 
   @Override
@@ -102,5 +111,29 @@ public class BaseNode implements Node {
   @Override
   public void addUpstream(StreamDef stream) {
     this.upstreams.add(stream);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <T extends BaseNode> T copy(BaseNode node, Class<T> clazz) throws Exception {
+    List<Object> cArgs = Arrays.asList(
+        node.vertexId,
+        node.vertexDef,
+        node.upstreamVertexIds,
+        node.downstreamVertexIds,
+        node.upstreams
+    );
+    Object obj;
+    Constructor con = ReflectiveInvokeUtils.findCompatibleConstructor(cArgs, clazz);
+    if (con != null) {
+      obj = con.newInstance(
+          ReflectiveInvokeUtils.getArgsWithListCoercian(cArgs, con.getParameterTypes()));
+    } else {
+      String msg = String.format(
+          "Couldn't find a suitable constructor for class '%s' with arguments '%s'.",
+          clazz.getName(),
+          cArgs);
+      throw new IllegalArgumentException(msg);
+    }
+    return (T) obj;
   }
 }

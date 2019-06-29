@@ -19,28 +19,43 @@
 package com.uber.athena.flux.converter.runtime.utils.rule;
 
 import com.uber.athena.flux.converter.api.converter.ConverterContext;
-import com.uber.athena.flux.converter.api.node.dsl.DslNode;
 import com.uber.athena.flux.converter.api.node.element.ElementNode;
 import com.uber.athena.flux.converter.api.rule.ConverterRule;
+import com.uber.athena.flux.converter.api.traverser.TraverserContext;
+import com.uber.athena.flux.converter.runtime.utils.node.expression.TraverseTreeExpressionNode;
 
-public class ExampleInputElementLinkageRule extends ConverterRule<DslNode, ElementNode> {
+public class ExampleInputElementLinkageRule
+    extends ConverterRule<ElementNode, TraverseTreeExpressionNode> {
 
-  public ExampleInputElementLinkageRule(Class<DslNode> in, Class<ElementNode> out, String description) {
+  public ExampleInputElementLinkageRule(
+      Class<ElementNode> in,
+      Class<TraverseTreeExpressionNode> out,
+      String description) {
     super(in, out, description);
   }
 
   @Override
-  public void onMatch(DslNode node, ConverterContext context) {
-
+  public void onMatch(
+      ElementNode node,
+      TraverserContext traverserContext,
+      ConverterContext converterContext) {
+    // no pre-processing
   }
 
   @Override
-  public boolean matches(DslNode node, ConverterContext context) {
-    return false;
+  public boolean matches(
+      ElementNode node,
+      TraverserContext traverserContext,
+      ConverterContext converterContext) {
+    // Always link elements
+    return true;
   }
 
   @Override
-  public ElementNode convertNode(DslNode node, ConverterContext context) {
+  public TraverseTreeExpressionNode convertNode(
+      ElementNode node,
+      TraverserContext traverserContext,
+      ConverterContext converterContext) {
     return null;
   }
 }

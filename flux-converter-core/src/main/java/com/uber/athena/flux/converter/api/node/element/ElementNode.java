@@ -21,11 +21,17 @@ package com.uber.athena.flux.converter.api.node.element;
 import com.uber.athena.flux.converter.api.node.Node;
 
 /**
- * Base Node class for a interpret version of the {@code DslNode}.
+ * Node that represents a vertex with its constructed object.
+ *
+ * <p>This {code ElementNode} is transformed from the {@code DslNode}. This
+ * constructed object should be platform-specific: each platform should
+ * implement sets of element nodes where different conversion rules applies.
+ *
+ * <p>The constructed object also requires enrichment around the them, such
+ * as platform-specific type system conversion. In general these rules are
+ * usually specific to the element node type: they cannot be applied generally.
  */
 public interface ElementNode extends Node {
 
-  Class<?> getNodeObjectClass();
-
-  Object getConstructedObject();
+  Object getElement();
 }

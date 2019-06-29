@@ -24,4 +24,10 @@ public class ExampleConverterContext extends RuleSetConverterContext<Node> {
 
   public ExampleConverterContext() {
   }
+
+  @Override
+  public void processConvertedResult(Node convertNode, Class<? extends Node> nodeClazz) {
+    // Save all incoming nodes in each categories (DSL, ELEMENT, and EXPRESSION)
+    // For each categories, only the latest is considered as the conversion result.
+  }
 }

@@ -24,4 +24,8 @@ import com.uber.athena.flux.converter.api.rule.RuleSet;
 public abstract class RuleSetConverter implements Converter {
 
   protected RuleSet converterRuleSet = null;
+
+  public RuleSet getRuleSet() {
+    return converterRuleSet;
+  }
 }

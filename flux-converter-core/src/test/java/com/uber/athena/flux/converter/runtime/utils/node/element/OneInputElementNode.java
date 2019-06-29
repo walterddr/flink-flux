@@ -16,18 +16,23 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.runtime.traverser;
+package com.uber.athena.flux.converter.runtime.utils.node.element;
 
-import java.util.Arrays;
-import java.util.List;
+import com.uber.athena.flux.model.VertexDef;
 
-public class BfsTraverserTest extends TraverseTestBase {
+public class OneInputElementNode extends BaseElementNode {
 
-  private static final List<String> TEST_TOPOLOGY_RESOURCE_PATHS = Arrays.asList(
-      "/configs/simple_passthrough_topology.yaml",
-      "/configs/diamond_topology.yaml");
+  public OneInputElementNode(String vertexId, VertexDef vertexDef) {
+    super(vertexId, vertexDef);
+  }
 
-  public BfsTraverserTest() {
-    super(TEST_TOPOLOGY_RESOURCE_PATHS);
+  @Override
+  public Class<?> getObjectClass() {
+    return null;
+  }
+
+  @Override
+  public Object getElement() {
+    return null;
   }
 }

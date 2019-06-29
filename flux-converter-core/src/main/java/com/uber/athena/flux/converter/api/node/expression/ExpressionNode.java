@@ -20,7 +20,19 @@ package com.uber.athena.flux.converter.api.node.expression;
 
 import com.uber.athena.flux.converter.api.node.Node;
 
+/**
+ * Node that represents the constructed DAG transformation towards this vertex.
+ *
+ * <p>{@code ExpressionNode} serves as a planner result constructed from
+ * sources of this DAG until this specific vertex. result is platform-specific
+ * E.g. they should:
+ *
+ * <p><ul>
+ * <li>Abstract: the planner result is represented in one-single expression.
+ * <li>Consolidated: downstream expression only depends on upstream expression.
+ * </ul></p>
+ */
 public interface ExpressionNode extends Node {
 
-  Class<?> getNodeObjectClass();
+  Object getExpression();
 }

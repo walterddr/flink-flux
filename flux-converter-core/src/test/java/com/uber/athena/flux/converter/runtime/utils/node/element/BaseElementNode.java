@@ -16,25 +16,31 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.runtime.utils.node;
+package com.uber.athena.flux.converter.runtime.utils.node.element;
 
 import com.uber.athena.flux.converter.api.node.BaseNode;
 import com.uber.athena.flux.converter.api.node.element.ElementNode;
 import com.uber.athena.flux.model.VertexDef;
 
-public class TwoInputElementNode extends BaseNode implements ElementNode {
+public class BaseElementNode extends BaseNode implements ElementNode {
 
-  public TwoInputElementNode(String vertexId, VertexDef vertexDef) {
+  protected Object constructedElement;
+
+  public BaseElementNode(String vertexId, VertexDef vertexDef) {
     super(vertexId, vertexDef);
   }
 
   @Override
-  public Class<?> getNodeObjectClass() {
-    return null;
+  public Class<?> getObjectClass() {
+    return BaseElementNode.class;
   }
 
   @Override
-  public Object getConstructedObject() {
-    return null;
+  public Object getElement() {
+    return constructedElement;
+  }
+
+  public void setElement(Object constructedElement) {
+    this.constructedElement = constructedElement;
   }
 }
