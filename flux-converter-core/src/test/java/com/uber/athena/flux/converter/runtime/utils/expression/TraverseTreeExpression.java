@@ -16,18 +16,7 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.runtime.node.dsl;
+package com.uber.athena.flux.converter.runtime.utils.expression;
 
-import com.uber.athena.flux.model.VertexDef;
-
-public class SinkNode extends BaseDslNode {
-
-  public SinkNode(String vertexId, VertexDef vertexDef) {
-    super(vertexId, vertexDef);
-  }
-
-  @Override
-  public Class<?> getObjectClass() {
-    return SinkNode.class;
-  }
+public class TraverseTreeExpression {
 }

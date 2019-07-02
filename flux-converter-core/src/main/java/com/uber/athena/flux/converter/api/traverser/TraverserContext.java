@@ -18,7 +18,6 @@
 
 package com.uber.athena.flux.converter.api.traverser;
 
-import com.uber.athena.flux.converter.api.node.Node;
 import com.uber.athena.flux.model.TopologyDef;
 
 /**
@@ -31,5 +30,5 @@ public interface TraverserContext {
 
   TopologyDef getTopologyDef();
 
-  Node getNode(String vertexId);
+  TraverserOpt getTraverserOpt(String vertexId);
 }

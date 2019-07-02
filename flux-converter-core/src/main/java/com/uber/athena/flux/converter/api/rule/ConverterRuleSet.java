@@ -24,11 +24,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class ListRuleSet implements RuleSet {
+public class ConverterRuleSet implements RuleSet<ConverterRule> {
 
-  private final List<Rule> rules;
+  private final List<ConverterRule> rules;
 
-  ListRuleSet(List<Rule> rules) {
+  ConverterRuleSet(List<ConverterRule> rules) {
     this.rules = rules;
   }
 
@@ -40,22 +40,22 @@ public class ListRuleSet implements RuleSet {
   @Override
   public boolean equals(Object obj) {
     return obj == this
-        || obj instanceof ListRuleSet
-        && rules.equals(((ListRuleSet) obj).rules);
+        || obj instanceof ConverterRuleSet
+        && rules.equals(((ConverterRuleSet) obj).rules);
   }
 
   @Override
-  public Iterator<Rule> iterator() {
+  public Iterator<ConverterRule> iterator() {
     return rules.iterator();
   }
 
   /** Creates a rule set with a given array of rules. */
-  public static RuleSet ofList(Rule... rules) {
-    return new ListRuleSet(Arrays.asList(rules));
+  public static RuleSet<ConverterRule> ofList(ConverterRule... rules) {
+    return new ConverterRuleSet(Arrays.asList(rules));
   }
 
   /** Creates a rule set with a given array of rules. */
-  public static RuleSet ofList(Collection<Rule> rules) {
-    return new ListRuleSet(new ArrayList<>(rules));
+  public static RuleSet<ConverterRule> ofList(Collection<ConverterRule> rules) {
+    return new ConverterRuleSet(new ArrayList<>(rules));
   }
 }

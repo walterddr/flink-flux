@@ -19,4 +19,15 @@
 package com.uber.athena.flux.converter.runtime.utils.operator;
 
 public class SimpleSource {
+
+  private int value;
+
+  public SimpleSource(int value) {
+
+    this.value = value;
+  }
+
+  public int getValue() {
+    return value;
+  }
 }

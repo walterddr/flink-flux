@@ -18,15 +18,21 @@
 
 package com.uber.athena.flux.converter.api.converter;
 
-import com.uber.athena.flux.converter.api.node.Node;
 import com.uber.athena.flux.converter.api.traverser.TraverserContext;
+import com.uber.athena.flux.converter.api.traverser.TraverserOpt;
 
 /**
- * Defines a conversion mechanism between the two types of nodes.
+ * Defines a conversion mechanism for a specific traverser step.
  */
 public interface Converter {
 
-  void convert(Node node, TraverserContext traverserContext, ConverterContext converterContext);
+  void convert(
+      TraverserOpt traverserOpt,
+      TraverserContext traverserContext,
+      ConverterContext converterContext);
 
-  void validate(Node node, TraverserContext traverserContext, ConverterContext converterContext);
+  void validate(
+      TraverserOpt traverserOpt,
+      TraverserContext traverserContext,
+      ConverterContext converterContext);
 }

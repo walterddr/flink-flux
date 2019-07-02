@@ -16,10 +16,13 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.api.converter;
+package com.uber.athena.flux.converter.runtime.utils.node.dsl;
 
-public interface BlackBoard {
+import com.uber.athena.flux.model.VertexDef;
 
-  <R> R getNode(String vertexId, Class<R> nodeClass);
+public class SourceNode extends BaseDslNode {
 
+  public SourceNode(String vertexId, VertexDef vertexDef) {
+    super(vertexId, vertexDef);
+  }
 }

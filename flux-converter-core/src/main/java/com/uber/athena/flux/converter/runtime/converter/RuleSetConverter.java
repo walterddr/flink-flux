@@ -19,13 +19,14 @@
 package com.uber.athena.flux.converter.runtime.converter;
 
 import com.uber.athena.flux.converter.api.converter.Converter;
+import com.uber.athena.flux.converter.api.rule.ConverterRule;
 import com.uber.athena.flux.converter.api.rule.RuleSet;
 
 public abstract class RuleSetConverter implements Converter {
 
-  protected RuleSet converterRuleSet = null;
+  protected RuleSet<ConverterRule> converterRuleSet = null;
 
-  public RuleSet getRuleSet() {
+  public RuleSet<ConverterRule> getRuleSet() {
     return converterRuleSet;
   }
 }

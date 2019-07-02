@@ -18,5 +18,5 @@
 
 package com.uber.athena.flux.converter.runtime.utils.operator;
 
-public class SimpleSink {
+public class SimpleSink extends SimpleOperator {
 }

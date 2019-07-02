@@ -21,6 +21,6 @@ package com.uber.athena.flux.converter.api.rule;
 /**
  * A set of {@code Rule}s that constructs a complete set for a program.
  */
-public interface RuleSet extends Iterable<Rule> {
+public interface RuleSet<T extends Rule> extends Iterable<T> {
 
 }

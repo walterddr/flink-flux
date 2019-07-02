@@ -18,8 +18,8 @@
 
 package com.uber.athena.flux.converter.runtime.traverser;
 
-import com.uber.athena.flux.converter.api.node.Node;
 import com.uber.athena.flux.converter.api.traverser.TraverserContext;
+import com.uber.athena.flux.converter.api.traverser.TraverserOpt;
 import com.uber.athena.flux.model.OperatorDef;
 import com.uber.athena.flux.model.SinkDef;
 import com.uber.athena.flux.model.SourceDef;
@@ -35,16 +35,22 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * This is a bsic traverse context implementation with the {@link Node}.
+ * This is a basic traverse context implementation.
  *
  * <p>This traverse context only provides the nodes stored on the starting
  *
  */
-public abstract class BaseTraverserContext<T extends Node> implements TraverserContext {
+public class BaseTraverserContext implements TraverserContext {
 
   private final TopologyDef topologyDef;
   private final Properties contextProperties;
-  private final Map<String, T> traverseNodeMap;
+  private final Map<String, TraverserOpt> traverseNodeMap;
+
+  public BaseTraverserContext(
+      TopologyDef topologyDef
+  ) {
+    this(topologyDef, null);
+  }
 
   public BaseTraverserContext(
       TopologyDef topologyDef,
@@ -56,7 +62,7 @@ public abstract class BaseTraverserContext<T extends Node> implements TraverserC
   BaseTraverserContext(
       TopologyDef topologyDef,
       Properties contextProperties,
-      Map<String, T> traverseNodeMap
+      Map<String, TraverserOpt> traverseNodeMap
   ) {
     this.topologyDef = topologyDef;
     this.contextProperties = contextProperties;
@@ -77,12 +83,12 @@ public abstract class BaseTraverserContext<T extends Node> implements TraverserC
     for (SourceDef sourceDef : TopologyUtils.getSourceList(topologyDef)) {
       traverseNodeMap.put(
           sourceDef.getId(),
-          constructNode(sourceDef.getId(), sourceDef));
+          constructTraverserOpt(sourceDef.getId(), sourceDef));
     }
     for (SinkDef sinkDef : TopologyUtils.getSinkList(topologyDef)) {
       traverseNodeMap.put(
           sinkDef.getId(),
-          constructNode(sinkDef.getId(), sinkDef));
+          constructTraverserOpt(sinkDef.getId(), sinkDef));
       if (sinkDef.getInputSpec() != null) {
         streamSpecDefMap.putAll(sinkDef.getInputSpec());
       }
@@ -90,7 +96,7 @@ public abstract class BaseTraverserContext<T extends Node> implements TraverserC
     for (OperatorDef operatorDef : TopologyUtils.getOperatorList(topologyDef)) {
       traverseNodeMap.put(
           operatorDef.getId(),
-          constructNode(operatorDef.getId(), operatorDef));
+          constructTraverserOpt(operatorDef.getId(), operatorDef));
       if (operatorDef.getInputSpec() != null) {
         streamSpecDefMap.putAll(operatorDef.getInputSpec());
       }
@@ -104,8 +110,8 @@ public abstract class BaseTraverserContext<T extends Node> implements TraverserC
       } else {
         streamDef.setStreamSpec(getDefaultStreamSpec());
       }
-      T fromNode = traverseNodeMap.get(streamDef.getFromVertex());
-      T toNode = traverseNodeMap.get(streamDef.getToVertex());
+      TraverserOpt fromNode = traverseNodeMap.get(streamDef.getFromVertex());
+      TraverserOpt toNode = traverseNodeMap.get(streamDef.getToVertex());
       if (fromNode == null || toNode == null) {
         throw new UnsupportedOperationException("Unsupported DSL graph. Cannot find proper vertex"
             + " definitions: " + streamDef.getFromVertex() + "-> " + streamDef.getToVertex());
@@ -122,23 +128,25 @@ public abstract class BaseTraverserContext<T extends Node> implements TraverserC
   }
 
   @Override
-  public T getNode(String vertexId) {
+  public TraverserOpt getTraverserOpt(String vertexId) {
     return traverseNodeMap.get(vertexId);
   }
 
-  public Collection<T> getAllTraverseNodes() {
+  public Collection<TraverserOpt> getAllTraverseNodes() {
     return traverseNodeMap.values();
-  }
-
-  protected StreamSpecDef getDefaultStreamSpec() {
-    StreamSpecDef defaultSpec = new StreamSpecDef();
-    defaultSpec.setStreamType(StreamSpecDef.StreamTypeEnum.DATA_STREAM);
-    return defaultSpec;
   }
 
   public Properties getContextProperties() {
     return contextProperties;
   }
 
-  public abstract T constructNode(String vertexId, VertexDef vertexDef);
+  private static StreamSpecDef getDefaultStreamSpec() {
+    StreamSpecDef defaultSpec = new StreamSpecDef();
+    defaultSpec.setStreamType(StreamSpecDef.StreamTypeEnum.DATA_STREAM);
+    return defaultSpec;
+  }
+
+  private static TraverserOpt constructTraverserOpt(String vertexId, VertexDef vertexDef) {
+    return new TraverserOpt(vertexId, vertexDef);
+  }
 }

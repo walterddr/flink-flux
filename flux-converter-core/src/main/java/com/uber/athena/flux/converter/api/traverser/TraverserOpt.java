@@ -16,46 +16,33 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.api.node;
+package com.uber.athena.flux.converter.api.traverser;
 
-import com.uber.athena.flux.converter.runtime.utils.ReflectiveInvokeUtils;
 import com.uber.athena.flux.model.StreamDef;
 import com.uber.athena.flux.model.VertexDef;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
- * Base node object that represents a node with its topology characteristic.
- *
- * <p>All Nodes should extend from this {@code BaseNode} and implements its
- * specific Node interface for that node conversion level:
- *
- * <p><ul>
- * <li>{@link com.uber.athena.flux.converter.api.node.dsl.DslNode}
- * <li>{@link com.uber.athena.flux.converter.api.node.element.ElementNode}
- * <li>{@link com.uber.athena.flux.converter.api.node.expression.ExpressionNode}
- * <li>... other user defined extensions
- * </ul></p>
+ * Base traverser operand representing a node's topology characteristic.
  */
-public class BaseNode implements Node {
+public class TraverserOpt {
 
   protected final String vertexId;
   protected final VertexDef vertexDef;
 
-  protected final List<String> upstreamVertexIds;
-  protected final List<String> downstreamVertexIds;
-  protected final List<StreamDef> upstreams;
+  protected List<String> upstreamVertexIds;
+  protected List<String> downstreamVertexIds;
+  protected List<StreamDef> upstreams;
 
-  public BaseNode(
+  public TraverserOpt(
       String vertexId,
       VertexDef vertexDef) {
     this(vertexId, vertexDef, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
   }
 
-  public BaseNode(
+  public TraverserOpt(
       String vertexId,
       VertexDef vertexDef,
       List<String> upstreamVertexIds,
@@ -68,72 +55,35 @@ public class BaseNode implements Node {
     this.upstreams = upstreams;
   }
 
-  @Override
-  public Class<?> getObjectClass() {
-    return BaseNode.class;
-  }
-
-  @Override
   public String getVertexId() {
     return vertexDef.getId();
   }
 
-  @Override
   public VertexDef getVertexDef() {
     return vertexDef;
   }
 
-  @Override
   public List<String> getUpstreamVertexIds() {
     return upstreamVertexIds;
   }
 
-  @Override
   public List<String> getDownstreamVertexIds() {
     return downstreamVertexIds;
   }
 
-  @Override
   public List<StreamDef> getUpstreams() {
     return upstreams;
   }
 
-  @Override
   public void addUpstreamVertexId(String upstreamVertexId) {
     this.upstreamVertexIds.add(upstreamVertexId);
   }
 
-  @Override
   public void addDownstreamVertexId(String upstreamVertexId) {
     this.downstreamVertexIds.add(upstreamVertexId);
   }
 
-  @Override
-  public void addUpstream(StreamDef stream) {
-    this.upstreams.add(stream);
-  }
-
-  @SuppressWarnings("unchecked")
-  public static <T extends BaseNode> T copy(BaseNode node, Class<T> clazz) throws Exception {
-    List<Object> cArgs = Arrays.asList(
-        node.vertexId,
-        node.vertexDef,
-        node.upstreamVertexIds,
-        node.downstreamVertexIds,
-        node.upstreams
-    );
-    Object obj;
-    Constructor con = ReflectiveInvokeUtils.findCompatibleConstructor(cArgs, clazz);
-    if (con != null) {
-      obj = con.newInstance(
-          ReflectiveInvokeUtils.getArgsWithListCoercian(cArgs, con.getParameterTypes()));
-    } else {
-      String msg = String.format(
-          "Couldn't find a suitable constructor for class '%s' with arguments '%s'.",
-          clazz.getName(),
-          cArgs);
-      throw new IllegalArgumentException(msg);
-    }
-    return (T) obj;
+  public void addUpstream(StreamDef streamDef) {
+    this.upstreams.add(streamDef);
   }
 }

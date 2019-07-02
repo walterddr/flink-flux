@@ -19,6 +19,9 @@
 package com.uber.athena.flux.converter.api.converter;
 
 import com.uber.athena.flux.converter.api.node.Node;
+import com.uber.athena.flux.converter.api.node.dsl.DslNode;
+import com.uber.athena.flux.converter.api.node.element.ElementNode;
+import com.uber.athena.flux.converter.api.node.expression.ExpressionNode;
 
 /**
  * This object saves the intermediate storage context for a converter.
@@ -27,5 +30,17 @@ import com.uber.athena.flux.converter.api.node.Node;
  */
 public interface ConverterContext {
 
+  /**
+   * Processed converted node objects and make it available in the context.
+   *
+   * @param convertNode converted node
+   * @param nodeClazz class of the converted node
+   */
   void processConvertedResult(Node convertNode, Class<? extends Node> nodeClazz);
+
+  DslNode getDslNode(String vertexId);
+
+  ElementNode getElementNode(String vertexId);
+
+  ExpressionNode getExpressionNode(String vertexId);
 }

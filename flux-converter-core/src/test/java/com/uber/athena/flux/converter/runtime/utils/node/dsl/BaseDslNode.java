@@ -16,18 +16,31 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.runtime.traverser;
+package com.uber.athena.flux.converter.runtime.utils.node.dsl;
 
-import java.util.Arrays;
-import java.util.List;
+import com.uber.athena.flux.converter.api.node.dsl.DslNode;
+import com.uber.athena.flux.model.VertexDef;
 
-public class BfsTraverserTest extends TraverseTestBase {
+/**
+ * Base class for all DSL Nodes in the topology.
+ */
+public class BaseDslNode implements DslNode {
 
-  private static final List<String> TEST_TOPOLOGY_RESOURCE_PATHS = Arrays.asList(
-      "/configs/simple_passthrough_topology.yaml",
-      "/configs/diamond_topology.yaml");
+  protected String vertexId;
+  protected VertexDef vertexDef;
 
-  public BfsTraverserTest() {
-    super(TEST_TOPOLOGY_RESOURCE_PATHS);
+  public BaseDslNode(String vertexId, VertexDef vertexDef) {
+    this.vertexId = vertexId;
+    this.vertexDef = vertexDef;
+  }
+
+  @Override
+  public String getVertexId() {
+    return vertexId;
+  }
+
+  @Override
+  public VertexDef getVertexDef() {
+    return vertexDef;
   }
 }

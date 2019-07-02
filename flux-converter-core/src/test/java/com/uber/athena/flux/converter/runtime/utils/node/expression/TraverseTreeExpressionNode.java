@@ -18,11 +18,17 @@
 
 package com.uber.athena.flux.converter.runtime.utils.node.expression;
 
+import com.uber.athena.flux.converter.runtime.utils.expression.TraverseTreeExpression;
 import com.uber.athena.flux.model.VertexDef;
 
 public class TraverseTreeExpressionNode extends BaseExpressionNode {
 
   public TraverseTreeExpressionNode(String vertexId, VertexDef vertexDef) {
     super(vertexId, vertexDef);
+  }
+
+  @Override
+  public Class<?> getExpressionClass() {
+    return TraverseTreeExpression.class;
   }
 }

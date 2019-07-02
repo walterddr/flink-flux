@@ -34,5 +34,17 @@ import com.uber.athena.flux.converter.api.node.Node;
  */
 public interface ExpressionNode extends Node {
 
+  /**
+   * Retruns the type of expression this node is capable of constructing.
+   *
+   * @return Clazz of the expression object.
+   */
+  Class<?> getExpressionClass();
+
+  /**
+   * Return the constructed expression.
+   *
+   * @return the constructed expression, or null if not constructed.
+   */
   Object getExpression();
 }

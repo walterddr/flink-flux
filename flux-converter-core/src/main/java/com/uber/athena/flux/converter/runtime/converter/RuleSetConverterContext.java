@@ -18,7 +18,6 @@
 
 package com.uber.athena.flux.converter.runtime.converter;
 
-import com.uber.athena.flux.converter.api.converter.BlackBoard;
 import com.uber.athena.flux.converter.api.converter.ConverterContext;
 
 import java.util.HashMap;
@@ -26,18 +25,9 @@ import java.util.Map;
 
 public abstract class RuleSetConverterContext<T> implements ConverterContext {
 
-  protected final Map<String, BlackBoard> blackboardMap = new HashMap<>();
   protected final Map<String, T> convertedNodeMap = new HashMap<>();
 
   public RuleSetConverterContext() {
-  }
-
-  public BlackBoard getBlackboard(String nodeBlackboardId) {
-    return blackboardMap.get(nodeBlackboardId);
-  }
-
-  public <R> R getBlackboardNode(String blackboardId, String vertexId, Class<R> nodeClass) {
-    return blackboardMap.get(blackboardId).getNode(vertexId, nodeClass);
   }
 
   public T getConvertedNode(String vertexId) {

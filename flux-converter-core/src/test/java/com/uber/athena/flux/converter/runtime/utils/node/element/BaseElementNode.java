@@ -18,21 +18,28 @@
 
 package com.uber.athena.flux.converter.runtime.utils.node.element;
 
-import com.uber.athena.flux.converter.api.node.BaseNode;
 import com.uber.athena.flux.converter.api.node.element.ElementNode;
 import com.uber.athena.flux.model.VertexDef;
 
-public class BaseElementNode extends BaseNode implements ElementNode {
+public abstract class BaseElementNode implements ElementNode {
 
   protected Object constructedElement;
+  protected String vertexId;
+  protected VertexDef vertexDef;
 
   public BaseElementNode(String vertexId, VertexDef vertexDef) {
-    super(vertexId, vertexDef);
+    this.vertexId = vertexId;
+    this.vertexDef = vertexDef;
   }
 
   @Override
-  public Class<?> getObjectClass() {
-    return BaseElementNode.class;
+  public String getVertexId() {
+    return vertexId;
+  }
+
+  @Override
+  public VertexDef getVertexDef() {
+    return vertexDef;
   }
 
   @Override

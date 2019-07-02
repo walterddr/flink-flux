@@ -16,18 +16,13 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.runtime.node.dsl;
+package com.uber.athena.flux.converter.runtime.utils.node.dsl;
 
 import com.uber.athena.flux.model.VertexDef;
 
-public class OperatorNode extends BaseDslNode {
+public class SinkNode extends BaseDslNode {
 
-  public OperatorNode(String vertexId, VertexDef vertexDef) {
+  public SinkNode(String vertexId, VertexDef vertexDef) {
     super(vertexId, vertexDef);
-  }
-
-  @Override
-  public Class<?> getObjectClass() {
-    return OperatorNode.class;
   }
 }

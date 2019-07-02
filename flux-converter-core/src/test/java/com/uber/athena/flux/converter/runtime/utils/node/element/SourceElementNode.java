@@ -18,6 +18,7 @@
 
 package com.uber.athena.flux.converter.runtime.utils.node.element;
 
+import com.uber.athena.flux.converter.runtime.utils.operator.SimpleSource;
 import com.uber.athena.flux.model.VertexDef;
 
 public class SourceElementNode extends BaseElementNode {
@@ -27,13 +28,7 @@ public class SourceElementNode extends BaseElementNode {
   }
 
   @Override
-  public Class<?> getObjectClass() {
-    // example element node, just use basic object identifier class.
-    return Object.class;
-  }
-
-  @Override
-  public Object getElement() {
-    return null;
+  public Class<?> getElementClass() {
+    return SimpleSource.class;
   }
 }

@@ -21,13 +21,18 @@ package com.uber.athena.flux.converter.runtime.utils.rule;
 import com.uber.athena.flux.converter.api.converter.ConverterContext;
 import com.uber.athena.flux.converter.api.node.element.ElementNode;
 import com.uber.athena.flux.converter.api.rule.ConverterRule;
+import com.uber.athena.flux.converter.api.rule.RuleOpt;
 import com.uber.athena.flux.converter.api.traverser.TraverserContext;
+import com.uber.athena.flux.converter.runtime.utils.expression.TraverseTreeExpression;
 import com.uber.athena.flux.converter.runtime.utils.node.expression.TraverseTreeExpressionNode;
 
-public class ExampleInputElementLinkageRule
-    extends ConverterRule<ElementNode, TraverseTreeExpressionNode> {
+public class SimpleElementLinkageRule extends ConverterRule {
 
-  public ExampleInputElementLinkageRule(
+  public static final SimpleElementLinkageRule INSTANCE = new SimpleElementLinkageRule(
+      ElementNode.class, TraverseTreeExpressionNode.class, "ElementLinkage"
+  );
+
+  SimpleElementLinkageRule(
       Class<ElementNode> in,
       Class<TraverseTreeExpressionNode> out,
       String description) {
@@ -35,16 +40,8 @@ public class ExampleInputElementLinkageRule
   }
 
   @Override
-  public void onMatch(
-      ElementNode node,
-      TraverserContext traverserContext,
-      ConverterContext converterContext) {
-    // no pre-processing
-  }
-
-  @Override
   public boolean matches(
-      ElementNode node,
+      RuleOpt ruleOpt,
       TraverserContext traverserContext,
       ConverterContext converterContext) {
     // Always link elements
@@ -52,10 +49,15 @@ public class ExampleInputElementLinkageRule
   }
 
   @Override
-  public TraverseTreeExpressionNode convertNode(
-      ElementNode node,
+  public void onMatch(
+      RuleOpt ruleOpt,
       TraverserContext traverserContext,
       ConverterContext converterContext) {
-    return null;
+    // TODO(@walterddr) add actual linkage
+    TraverseTreeExpressionNode node = new TraverseTreeExpressionNode(
+        ruleOpt.getNode().getVertexId(),
+        ruleOpt.getNode().getVertexDef());
+    node.setExpression(new TraverseTreeExpression());
+    converterContext.processConvertedResult(node, TraverseTreeExpressionNode.class);
   }
 }

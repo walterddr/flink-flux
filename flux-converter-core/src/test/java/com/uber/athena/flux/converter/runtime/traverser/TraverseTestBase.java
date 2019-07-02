@@ -20,9 +20,10 @@ package com.uber.athena.flux.converter.runtime.traverser;
 
 import com.uber.athena.flux.converter.api.converter.Converter;
 import com.uber.athena.flux.converter.api.converter.ConverterContext;
-import com.uber.athena.flux.converter.api.node.dsl.DslNode;
-import com.uber.athena.flux.converter.runtime.converter.ExampleConverter;
-import com.uber.athena.flux.converter.runtime.converter.ExampleConverterContext;
+import com.uber.athena.flux.converter.api.rule.ConverterRule;
+import com.uber.athena.flux.converter.api.rule.RuleSet;
+import com.uber.athena.flux.converter.runtime.converter.SimpleConverter;
+import com.uber.athena.flux.converter.runtime.converter.SimpleConverterContext;
 import com.uber.athena.flux.model.TopologyDef;
 import com.uber.athena.flux.parser.FluxParser;
 import org.junit.Test;
@@ -32,31 +33,37 @@ import java.util.List;
 public abstract class TraverseTestBase {
 
   private final List<String> testTopologies;
+  private final List<RuleSet<ConverterRule>> ruleSets;
 
-  protected TraverseTestBase(List<String> testTopologies) {
+  protected TraverseTestBase(
+      List<String> testTopologies,
+      List<RuleSet<ConverterRule>> ruleSets) {
     this.testTopologies = testTopologies;
+    this.ruleSets = ruleSets;
   }
 
   @Test
   public void testTopologies() throws Exception {
     for (String resource : testTopologies) {
-      TopologyDef topologyDef = FluxParser.parseResource(resource,
-          false, true, null, false);
-      testTraversingWithEmptyRuleSet(topologyDef);
+      for (RuleSet<ConverterRule> ruleSet : ruleSets) {
+        TopologyDef topologyDef = FluxParser.parseResource(resource,
+            false, true, null, false);
+        testTraversingWithEmptyRuleSet(topologyDef, ruleSet);
+      }
     }
   }
 
-  private void testTraversingWithEmptyRuleSet(TopologyDef def) throws Exception {
-    TopologyDef topologyDef = FluxParser.parseResource("/configs/simple_passthrough_topology.yaml",
-        false, true, null, false);
-
-    BaseTraverserContext<DslNode> traverserCtx = new ExampleTraverserContext(topologyDef);
-    ConverterContext converterCtx = new ExampleConverterContext();
-    Converter converter = new ExampleConverter();
-    BfsTraverser<DslNode> traverser = new BfsTraverser<>(
+  private void testTraversingWithEmptyRuleSet(
+      TopologyDef topologyDef,
+      RuleSet<ConverterRule> ruleSet) throws Exception {
+    BaseTraverserContext traverserCtx = new BaseTraverserContext(topologyDef);
+    ConverterContext converterCtx = new SimpleConverterContext();
+    Converter converter = new SimpleConverter(ruleSet);
+    BaseTraverser traverser = new BaseTraverser(
         traverserCtx, converterCtx, converter
     );
 
     traverser.run();
+    traverser.validate();
   }
 }

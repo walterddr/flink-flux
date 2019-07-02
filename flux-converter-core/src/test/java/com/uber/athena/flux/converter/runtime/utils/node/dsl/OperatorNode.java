@@ -16,18 +16,13 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.runtime.node.dsl;
+package com.uber.athena.flux.converter.runtime.utils.node.dsl;
 
-import com.uber.athena.flux.converter.api.node.BaseNode;
-import com.uber.athena.flux.converter.api.node.dsl.DslNode;
 import com.uber.athena.flux.model.VertexDef;
 
-/**
- * Base class for all DSL Nodes in the topology.
- */
-public abstract class BaseDslNode extends BaseNode implements DslNode {
+public class OperatorNode extends BaseDslNode {
 
-  public BaseDslNode(String vertexId, VertexDef vertexDef) {
+  public OperatorNode(String vertexId, VertexDef vertexDef) {
     super(vertexId, vertexDef);
   }
 }

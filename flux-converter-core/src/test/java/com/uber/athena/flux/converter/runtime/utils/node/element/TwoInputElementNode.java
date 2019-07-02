@@ -18,6 +18,7 @@
 
 package com.uber.athena.flux.converter.runtime.utils.node.element;
 
+import com.uber.athena.flux.converter.runtime.utils.operator.MultiInputOperator;
 import com.uber.athena.flux.model.VertexDef;
 
 public class TwoInputElementNode extends BaseElementNode {
@@ -27,12 +28,7 @@ public class TwoInputElementNode extends BaseElementNode {
   }
 
   @Override
-  public Class<?> getObjectClass() {
-    return null;
-  }
-
-  @Override
-  public Object getElement() {
-    return null;
+  public Class<?> getElementClass() {
+    return MultiInputOperator.class;
   }
 }

@@ -20,8 +20,8 @@ package com.uber.athena.flux.converter.runtime.traverser;
 
 import com.uber.athena.flux.converter.api.converter.Converter;
 import com.uber.athena.flux.converter.api.converter.ConverterContext;
-import com.uber.athena.flux.converter.api.node.Node;
 import com.uber.athena.flux.converter.api.traverser.Traverser;
+import com.uber.athena.flux.converter.api.traverser.TraverserOpt;
 import com.uber.athena.flux.model.SourceDef;
 
 import java.util.ArrayDeque;
@@ -35,12 +35,10 @@ import java.util.Queue;
  *
  * <p>The traverse depends on {@link BaseTraverserContext} to determine whether
  * a specific node is ready for processing or not.
- *
- * @param <T> Node type hosted in the traverser context.
  */
-public class BfsTraverser<T extends Node> implements Traverser {
+public class BaseTraverser implements Traverser {
 
-  protected final BaseTraverserContext<T> traverserContext;
+  protected final BaseTraverserContext traverserContext;
   protected final ConverterContext converterContext;
   protected final Converter converter;
   protected final Properties properties;
@@ -48,16 +46,16 @@ public class BfsTraverser<T extends Node> implements Traverser {
   protected Queue<String> vertexTraverseQueue = new ArrayDeque<>();
   protected Map<String, Integer> upStreamConversionMap = new HashMap<>();
 
-  public BfsTraverser(
-      BaseTraverserContext<T> traverserContext,
+  public BaseTraverser(
+      BaseTraverserContext traverserContext,
       ConverterContext converterContext,
       Converter converter
   ) {
     this(traverserContext, converterContext, converter, null);
   }
 
-  public BfsTraverser(
-      BaseTraverserContext<T> traverserContext,
+  public BaseTraverser(
+      BaseTraverserContext traverserContext,
       ConverterContext converterContext,
       Converter converter,
       Properties properties
@@ -76,8 +74,8 @@ public class BfsTraverser<T extends Node> implements Traverser {
   @Override
   public void run() {
     // Setting up all vertex upstream conversion count
-    for (T node : traverserContext.getAllTraverseNodes()) {
-      upStreamConversionMap.put(node.getVertexId(), node.getDownstreamVertexIds().size());
+    for (TraverserOpt opt : traverserContext.getAllTraverseNodes()) {
+      upStreamConversionMap.put(opt.getVertexId(), opt.getUpstreamVertexIds().size());
     }
 
     // Get all sources into queue.
@@ -90,12 +88,12 @@ public class BfsTraverser<T extends Node> implements Traverser {
 
       // Convert the node from head of the queue.
       String vertexId = vertexTraverseQueue.poll();
-      T node = traverserContext.getNode(vertexId);
-      converter.convert(node, traverserContext, converterContext);
-      converter.validate(node, traverserContext, converterContext);
+      TraverserOpt opt = traverserContext.getTraverserOpt(vertexId);
+      converter.convert(opt, traverserContext, converterContext);
+      converter.validate(opt, traverserContext, converterContext);
 
       // Add additional nodes to the queue if they are next to be convert.
-      for (String downstreamId : node.getDownstreamVertexIds()) {
+      for (String downstreamId : opt.getDownstreamVertexIds()) {
         Integer currentCount = upStreamConversionMap.get(downstreamId);
         upStreamConversionMap.put(downstreamId, currentCount - 1);
         if (currentCount - 1 == 0) {

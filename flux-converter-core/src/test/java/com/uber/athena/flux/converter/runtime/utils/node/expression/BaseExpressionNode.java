@@ -18,21 +18,29 @@
 
 package com.uber.athena.flux.converter.runtime.utils.node.expression;
 
-import com.uber.athena.flux.converter.api.node.BaseNode;
 import com.uber.athena.flux.converter.api.node.expression.ExpressionNode;
 import com.uber.athena.flux.model.VertexDef;
 
-public class BaseExpressionNode extends BaseNode implements ExpressionNode {
+public abstract class BaseExpressionNode implements ExpressionNode {
 
   protected Object constructedExpression;
 
+  protected String vertexId;
+  protected VertexDef vertexDef;
+
   public BaseExpressionNode(String vertexId, VertexDef vertexDef) {
-    super(vertexId, vertexDef);
+    this.vertexId = vertexId;
+    this.vertexDef = vertexDef;
   }
 
   @Override
-  public Class<?> getObjectClass() {
-    return BaseExpressionNode.class;
+  public String getVertexId() {
+    return vertexId;
+  }
+
+  @Override
+  public VertexDef getVertexDef() {
+    return vertexDef;
   }
 
   @Override
