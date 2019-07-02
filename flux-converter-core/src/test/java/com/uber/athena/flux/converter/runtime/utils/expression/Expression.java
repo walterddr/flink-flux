@@ -16,21 +16,24 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.runtime.utils.operator;
+package com.uber.athena.flux.converter.runtime.utils.expression;
 
-public class SimpleSource extends Operator {
+import com.uber.athena.flux.converter.runtime.utils.operator.Operator;
+import com.uber.athena.flux.model.VertexDef;
 
-  private int value;
+import java.util.Map;
 
-  public SimpleSource(int value) {
-    this.value = value;
+public abstract class Expression {
+
+  protected String digest;
+
+  public String getDigest() {
+    return digest;
   }
 
-  public int getValue() {
-    return value;
-  }
+  public abstract Operator getOperator();
 
-  public void computeDigest() {
-    this.setDigest(this.getClass().getSimpleName() + "(" + this.getVertexId() + ")");
-  }
+  public abstract VertexDef getVertexDef();
+
+  public abstract Map<String, Expression> getUpstreams();
 }

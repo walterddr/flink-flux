@@ -18,5 +18,12 @@
 
 package com.uber.athena.flux.converter.runtime.utils.operator;
 
-public class MultiInputOperator {
+public class MultiInputOperator extends Operator {
+
+  public MultiInputOperator() {
+  }
+
+  public void computeDigest() {
+    this.setDigest(this.getClass().getSimpleName() + "(" + this.getVertexId() + ")");
+  }
 }

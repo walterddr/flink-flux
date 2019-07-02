@@ -19,4 +19,11 @@
 package com.uber.athena.flux.converter.runtime.utils.operator;
 
 public class SimpleSink extends SimpleOperator {
+
+  public SimpleSink() {
+  }
+
+  public void computeDigest() {
+    this.setDigest(this.getClass().getSimpleName() + "(" + this.getVertexId() + ")");
+  }
 }

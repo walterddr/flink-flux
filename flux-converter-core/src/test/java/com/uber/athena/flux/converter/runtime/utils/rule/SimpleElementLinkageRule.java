@@ -23,8 +23,14 @@ import com.uber.athena.flux.converter.api.node.element.ElementNode;
 import com.uber.athena.flux.converter.api.rule.ConverterRule;
 import com.uber.athena.flux.converter.api.rule.RuleOpt;
 import com.uber.athena.flux.converter.api.traverser.TraverserContext;
+import com.uber.athena.flux.converter.runtime.utils.expression.Expression;
 import com.uber.athena.flux.converter.runtime.utils.expression.TraverseTreeExpression;
 import com.uber.athena.flux.converter.runtime.utils.node.expression.TraverseTreeExpressionNode;
+import com.uber.athena.flux.converter.runtime.utils.operator.Operator;
+import com.uber.athena.flux.model.StreamDef;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SimpleElementLinkageRule extends ConverterRule {
 
@@ -44,7 +50,13 @@ public class SimpleElementLinkageRule extends ConverterRule {
       RuleOpt ruleOpt,
       TraverserContext traverserContext,
       ConverterContext converterContext) {
-    // Always link elements
+    // ready to convert if all upstreams has expressions generated.
+    for (StreamDef stream : ruleOpt.getUpstreams()) {
+      String upstreamVertex = stream.getFromVertex();
+      if (converterContext.getExpressionNode(upstreamVertex) == null) {
+        return false;
+      }
+    }
     return true;
   }
 
@@ -53,11 +65,22 @@ public class SimpleElementLinkageRule extends ConverterRule {
       RuleOpt ruleOpt,
       TraverserContext traverserContext,
       ConverterContext converterContext) {
-    // TODO(@walterddr) add actual linkage
     TraverseTreeExpressionNode node = new TraverseTreeExpressionNode(
         ruleOpt.getNode().getVertexId(),
         ruleOpt.getNode().getVertexDef());
-    node.setExpression(new TraverseTreeExpression());
+    Map<String, Expression> upstreamMap = new HashMap<>();
+    for (StreamDef stream : ruleOpt.getUpstreams()) {
+      String upstreamVertex = stream.getFromVertex();
+      upstreamMap.put(upstreamVertex,
+          (TraverseTreeExpression) converterContext.getExpressionNode(
+              upstreamVertex).getExpression());
+    }
+    node.setExpression(new TraverseTreeExpression(
+        ruleOpt.getNode().getVertexId(),
+        ruleOpt.getNode().getVertexDef(),
+        (Operator) ((ElementNode) ruleOpt.getNode()).getElement(),
+        upstreamMap
+    ));
     converterContext.processConvertedResult(node, TraverseTreeExpressionNode.class);
   }
 }

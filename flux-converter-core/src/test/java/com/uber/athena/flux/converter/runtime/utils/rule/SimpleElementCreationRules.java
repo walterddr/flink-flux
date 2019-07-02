@@ -30,6 +30,7 @@ import com.uber.athena.flux.converter.runtime.utils.node.element.BaseElementNode
 import com.uber.athena.flux.converter.runtime.utils.node.element.OneInputElementNode;
 import com.uber.athena.flux.converter.runtime.utils.node.element.SourceElementNode;
 import com.uber.athena.flux.converter.runtime.utils.node.element.TwoInputElementNode;
+import com.uber.athena.flux.converter.runtime.utils.operator.Operator;
 import com.uber.athena.flux.model.VertexDef;
 
 public abstract class SimpleElementCreationRules<T extends ElementNode> extends ConverterRule {
@@ -152,9 +153,10 @@ public abstract class SimpleElementCreationRules<T extends ElementNode> extends 
       ConverterContext converterContext) {
     try {
       VertexDef vertexDef = elementNode.getVertexDef();
-      Object object = ReflectiveInvokeUtils.buildObject(
+      Operator operator = (Operator) ReflectiveInvokeUtils.buildObject(
           vertexDef, traverserContext, converterContext);
-      elementNode.setElement(object);
+      operator.setVertexId(elementNode.getVertexId());
+      elementNode.setElement(operator);
     } catch (Exception e) {
       throw new RuntimeException("Cannot construct build object!", e);
     }

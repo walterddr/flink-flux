@@ -18,19 +18,25 @@
 
 package com.uber.athena.flux.converter.runtime.utils.operator;
 
-public class SimpleSource extends Operator {
+public abstract class Operator {
+  private String digest;
+  private String vertexId;
 
-  private int value;
-
-  public SimpleSource(int value) {
-    this.value = value;
+  public String getDigest() {
+    return digest;
   }
 
-  public int getValue() {
-    return value;
+  public void setDigest(String digest) {
+    this.digest = digest;
   }
 
-  public void computeDigest() {
-    this.setDigest(this.getClass().getSimpleName() + "(" + this.getVertexId() + ")");
+  public String getVertexId() {
+    return vertexId;
   }
+
+  public void setVertexId(String vertexId) {
+    this.vertexId = vertexId;
+  }
+
+  public abstract void computeDigest();
 }
