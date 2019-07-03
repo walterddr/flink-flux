@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.runtime.converter;
+package com.uber.athena.flux.converter.runtime.utils.converter;
 
 import com.uber.athena.flux.converter.api.converter.ConverterContext;
 import com.uber.athena.flux.converter.api.converter.ConverterRuleOpt;
@@ -29,6 +29,7 @@ import com.uber.athena.flux.converter.api.rule.ConverterRuleSet;
 import com.uber.athena.flux.converter.api.rule.RuleSet;
 import com.uber.athena.flux.converter.api.traverser.TraverserContext;
 import com.uber.athena.flux.converter.api.traverser.TraverserOpt;
+import com.uber.athena.flux.converter.runtime.converter.RuleSetConverter;
 import com.uber.athena.flux.converter.runtime.utils.node.dsl.BaseDslNode;
 import com.uber.athena.flux.model.EdgeDef;
 

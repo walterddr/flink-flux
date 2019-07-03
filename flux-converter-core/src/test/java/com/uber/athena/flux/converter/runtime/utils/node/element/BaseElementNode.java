@@ -18,14 +18,17 @@
 
 package com.uber.athena.flux.converter.runtime.utils.node.element;
 
+import com.uber.athena.flux.converter.api.node.Node;
 import com.uber.athena.flux.converter.api.node.element.ElementNode;
+import com.uber.athena.flux.converter.runtime.utils.operator.Operator;
 import com.uber.athena.flux.model.VertexDef;
 
 public abstract class BaseElementNode implements ElementNode {
 
-  protected Object constructedElement;
+  protected Operator constructedElement;
   protected String vertexId;
   protected VertexDef vertexDef;
+  protected String digest;
 
   public BaseElementNode(String vertexId, VertexDef vertexDef) {
     this.vertexId = vertexId;
@@ -43,11 +46,28 @@ public abstract class BaseElementNode implements ElementNode {
   }
 
   @Override
+  public String getDigest() {
+    return digest;
+  }
+
+  @Override
+  public void computeDigest() {
+    this.digest = computeElementDigest(this.getClass(), this.vertexId, this.constructedElement);
+  }
+
+  @Override
   public Object getElement() {
     return constructedElement;
   }
 
-  public void setElement(Object constructedElement) {
+  public void setElement(Operator constructedElement) {
     this.constructedElement = constructedElement;
+  }
+
+  protected static String computeElementDigest(
+      Class<? extends Node> nodeClazz,
+      String vertexId,
+      Operator element) {
+    return nodeClazz.getSimpleName() + "(" + vertexId + "):\n" + element.getDescription();
   }
 }

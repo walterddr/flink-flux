@@ -19,15 +19,15 @@
 package com.uber.athena.flux.converter.runtime.utils.operator;
 
 public abstract class Operator {
-  private String digest;
+  private String description;
   private String vertexId;
 
-  public String getDigest() {
-    return digest;
+  public String getDescription() {
+    return description;
   }
 
-  public void setDigest(String digest) {
-    this.digest = digest;
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   public String getVertexId() {
@@ -38,5 +38,5 @@ public abstract class Operator {
     this.vertexId = vertexId;
   }
 
-  public abstract void computeDigest();
+  public abstract void computeDescription();
 }

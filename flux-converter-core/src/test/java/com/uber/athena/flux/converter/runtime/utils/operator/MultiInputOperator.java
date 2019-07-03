@@ -23,7 +23,7 @@ public class MultiInputOperator extends Operator {
   public MultiInputOperator() {
   }
 
-  public void computeDigest() {
-    this.setDigest(this.getClass().getSimpleName() + "(" + this.getVertexId() + ")");
+  public void computeDescription() {
+    this.setDescription(this.getClass().getSimpleName() + "(" + this.getVertexId() + ")");
   }
 }

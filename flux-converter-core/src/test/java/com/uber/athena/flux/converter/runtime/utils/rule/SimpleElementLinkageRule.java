@@ -19,6 +19,7 @@
 package com.uber.athena.flux.converter.runtime.utils.rule;
 
 import com.uber.athena.flux.converter.api.converter.ConverterContext;
+import com.uber.athena.flux.converter.api.node.Node;
 import com.uber.athena.flux.converter.api.node.element.ElementNode;
 import com.uber.athena.flux.converter.api.rule.ConverterRule;
 import com.uber.athena.flux.converter.api.rule.RuleOpt;
@@ -57,7 +58,10 @@ public class SimpleElementLinkageRule extends ConverterRule {
         return false;
       }
     }
-    return super.matches(ruleOpt, traverserContext, converterContext);
+    // relaxing to use assignable
+    Node node = ruleOpt.getNode();
+    Class nodeClass = node.getClass();
+    return inClazz.isAssignableFrom(nodeClass);
   }
 
   @Override

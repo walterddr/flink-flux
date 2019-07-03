@@ -22,8 +22,8 @@ import com.uber.athena.flux.converter.api.converter.Converter;
 import com.uber.athena.flux.converter.api.converter.ConverterContext;
 import com.uber.athena.flux.converter.api.rule.ConverterRule;
 import com.uber.athena.flux.converter.api.rule.RuleSet;
-import com.uber.athena.flux.converter.runtime.converter.SimpleConverter;
-import com.uber.athena.flux.converter.runtime.converter.SimpleConverterContext;
+import com.uber.athena.flux.converter.runtime.utils.converter.SimpleConverter;
+import com.uber.athena.flux.converter.runtime.utils.converter.SimpleConverterContext;
 import com.uber.athena.flux.model.TopologyDef;
 import com.uber.athena.flux.parser.FluxParser;
 import org.junit.Test;
@@ -48,12 +48,12 @@ public abstract class TraverseTestBase {
       for (RuleSet<ConverterRule> ruleSet : ruleSets) {
         TopologyDef topologyDef = FluxParser.parseResource(resource,
             false, true, null, false);
-        testTraversingWithEmptyRuleSet(topologyDef, ruleSet);
+        traverserPassthroughValidation(topologyDef, ruleSet);
       }
     }
   }
 
-  private void testTraversingWithEmptyRuleSet(
+  private void traverserPassthroughValidation(
       TopologyDef topologyDef,
       RuleSet<ConverterRule> ruleSet) throws Exception {
     BaseTraverserContext traverserCtx = new BaseTraverserContext(topologyDef);

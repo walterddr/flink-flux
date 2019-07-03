@@ -47,7 +47,10 @@ public abstract class SimpleElementCreationRules<T extends ElementNode> extends 
     if (ruleOpt.getUpstreams().size() != getDesiredUpstreamSize()) {
       return false;
     }
-    return super.matches(ruleOpt, traverserContext, converterContext);
+    // relaxing match rule to only do subclass matches.
+    Node node = ruleOpt.getNode();
+    Class nodeClass = node.getClass();
+    return inClazz.isAssignableFrom(nodeClass);
   }
 
   public abstract int getDesiredUpstreamSize();

@@ -56,6 +56,19 @@ public abstract class SimpleDslConversionRules<T extends DslNode> extends Conver
     }
 
     @Override
+    public boolean matches(
+        RuleOpt ruleOpt,
+        TraverserContext traverserContext,
+        ConverterContext converterContext) {
+      Node node = ruleOpt.getNode();
+      String vertexId = node.getVertexDef().getId();
+      if (!traverserContext.getTopologyDef().getSources().containsKey(vertexId)) {
+        return false;
+      }
+      return super.matches(ruleOpt, traverserContext, converterContext);
+    }
+
+    @Override
     public void onMatch(
         RuleOpt ruleOpt,
         TraverserContext traverserContext,
@@ -85,6 +98,19 @@ public abstract class SimpleDslConversionRules<T extends DslNode> extends Conver
     }
 
     @Override
+    public boolean matches(
+        RuleOpt ruleOpt,
+        TraverserContext traverserContext,
+        ConverterContext converterContext) {
+      Node node = ruleOpt.getNode();
+      String vertexId = node.getVertexDef().getId();
+      if (!traverserContext.getTopologyDef().getSinks().containsKey(vertexId)) {
+        return false;
+      }
+      return super.matches(ruleOpt, traverserContext, converterContext);
+    }
+
+    @Override
     public void onMatch(
         RuleOpt ruleOpt,
         TraverserContext traverserContext,
@@ -111,6 +137,19 @@ public abstract class SimpleDslConversionRules<T extends DslNode> extends Conver
 
     OperatorConverter(Class<DslNode> in, Class<OperatorNode> out, String description) {
       super(in, out, description);
+    }
+
+    @Override
+    public boolean matches(
+        RuleOpt ruleOpt,
+        TraverserContext traverserContext,
+        ConverterContext converterContext) {
+      Node node = ruleOpt.getNode();
+      String vertexId = node.getVertexDef().getId();
+      if (!traverserContext.getTopologyDef().getOperators().containsKey(vertexId)) {
+        return false;
+      }
+      return super.matches(ruleOpt, traverserContext, converterContext);
     }
 
     @Override

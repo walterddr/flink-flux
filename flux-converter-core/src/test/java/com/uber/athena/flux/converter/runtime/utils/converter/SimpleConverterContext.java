@@ -16,12 +16,13 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.runtime.converter;
+package com.uber.athena.flux.converter.runtime.utils.converter;
 
 import com.uber.athena.flux.converter.api.node.Node;
 import com.uber.athena.flux.converter.api.node.dsl.DslNode;
 import com.uber.athena.flux.converter.api.node.element.ElementNode;
 import com.uber.athena.flux.converter.api.node.expression.ExpressionNode;
+import com.uber.athena.flux.converter.runtime.converter.RuleSetConverterContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,6 +47,7 @@ public class SimpleConverterContext extends RuleSetConverterContext<Node> {
    */
   @Override
   public void processConvertedResult(Node convertNode, Class<? extends Node> nodeClazz) {
+    convertNode.computeDigest();
     if (convertNode instanceof DslNode) {
       dslNodeMap.put(convertNode.getVertexId(), (DslNode) convertNode);
     } else if (convertNode instanceof ElementNode) {

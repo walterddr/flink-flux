@@ -38,4 +38,15 @@ public interface Node extends Serializable {
    * @return vertex definition
    */
   VertexDef getVertexDef();
+
+  /**
+   * get node digest.
+   * @return digest of the node.
+   */
+  String getDigest();
+
+  /**
+   * Trigger re-computation of the digest values.
+   */
+  void computeDigest();
 }

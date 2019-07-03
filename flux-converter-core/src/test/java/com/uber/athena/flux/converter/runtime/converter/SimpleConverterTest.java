@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.uber.athena.flux.converter.runtime.traverser;
+package com.uber.athena.flux.converter.runtime.converter;
 
 import com.uber.athena.flux.converter.api.rule.ConverterRule;
 import com.uber.athena.flux.converter.api.rule.ConverterRuleSet;
@@ -26,29 +26,31 @@ import com.uber.athena.flux.converter.runtime.utils.rule.SimpleElementCreationRu
 import com.uber.athena.flux.converter.runtime.utils.rule.SimpleElementLinkageRule;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-public class BaseTraverserTest extends TraverseTestBase {
+public class SimpleConverterTest extends ConverterTestBase {
+
+  private static final RuleSet<ConverterRule> RULE_SET = ConverterRuleSet.ofList(
+      SimpleDslConversionRules.OperatorConverter.INSTANCE,
+      SimpleDslConversionRules.SourceConverter.INSTANCE,
+      SimpleDslConversionRules.SinkConverter.INSTANCE,
+      SimpleElementCreationRules.SourceCreationRule.INSTANCE,
+      SimpleElementCreationRules.OneInputCreationRule.INSTANCE,
+      SimpleElementCreationRules.TwoInputCreationRule.INSTANCE,
+      SimpleElementLinkageRule.INSTANCE
+  );
 
   private static final List<String> TEST_TOPOLOGY_RESOURCE_PATHS = Arrays.asList(
       "/configs/simple_passthrough_topology.yaml",
       "/configs/diamond_topology.yaml");
+  private static final List<String> TEST_EXPECTED_DIGEST_MAP_PATHS = Arrays.asList(
+      "/digests/simple_passthrough_topology.yaml",
+      "/digests/diamond_topology.yaml");
 
-  private static final List<RuleSet<ConverterRule>> RULE_SETS = Arrays.asList(
-      ConverterRuleSet.ofList(Collections.emptyList()),
-      ConverterRuleSet.ofList(
-          SimpleDslConversionRules.OperatorConverter.INSTANCE,
-          SimpleDslConversionRules.SourceConverter.INSTANCE,
-          SimpleDslConversionRules.SinkConverter.INSTANCE,
-          SimpleElementCreationRules.SourceCreationRule.INSTANCE,
-          SimpleElementCreationRules.OneInputCreationRule.INSTANCE,
-          SimpleElementCreationRules.TwoInputCreationRule.INSTANCE,
-          SimpleElementLinkageRule.INSTANCE
-      )
-  );
-
-  public BaseTraverserTest() {
-    super(TEST_TOPOLOGY_RESOURCE_PATHS, RULE_SETS);
+  public SimpleConverterTest() {
+    super(
+        RULE_SET,
+        TEST_TOPOLOGY_RESOURCE_PATHS,
+        TEST_EXPECTED_DIGEST_MAP_PATHS);
   }
 }

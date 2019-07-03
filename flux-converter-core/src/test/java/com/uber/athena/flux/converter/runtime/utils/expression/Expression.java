@@ -25,10 +25,10 @@ import java.util.Map;
 
 public abstract class Expression {
 
-  protected String digest;
+  protected String description;
 
-  public String getDigest() {
-    return digest;
+  public String getDescription() {
+    return description;
   }
 
   public abstract Operator getOperator();

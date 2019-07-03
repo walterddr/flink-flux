@@ -23,7 +23,7 @@ public class SimpleOperator extends Operator {
   public SimpleOperator() {
   }
 
-  public void computeDigest() {
-    this.setDigest(this.getClass().getSimpleName() + "(" + this.getVertexId() + ")");
+  public void computeDescription() {
+    this.setDescription(this.getClass().getSimpleName() + "(" + this.getVertexId() + ")");
   }
 }
