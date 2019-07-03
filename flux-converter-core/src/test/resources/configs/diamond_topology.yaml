@@ -47,7 +47,7 @@ config:
 sources:
   source-1:
     id: "source-1"
-    className: "com.uber.athena.flux.converter.runtime.utils.operator.SimpleSource"
+    className: "com.uber.athena.flux.converter.impl.testutils.operator.SimpleSource"
     parallelism: 4
     constructorArgs:
       - 10 # limit
@@ -57,15 +57,15 @@ sources:
 operators:
   operator-1:
     id: "operator-1"
-    className: "com.uber.athena.flux.converter.runtime.utils.operator.SimpleOperator"
+    className: "com.uber.athena.flux.converter.impl.testutils.operator.SimpleOperator"
     parallelism: 1
   operator-2:
     id: "operator-2"
-    className: "com.uber.athena.flux.converter.runtime.utils.operator.SimpleOperator"
+    className: "com.uber.athena.flux.converter.impl.testutils.operator.SimpleOperator"
     parallelism: 1
   operator-merge:
     id: "operator-merge"
-    className: "com.uber.athena.flux.converter.runtime.utils.operator.MultiInputOperator"
+    className: "com.uber.athena.flux.converter.impl.testutils.operator.MultiInputOperator"
     parallelism: 1
     inputSpec:
       "operator-1 --> operator-merge":
@@ -78,7 +78,7 @@ operators:
 sinks:
   sink-1:
     id: "sink-1"
-    className: "com.uber.athena.flux.converter.runtime.utils.operator.SimpleSink"
+    className: "com.uber.athena.flux.converter.impl.testutils.operator.SimpleSink"
     parallelism: 16
     # ...
 

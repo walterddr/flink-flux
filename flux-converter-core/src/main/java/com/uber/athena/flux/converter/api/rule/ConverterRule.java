@@ -61,7 +61,7 @@ public abstract class ConverterRule implements Rule {
       ConverterContext converterContext) {
     Node node = converterRuleOpt.getNode();
     Class nodeClass = node.getClass();
-    return inClazz.isInstance(nodeClass);
+    return inClazz.isAssignableFrom(nodeClass);
   }
 
   public String getDescription() {
