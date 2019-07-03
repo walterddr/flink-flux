@@ -41,6 +41,7 @@ public abstract class SimpleDslConversionRules<T extends DslNode> extends Conver
       ConverterContext converterContext) {
     Node node = converterRuleOpt.getNode();
     Class nodeClass = node.getClass();
+    // relaxing the match criteria to all extended class.
     return inClazz.isAssignableFrom(nodeClass);
   }
 

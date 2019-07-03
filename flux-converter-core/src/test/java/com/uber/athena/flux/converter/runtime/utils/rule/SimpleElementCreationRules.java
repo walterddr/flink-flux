@@ -41,10 +41,13 @@ public abstract class SimpleElementCreationRules<T extends ElementNode> extends 
 
   @Override
   public boolean matches(
-      RuleOpt converterRuleOpt,
+      RuleOpt ruleOpt,
       TraverserContext traverserContext,
       ConverterContext converterContext) {
-    return converterRuleOpt.getUpstreams().size() == getDesiredUpstreamSize();
+    if (ruleOpt.getUpstreams().size() != getDesiredUpstreamSize()) {
+      return false;
+    }
+    return super.matches(ruleOpt, traverserContext, converterContext);
   }
 
   public abstract int getDesiredUpstreamSize();

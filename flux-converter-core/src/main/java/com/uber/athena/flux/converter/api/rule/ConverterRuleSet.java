@@ -27,9 +27,17 @@ import java.util.List;
 public class ConverterRuleSet implements RuleSet<ConverterRule> {
 
   private final List<ConverterRule> rules;
+  private RuleMatchOrder ruleMatchOrder;
 
   ConverterRuleSet(List<ConverterRule> rules) {
+    this(rules, RuleMatchOrder.ARBITRARY);
+  }
+
+  ConverterRuleSet(
+      List<ConverterRule> rules,
+      RuleMatchOrder order) {
     this.rules = rules;
+    this.ruleMatchOrder = order;
   }
 
   @Override
@@ -57,5 +65,14 @@ public class ConverterRuleSet implements RuleSet<ConverterRule> {
   /** Creates a rule set with a given array of rules. */
   public static RuleSet<ConverterRule> ofList(Collection<ConverterRule> rules) {
     return new ConverterRuleSet(new ArrayList<>(rules));
+  }
+
+  @Override
+  public RuleMatchOrder getRuleMatchOrder() {
+    return ruleMatchOrder;
+  }
+
+  public void setRuleMatchOrder(RuleMatchOrder matchOrder) {
+    this.ruleMatchOrder = matchOrder;
   }
 }

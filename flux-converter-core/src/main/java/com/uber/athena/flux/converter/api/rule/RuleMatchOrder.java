@@ -19,9 +19,22 @@
 package com.uber.athena.flux.converter.api.rule;
 
 /**
- * A set of {@code Rule}s that constructs a complete set for a program.
+ * Specifies the order of ruleset traversal when looking for rule matches.
  */
-public interface RuleSet<T extends Rule> extends Iterable<T> {
+public enum RuleMatchOrder {
 
-  RuleMatchOrder getRuleMatchOrder();
+  /**
+   * Match in arbitrary order.
+   *
+   * <p>This is the default because it is efficient, and most rules don't care
+   * about order.
+   */
+  ARBITRARY,
+
+  /**
+   * Match from top down.
+   *
+   * <p>A match attempts to apply rules in a {@link RuleSet} sequentially.
+   */
+  SEQUENTIAL
 }

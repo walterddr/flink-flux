@@ -57,7 +57,7 @@ public class SimpleElementLinkageRule extends ConverterRule {
         return false;
       }
     }
-    return true;
+    return super.matches(ruleOpt, traverserContext, converterContext);
   }
 
   @Override
