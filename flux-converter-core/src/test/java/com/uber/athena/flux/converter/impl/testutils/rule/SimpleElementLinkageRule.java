@@ -19,7 +19,6 @@
 package com.uber.athena.flux.converter.impl.testutils.rule;
 
 import com.uber.athena.flux.converter.api.converter.ConverterContext;
-import com.uber.athena.flux.converter.api.node.Node;
 import com.uber.athena.flux.converter.api.node.element.ElementNode;
 import com.uber.athena.flux.converter.api.rule.ConverterRule;
 import com.uber.athena.flux.converter.api.rule.RuleOpt;

@@ -42,9 +42,13 @@ public interface ExpressionNode extends Node {
   Class<?> getExpressionClass();
 
   /**
-   * Return the constructed expression.
+   * Return the constructed element.
    *
-   * @return the constructed expression, or null if not constructed.
+   * <p>return element type should match element class acquired from the
+   * {@link ExpressionNode.getExpressionClass} method.
+   *
+   * @param <R> result matching return type
+   * @return the constructed element, or null if not constructed.
    */
-  Object getExpression();
+  <R> R getExpression();
 }

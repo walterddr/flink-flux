@@ -34,7 +34,7 @@ import com.uber.athena.flux.converter.api.node.Node;
 public interface ElementNode extends Node {
 
   /**
-   * Retruns the type of element this node is capable of constructing.
+   * Returns the type of element this node is capable of constructing.
    *
    * @return Clazz of the element object.
    */
@@ -43,7 +43,11 @@ public interface ElementNode extends Node {
   /**
    * Return the constructed element.
    *
+   * <p>return element type should match element class acquired from the
+   * {@link ElementNode.getElementClass} method.
+   *
+   * @param <R> result matching return type
    * @return the constructed element, or null if not constructed.
    */
-  Object getElement();
+  <R> R getElement();
 }

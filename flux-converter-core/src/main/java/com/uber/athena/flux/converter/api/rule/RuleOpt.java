@@ -40,18 +40,6 @@ public interface RuleOpt {
   Rule getRule();
 
   /**
-   * Returns a upstream node associated with this node via a {@link StreamDef}.
-   *
-   * <p>Upstream nodes should be formed via converter context
-   * to associate correct format of the node for this particular
-   * rule's requirement.
-   *
-   * @param vertexId the node vertex ID.
-   * @return the upstream node of the vertexId matched in this rule's context.
-   */
-  <R extends Node> R getUpstreamNode(String vertexId);
-
-  /**
    * Retrieves a list of upstream definitions connecting with this node.
    *
    * @return the upstream list.

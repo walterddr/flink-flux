@@ -34,19 +34,16 @@ public class ConverterRuleOpt implements RuleOpt {
   protected final String vertexId;
   protected final Node node;
   protected final Rule rule;
-  protected final Map<String, Node> upstreamNodeMap;
   protected final List<StreamDef> upstreamList;
 
   public ConverterRuleOpt(
       String vertexId,
       Node node,
       Rule rule,
-      Map<String, Node> upstreamNodeMap,
       List<StreamDef> upstreamList) {
     this.vertexId = vertexId;
     this.node = node;
     this.rule = rule;
-    this.upstreamNodeMap = upstreamNodeMap;
     this.upstreamList = upstreamList;
   }
 
@@ -59,12 +56,6 @@ public class ConverterRuleOpt implements RuleOpt {
   @Override
   public Rule getRule() {
     return rule;
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public <R extends Node> R getUpstreamNode(String vertexId) {
-    return (R) upstreamNodeMap.get(vertexId);
   }
 
   @Override

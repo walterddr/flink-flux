@@ -62,18 +62,6 @@ public class SimpleConverter extends RuleSetConverter {
       TraverserContext traverserContext,
       ConverterContext converterContext) {
     for (ConverterRule rule : converterRuleSet) {
-
-      Map<String, Node> nodeMap = traverserOpt.getUpstreams()
-          .stream()
-          .collect(
-              Collectors.toMap(
-                  EdgeDef::getFromVertex,
-                  (x -> getNode(
-                      x.getFromVertex(),
-                      traverserContext,
-                      converterContext,
-                      rule.getTransformedClass())))
-          );
       ConverterRuleOpt ruleOpt = new ConverterRuleOpt(
           traverserOpt.getVertexId(),
           getNode(
@@ -82,7 +70,6 @@ public class SimpleConverter extends RuleSetConverter {
               converterContext,
               rule.getInputClass()),
           rule,
-          nodeMap,
           traverserOpt.getUpstreams()
       );
       if (rule.matches(ruleOpt, traverserContext, converterContext)) {

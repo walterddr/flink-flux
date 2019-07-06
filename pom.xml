@@ -63,7 +63,7 @@ under the License.
 
 			<dependency>
 				<groupId>com.uber.athena</groupId>
-				<artifactId>flux-compiler-core</artifactId>
+				<artifactId>flux-converter-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
