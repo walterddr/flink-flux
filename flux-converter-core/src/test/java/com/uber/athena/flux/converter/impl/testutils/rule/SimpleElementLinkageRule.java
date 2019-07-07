@@ -26,7 +26,6 @@ import com.uber.athena.flux.converter.api.traverser.TraverserContext;
 import com.uber.athena.flux.converter.impl.testutils.expression.Expression;
 import com.uber.athena.flux.converter.impl.testutils.expression.TraverseTreeExpression;
 import com.uber.athena.flux.converter.impl.testutils.node.expression.TraverseTreeExpressionNode;
-import com.uber.athena.flux.converter.impl.testutils.operator.Operator;
 import com.uber.athena.flux.model.StreamDef;
 
 import java.util.HashMap;
@@ -72,13 +71,13 @@ public class SimpleElementLinkageRule extends ConverterRule {
     for (StreamDef stream : ruleOpt.getUpstreams()) {
       String upstreamVertex = stream.getFromVertex();
       upstreamMap.put(upstreamVertex,
-          (TraverseTreeExpression) converterContext.getExpressionNode(
+          converterContext.getExpressionNode(
               upstreamVertex).getExpression());
     }
     node.setExpression(new TraverseTreeExpression(
         ruleOpt.getNode().getVertexId(),
         ruleOpt.getNode().getVertexDef(),
-        (Operator) ((ElementNode) ruleOpt.getNode()).getElement(),
+        ((ElementNode) ruleOpt.getNode()).getElement(),
         upstreamMap
     ));
     converterContext.processConvertedResult(node, TraverseTreeExpressionNode.class);

@@ -57,8 +57,9 @@ public abstract class BaseExpressionNode implements ExpressionNode {
   }
 
   @Override
-  public Object getExpression() {
-    return constructedExpression;
+  @SuppressWarnings("unchecked")
+  public <R> R getExpression() {
+    return (R) constructedExpression;
   }
 
   public void setExpression(Expression expression) {

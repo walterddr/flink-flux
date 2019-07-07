@@ -31,10 +31,6 @@ import com.uber.athena.flux.converter.api.traverser.TraverserContext;
 import com.uber.athena.flux.converter.api.traverser.TraverserOpt;
 import com.uber.athena.flux.converter.impl.converter.RuleSetConverter;
 import com.uber.athena.flux.converter.impl.testutils.node.dsl.BaseDslNode;
-import com.uber.athena.flux.model.EdgeDef;
-
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class SimpleConverter extends RuleSetConverter {
 

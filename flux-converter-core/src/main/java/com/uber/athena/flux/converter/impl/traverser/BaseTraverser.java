@@ -67,8 +67,8 @@ public class BaseTraverser implements Traverser {
   }
 
   @Override
-  public void validate() {
-    // TODO(@walterddr) add validator API
+  public void validate() throws Exception {
+    // Traverser result are always valid for base traverser.
   }
 
   @Override

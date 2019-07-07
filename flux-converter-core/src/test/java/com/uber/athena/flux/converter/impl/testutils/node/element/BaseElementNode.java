@@ -56,8 +56,9 @@ public abstract class BaseElementNode implements ElementNode {
   }
 
   @Override
-  public Object getElement() {
-    return constructedElement;
+  @SuppressWarnings("unchecked")
+  public <R> R getElement() {
+    return (R) constructedElement;
   }
 
   public void setElement(Operator constructedElement) {

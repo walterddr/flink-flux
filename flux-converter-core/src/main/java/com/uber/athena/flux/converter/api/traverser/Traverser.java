@@ -39,5 +39,5 @@ public interface Traverser {
   /**
    * Validate that the traverse program is ready to run.
    */
-  void validate();
+  void validate() throws Exception;
 }

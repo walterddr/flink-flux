@@ -24,7 +24,6 @@ import com.uber.athena.flux.converter.api.rule.RuleOpt;
 import com.uber.athena.flux.model.StreamDef;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Base converter operand representing relationships of a node being converted.
