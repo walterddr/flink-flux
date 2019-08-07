@@ -26,7 +26,8 @@ branches:
 stages:
   - name: main
 
-jdk: "oraclejdk8"
+jdk: "oraclejdk12"
+
 jobs:
   include:
     - if: type in (pull_request, push)
