@@ -16,26 +16,32 @@
  * limitations under the License.
  */
 
-package com.uber.athena.dsl.parser;
+package com.uber.athena.dsl.topology.api;
 
 import com.uber.athena.dsl.model.TopologyDef;
-import com.uber.athena.dsl.utils.TopologyUtils;
-import org.junit.Test;
+import com.uber.athena.dsl.topology.exceptions.ConstructionException;
 
-public class TopologyParsingTest {
+import java.util.Map;
 
-  @Test
-  public void testBasicTopologyGen() throws Exception {
-    TopologyDef topologyDef = DslParser.parseResource(
-        "/configs/basic_topology.yaml", false, true, null, false);
-    TopologyUtils.validate(topologyDef);
-  }
+/**
+ * Marker interface for objects that can produce `StormTopology` objects.
+ *
+ * <p>If a `topology-source` class implements the `createTopology()` method, DSL will
+ * call that method.
+ *
+ * <p>A specific DSL execution framework should implement this interface and produce
+ * concrete {@code Topology} implementations that can be executed within the framework.
+ */
+public interface TopologyBuilder {
 
-  @Test
-  public void testRepartitionTopologyGen() throws Exception {
-    TopologyDef topologyDef = DslParser.parseResource(
-        "/configs/diamond_topology.yaml", false, true, null, false);
-    TopologyUtils.validate(topologyDef);
-  }
-
+  /**
+   * Create DSL topology based on topology definition.
+   *
+   * @param topologyDef topology definition
+   * @param config      configuration global map
+   * @return topology
+   */
+  Topology createTopology(
+      TopologyDef topologyDef,
+      Map<String, Object> config) throws ConstructionException;
 }

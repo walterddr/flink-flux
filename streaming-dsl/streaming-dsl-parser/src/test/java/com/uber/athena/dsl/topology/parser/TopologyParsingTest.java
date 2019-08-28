@@ -16,14 +16,22 @@
  * limitations under the License.
  */
 
-package com.uber.athena.dsl.api.topology;
+package com.uber.athena.dsl.topology.parser;
 
-/**
- * Dsl topology that can be self convert into Execution job graph.
- *
- * <p>Specific DSL Topology execution framework should implement this interface
- * and the concrete implementation should be executable within the framework.
- */
-public interface DslTopology {
+import com.uber.athena.dsl.model.TopologyDef;
+import org.junit.Test;
 
+public class TopologyParsingTest {
+
+  @Test
+  public void testResourceParsing() throws Exception {
+    TopologyDef topologyDef = DslParser.parseResource(
+        "/configs/basic_topology.yaml", false, null, false);
+  }
+
+  @Test
+  public void testFileParsing() throws Exception {
+    TopologyDef topologyDef = DslParser.parseFile(
+        "src/test/resources/configs/basic_topology.yaml", false, null, false);
+  }
 }

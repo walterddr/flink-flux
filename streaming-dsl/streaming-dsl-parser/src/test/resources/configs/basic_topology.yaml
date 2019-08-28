@@ -43,8 +43,8 @@ config:
   topology.workers: 1
   # ...
 
-# source definitions
-sources:
+# definitions for vertices
+vertices:
   source-1:
     id: "source-1"
     className: "DummySource"
@@ -52,17 +52,11 @@ sources:
     constructorArgs:
       - 10 # limit
     # ...
-
-# operator definitions
-operators:
   operator-1:
     id: "operator-1"
     className: "DummyOperator"
     parallelism: 1
     # ...
-
-# sink definitions
-sinks:
   sink-1:
     id: "sink-1"
     className: "DummySink"

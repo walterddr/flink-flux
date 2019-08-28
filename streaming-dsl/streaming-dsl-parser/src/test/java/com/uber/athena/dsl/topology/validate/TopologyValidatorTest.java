@@ -16,32 +16,29 @@
  * limitations under the License.
  */
 
-package com.uber.athena.dsl.api.topology;
+package com.uber.athena.dsl.topology.validate;
 
 import com.uber.athena.dsl.model.TopologyDef;
+import com.uber.athena.dsl.topology.model.DslTopologyBuilder;
+import com.uber.athena.dsl.topology.parser.DslParser;
+import org.junit.Test;
 
-import java.io.IOException;
-import java.util.Map;
+public class TopologyValidatorTest {
 
-/**
- * Marker interface for objects that can produce `StormTopology` objects.
- *
- * <p>If a `topology-source` class implements the `createTopology()` method, DSL will
- * call that method.
- *
- * <p>A specific DSL execution framework should implement this interface and produce
- * concrete {@code DslTopology} implementations that can be executed within the framework.
- */
-public interface DslTopologyBuilder {
+  @Test
+  public void testBasicTopology() throws Exception {
+    TopologyDef topologyDef = DslParser.parseResource(
+        "/configs/basic_topology.yaml", false, null, false);
+    DslTopologyBuilder builder = new DslTopologyBuilder();
+    new DslValidator(builder).validate(topologyDef, null);
+  }
 
-  /**
-   * Create DSL topology based on topology definition.
-   *
-   * @param topologyDef topology definition
-   * @param config      configuration global map
-   * @return topology
-   */
-  DslTopology createTopology(
-      TopologyDef topologyDef,
-      Map<String, Object> config) throws IOException;
+  @Test
+  public void testDiamondTopology() throws Exception {
+    TopologyDef topologyDef = DslParser.parseResource(
+        "/configs/diamond_topology.yaml", false, null, false);
+    DslTopologyBuilder builder = new DslTopologyBuilder();
+    new DslValidator(builder).validate(topologyDef, null);
+  }
+
 }

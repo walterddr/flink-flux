@@ -16,17 +16,33 @@
  * limitations under the License.
  */
 
-package com.uber.athena.dsl.utils;
+package com.uber.athena.dsl.topology.api;
 
-import java.io.IOException;
+import com.uber.athena.dsl.model.ComponentDef;
+import com.uber.athena.dsl.model.PropertyDef;
+import com.uber.athena.dsl.model.StreamDef;
 
-final class Utils {
+import java.util.List;
+import java.util.Map;
 
-  private Utils() {
+/**
+ * Dsl topology that can be converted into Execution job graph.
+ */
+public interface Topology {
 
-  }
+  String getName();
 
-  public static IOException wrapAsIOException(Exception e) {
-    return new IOException(e);
-  }
+  Map<String, Object> getConfig();
+
+  Map<String, PropertyDef> getPropertyMap();
+
+  Map<String, ComponentDef> getComponents();
+
+  Map<String, Vertex> getOperators();
+
+  Map<String, Vertex> getSources();
+
+  Map<String, Vertex> getSinks();
+
+  List<StreamDef> getStreams();
 }

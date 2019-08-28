@@ -34,22 +34,6 @@ definitions:
 # -----------------------------------------------------------------------------
 # Basic object definitions
 # -----------------------------------------------------------------------------
-  IncludeDef:
-    type: object
-    properties:
-      resourceName:
-        type: string
-        description: the name of the resource to be included
-      isOverride:
-        type: boolean
-        description: indicator on whether this resource should override any existing defaults
-      resourceType:
-        type: string
-        description: the type of the resource
-        enum:
-          - RESOURCE
-          - FILE
-        default: FILE
   PropertyDef:
     type: object
     properties:
@@ -149,15 +133,6 @@ definitions:
           inputSpec:
             type: object
             $ref: '#definitions/InputSpecDef'
-  SourceDef:
-    allOf:
-      - $ref: '#/definitions/VertexDef'
-  SinkDef:
-    allOf:
-      - $ref: '#/definitions/VertexDef'
-  OperatorDef:
-    allOf:
-      - $ref: '#/definitions/VertexDef'
 
   EdgeDef:
     allOf:
@@ -185,44 +160,12 @@ definitions:
   TopologyDef:
     type: object
     properties:
+      # -----------------------------------------------------------------------
+      # Basic properties of the entire topology.
+      # -----------------------------------------------------------------------
       name:
         type: string
         description: the identifier name for this topology
-      components:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/ComponentDef'
-        description: the mapping from component identifiers to component definitions
-      sources:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/SourceDef'
-        description: the mapping from source identifiers to source definitions
-      sinks:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/SinkDef'
-        description: the mapping from sink identifiers to sink definitions
-      operators:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/OperatorDef'
-        description: the mapping from operator identifiers to operator definitions
-      includes:
-        type: array
-        items:
-          $ref: '#/definitions/IncludeDef'
-        description: the included resource list
-      streams:
-        type: array
-        items:
-          $ref: '#/definitions/StreamDef'
-        description: list for all stream/edge defintiions
-      configMethods:
-        type: array
-        items:
-          $ref: '#/definitions/ConfigMethodDef'
-        description: the optional method provided by this object for configuration
       config:
         type: object
         additionalProperties:
@@ -233,3 +176,26 @@ definitions:
         additionalProperties:
           $ref: '#/definitions/PropertyDef'
         description: the mapping of all the additional properties
+
+      # -----------------------------------------------------------------------
+      # Components of the topology that constructs all vertices.
+      # -----------------------------------------------------------------------
+      components:
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/ComponentDef'
+        description: the mapping of all reusable components which are not directly used as DAG vertex.
+      vertices:
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/VertexDef'
+        description: the mapping from vertex identifiers to vertex definitions
+
+      # -----------------------------------------------------------------------
+      # Streams of the topology that constructs all edges.
+      # -----------------------------------------------------------------------
+      streams:
+        type: array
+        items:
+          $ref: '#/definitions/StreamDef'
+        description: list for all stream/edge defintiions
