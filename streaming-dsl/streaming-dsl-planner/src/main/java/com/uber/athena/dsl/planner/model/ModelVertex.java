@@ -19,12 +19,13 @@
 
 package com.uber.athena.dsl.planner.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Model node represents a vertex within a {@link com.uber.athena.dsl.planner.topology.Topology}.
  */
-public class ModelVertex implements VertexNode {
+public class ModelVertex implements VertexNode, Serializable {
 
   protected final String vertexId;
   protected final VertexDef vertexDef;

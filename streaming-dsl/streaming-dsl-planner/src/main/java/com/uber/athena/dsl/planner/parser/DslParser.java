@@ -62,10 +62,14 @@ public final class DslParser implements Parser {
 
     // Parser
     FileInputStream in = new FileInputStream(inputFile);
-    Topology topology = parseInputStream(in, dumpYaml, propertiesFile, envSub);
-    in.close();
-
-    return topology;
+    try {
+      Topology topology = parseInputStream(in, dumpYaml, propertiesFile, envSub);
+      in.close();
+      return topology;
+    } catch (ParsingException pe) {
+      in.close();
+      throw new ParsingException("unable to parse file: " + inputFile, pe);
+    }
   }
 
   public Topology parseResource(
@@ -75,10 +79,15 @@ public final class DslParser implements Parser {
       boolean envSub) throws IOException, ParsingException {
 
     InputStream in = DslParser.class.getResourceAsStream(resource);
-    Topology topology = parseInputStream(in, dumpYaml, propertiesFile, envSub);
-    in.close();
 
-    return topology;
+    try {
+      Topology topology = parseInputStream(in, dumpYaml, propertiesFile, envSub);
+      in.close();
+      return topology;
+    } catch (ParsingException pe) {
+      in.close();
+      throw new ParsingException("unable to parse resource: " + resource, pe);
+    }
   }
 
   public Topology parseInputStream(

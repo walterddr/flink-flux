@@ -97,16 +97,16 @@ class TestPatchRunner:
             + '[ $PIPESTATUS -eq 0 ] || exit $PIPESTATUS'], stdout=sys.stdout, stderr=sys.stderr)
         return proc.wait()
 
-    def run_findbugs(self):
-        LOG.info('Running findbugs')
+    def run_spotbugs(self):
+        LOG.info('Running spotbugs')
         proc = Popen([
             '/bin/bash', '-c',
-            'mvn findbugs:findbugs --batch-mode --fail-at-end|tee ' + TARGET_DIR + '/findbugsResults.txt;'
+            'mvn spotbugs:spotbugs --batch-mode --fail-at-end|tee ' + TARGET_DIR + '/spotbugsResults.txt;'
             + '[ $PIPESTATUS -eq 0 ] || exit $PIPESTATUS'], stdout=sys.stdout, stderr=sys.stderr)
         return proc.wait()
 
-    def parse_findbugs(self):
-        for f in find_files('.', 'findbugsXml.xml'):
+    def parse_spotbugs(self):
+        for f in find_files('.', 'spotbugsXml.xml'):
             try:
                 tree = ET.parse(f)
                 root = tree.getroot()
@@ -115,7 +115,7 @@ class TestPatchRunner:
                     name = root.find('./Project').attrib['projectName']
                     yield (name, bugs)
             except Exception as e:
-                    LOG.warning('[test-patch] Failed to parse the findbugs results from %s, reason: %s' % (f, e))
+                    LOG.warning('[test-patch] Failed to parse the spotbugs results from %s, reason: %s' % (f, e))
 
     def parse_failed_test(self):
         for f in find_files('.', 'TEST*.xml'):
@@ -167,17 +167,17 @@ class TestPatchRunner:
                 self.out.write('  %s\n' % test)
             return -1
 
-        # -- Begin findbugs check --
-        if self.run_findbugs() != 0:
-            self.out.write('There are failures when running findbugs.\n')
+        # -- Begin spotbugs check --
+        if self.run_spotbugs() != 0:
+            self.out.write('There are failures when running spotbugs.\n')
         else:
-            self.findbugsWarnings = list(self.parse_findbugs())
-            if len(self.findbugsWarnings) == 0:
-                self.out.write('No findbugs warnings has been found.\n')
+            self.spotbugsWarnings = list(self.parse_spotbugs())
+            if len(self.spotbugsWarnings) == 0:
+                self.out.write('No spotbugs warnings has been found.\n')
             else:
-                self.out.write('Findbugs has failed.\n')
-                for name, bugs in self.findbugsWarnings:
-                    self.out.write('  Project %s has %s findbugs warnings.\n' % (name, bugs))
+                self.out.write('spotbugs has failed.\n')
+                for name, bugs in self.spotbugsWarnings:
+                    self.out.write('  Project %s has %s spotbugs warnings.\n' % (name, bugs))
                 return -1
 
         self.out.write('====================================================\n')
