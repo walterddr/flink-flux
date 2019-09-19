@@ -43,20 +43,14 @@ under the License.
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- module dependencies -->
 			<dependency>
 				<groupId>com.uber.athena</groupId>
 				<artifactId>streaming-dsl-api</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>com.uber.athena</groupId>
-				<artifactId>streaming-dsl-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-
 			<!-- core dependencies -->
-
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-annotations</artifactId>

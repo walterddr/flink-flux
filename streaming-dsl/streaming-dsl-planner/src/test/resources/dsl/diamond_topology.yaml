@@ -1,0 +1,110 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+# YAML configuration to serve as a basic smoke test for what is supported.
+#
+# We should support comments, so if we've failed so far, things aren't good.
+
+# we shouldn't choke if we see a document separator...
+---
+
+# topology definition
+# name to be used when submitting
+name: "yaml-topology"
+
+# Components
+# Components are analagous to Spring beans. They are meant to be used as constructor,
+# property(setter), and builder arguments.
+#components:
+#  - id: "myComponent"
+#    className: "com.foo.bar.MyComponent"
+#    properties:
+#      foo: "bar"
+#      bar: "foo"
+
+# topology configuration
+# this will be passed to the submitter as a map of config options
+#
+config:
+  topology.workers: 1
+  # ...
+
+# source definitions
+vertices:
+  source-1:
+    id: "source-1"
+    className: "com.uber.athena.dsl.planner.element.BaseSimpleSource"
+    parallelism: 1
+    constructorArgs:
+      - 10
+
+  operator-1:
+    id: "operator-1"
+    className: "com.uber.athena.dsl.planner.element.BaseMultiConstructorOperator"
+    parallelism: 1
+    constructorArgs:
+      - 10
+  operator-2:
+    id: "operator-2"
+    className: "com.uber.athena.dsl.planner.element.BaseSingleConstructorOperator"
+    parallelism: 1
+    constructorArgs:
+      - 10
+  operator-merge:
+    id: "operator-merge"
+    className: "com.uber.athena.dsl.planner.element.BaseMultiConstructorOperator"
+    parallelism: 1
+    constructorArgs:
+      - 10
+      - "foo"
+
+  sink-1:
+    id: "sink-1"
+    className: "com.uber.athena.flux.converter.impl.testutils.operator.SimpleSink"
+    parallelism: 16
+
+#stream definitions
+# stream definitions define connections between sources, operator and sinks.
+# note that such connections can be cyclical
+streams:
+  - id: "source-1 --> operator-1"
+    fromVertex: "source-1"
+    toVertex: "operator-1"
+  - id: "source-1 --> operator-2"
+    fromVertex: "source-1"
+    toVertex: "operator-2"
+  - id: "operator-1 --> operator-merge"
+    fromVertex: "operator-1"
+    toVertex: "operator-merge"
+    streamSpec:
+      streamType: "LEADING_CO_STREAM"
+  - id: "operator-2 --> operator-merge"
+    fromVertex: "operator-2"
+    toVertex: "operator-merge"
+    streamSpec:
+      streamType: "FOLLOWING_CO_STREAM"
+  - id: "operator-merge --> sink-1"
+    fromVertex: "operator-merge"
+    toVertex: "sink-1"
+
+
+
+
+
+
+
+

@@ -1,0 +1,241 @@
+################################################################################
+#  Licensed to the Apache Software Foundation (ASF) under one
+#  or more contributor license agreements.  See the NOTICE file
+#  distributed with this work for additional information
+#  regarding copyright ownership.  The ASF licenses this file
+#  to you under the Apache License, Version 2.0 (the
+#  "License"); you may not use this file except in compliance
+#  with the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################
+
+openapi: '3.0'
+info:
+  description: Streaming DSL API
+  version: '0.0.1'
+  title: Streaming DSL API
+  contact:
+    email: athena-dev@uber.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - url: http://localhost/ws/v1
+paths: {}
+components:
+  schemas:
+    # ---------------------------------------------------------------------------
+    # Basic DSL element definitions
+    # ---------------------------------------------------------------------------
+    PropertyDef:
+      type: object
+      properties:
+        name:
+          type: string
+          description: the property identifier
+        value:
+          type: object
+          description: the property content
+        reference:
+          type: string
+          description: if this is a reference type, describe the base reference
+    ConfigMethodDef:
+      type: object
+      properties:
+        name:
+          type: string
+          description: the configuration method/function name
+        configArgs:
+          type: array
+          items:
+            type: object
+          description: the function call arguments defined in order
+        hasReferenceInArgs:
+          type: boolean
+          description: describe whether this list of arguments has reference
+          default: false
+    ObjectDef:
+      type: object
+      properties:
+        className:
+          type: string
+          description: the fully qualified class name of the object
+        constructorArgs:
+          type: array
+          items:
+            type: object
+          description: the constructor arguments defined in order
+        hasReferenceInArgs:
+          type: boolean
+          description: describe whether this list of arguments has reference
+          default: false
+        propertyList:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDef'
+          description: the optional properties accepted by this object for construct/config
+        configMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfigMethodDef'
+          description: the optional method provided by this object for configuration
+    ComponentDef:
+      allOf:
+        - $ref: '#/components/schemas/ObjectDef'
+        - type: object
+          properties:
+            id:
+              type: string
+              description: the identifier of this component
+    ComponentRefDef:
+      type: object
+      properties:
+        id:
+          type: string
+          description: the identifier of the component it is referring to
+  # ---------------------------------------------------------------------------
+  # DSL element specifications
+  # ---------------------------------------------------------------------------
+    StreamSpecDef:
+      type: object
+      properties:
+        streamType:
+          type: string
+          description: the type of the stream
+          enum:
+            - DATA_STREAM
+            - KEYED_STREAM
+            - LEADING_CO_STREAM
+            - FOLLOWING_CO_STREAM
+            - BROADCAST_STREAM
+            - TABLE_STREAM
+          default: DATA_STREAM
+    TypeSpecDef:
+      type: object
+      properties:
+        typeService:
+          type: object
+          $ref: '#/components/schemas/TypeService'
+        typeDef:
+          type: object
+          required: false
+          $ref: '#/components/schemas/TypeDef'
+    TypeDef:
+      type: object
+      additionalProperties:
+        oneOf:
+          - $ref: '#/components/schemas/BasicTypeDef'
+          - $ref: '#/components/schemas/TypeDef'
+    BasicTypeDef:
+      type: string
+      description: the primitive and basic types.
+      enum:
+        - STRING_TYPE
+        - BOOLEAN_TYPE
+        - BYTE_TYPE
+        - SHORT_TYPE
+        - INT_TYPE
+        - LONG_TYPE
+        - FLOAT_TYPE
+        - DOUBLE_TYPE
+        - CHAR_TYPE
+        - DATE_TYPE
+        - VOID_TYPE
+        - BIG_INT_TYPE
+        - BIG_DEC_TYPE
+        - INSTANT_TYPE
+    TypeService:
+      type: string
+      description: indicator of type service used to resolve the produce type.
+      enum:
+        - RAW
+        - HTTP
+
+  # ---------------------------------------------------------------------------
+  # Topology Construct Definitions - Vertex & Edge
+  # ---------------------------------------------------------------------------
+    VertexDef:
+      allOf:
+        - $ref: '#/components/schemas/ComponentDef'
+        - type: object
+          properties:
+            parallelism:
+              type: integer
+              description: the parallelism of the vertex in the job graph
+            typeSpec:
+              type: object
+              required: false
+              $ref: '#/components/schemas/TypeSpecDef'
+
+    EdgeDef:
+      allOf:
+        - $ref: '#/components/schemas/ComponentDef'
+        - type: object
+          properties:
+            fromVertex:
+              type: string
+              description: the ID of the start vertex of this edge
+            toVertex:
+              type: string
+              description: the ID of the end vertex of this edge
+    StreamDef:
+      allOf:
+        - $ref: '#/components/schemas/EdgeDef'
+        - type: object
+          properties:
+            streamSpec:
+              type: object
+              $ref: '#/components/schemas/StreamSpecDef'
+
+  # ---------------------------------------------------------------------------
+  # Topology Definition
+  # ---------------------------------------------------------------------------
+    TopologyDef:
+      type: object
+      properties:
+        # ---------------------------------------------------------------------
+        # Basic properties of the entire topology.
+        # ---------------------------------------------------------------------
+        name:
+          type: string
+          description: the identifier name for this topology
+        config:
+          type: object
+          additionalProperties:
+            type: object
+          description: the additional metadata configuration for the topology
+        propertyMap:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/PropertyDef'
+          description: the mapping of all the additional properties
+
+        # ---------------------------------------------------------------------
+        # Components of the topology that constructs all vertices.
+        # ---------------------------------------------------------------------
+        components:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ComponentDef'
+          description: the mapping of all reusable components which are not directly used as DAG vertex.
+        vertices:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/VertexDef'
+          description: the mapping from vertex identifiers to vertex definitions
+
+        # ---------------------------------------------------------------------
+        # Streams of the topology that constructs all edges.
+        # ---------------------------------------------------------------------
+        streams:
+          type: array
+          items:
+            $ref: '#/components/schemas/StreamDef'
+          description: list for all stream/edge defintiions
