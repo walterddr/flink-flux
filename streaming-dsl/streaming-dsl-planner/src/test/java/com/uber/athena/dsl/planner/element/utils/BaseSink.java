@@ -17,33 +17,11 @@
  *
  */
 
-package com.uber.athena.dsl.planner;
-
-import com.uber.athena.dsl.planner.model.ModelVertex;
+package com.uber.athena.dsl.planner.element.utils;
 
 /**
- * Blackboard is an indexed holder for a specific type of node.
- *
- * <p>Blackboard is used to host intermediate as well as final node contents
- * for builders and convertlets to perform actions.
- *
- * @param <T> the type of node this blackboard is designed to host.
+ * Base operator for testing construction.
  */
-public interface Blackboard<T> {
-
-  /**
-   * Retrieve node based on DSL model vertex.
-   *
-   * @param vertex the vertex model.
-   * @return the corresponding node saved previously in the blackboard.
-   */
-  T getNode(ModelVertex vertex);
-
-  /**
-   * Save a node to the blackboard associating it with the DSL model vertex.
-   *
-   * @param node the node object.
-   * @param vertex the vertex model.
-   */
-  void saveNode(T node, ModelVertex vertex);
+public class BaseSink extends BaseOperator {
 }
+

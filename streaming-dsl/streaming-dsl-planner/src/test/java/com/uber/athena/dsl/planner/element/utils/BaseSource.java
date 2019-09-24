@@ -17,24 +17,11 @@
  *
  */
 
-package com.uber.athena.dsl.planner.relation.rule;
+package com.uber.athena.dsl.planner.element.utils;
 
 /**
- * Defines a converter rule that transforms nodes from one type to another.
+ * Base operator for testing construction.
  */
-public interface Rule {
-
-  /**
-   * Check a rule match and perform actions defined in the {@link RuleCall}.
-   *
-   * <p>At the time that this method is called, {@link RuleCall} holds
-   * the rule firing context.
-   *
-   * <p>Typically a ruleCall would include a {@link Rule}, the node/vertex
-   * that's associate with the rule, and necessary upstream/downstream
-   * context.
-   *
-   * @param ruleCall the rule invocation context.
-   */
-  void onMatch(RuleCall ruleCall);
+public class BaseSource extends BaseOperator {
 }
+

@@ -17,16 +17,20 @@
  *
  */
 
-package com.uber.athena.dsl.planner.element;
+package com.uber.athena.dsl.planner.element.utils;
 
 /**
- * Basic source for test purpose.
+ * Basic sink for test purpose.
  */
-public class BaseSimpleSource extends BaseSource {
+public class BaseSimpleSink extends BaseSink {
 
   private int dummyIntArg;
 
-  public BaseSimpleSource(int dummyIntArg) {
+  public BaseSimpleSink() {
+    this(10);
+  }
+
+  public BaseSimpleSink(int dummyIntArg) {
     this.dummyIntArg = dummyIntArg;
   }
 

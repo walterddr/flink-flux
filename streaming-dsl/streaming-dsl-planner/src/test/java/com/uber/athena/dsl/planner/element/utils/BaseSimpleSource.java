@@ -17,14 +17,20 @@
  *
  */
 
-package com.uber.athena.dsl.planner.relation.rule;
+package com.uber.athena.dsl.planner.element.utils;
 
 /**
- * A set of {@code Rule}s that works together to construct a plan.
- *
- * <p>the set of rule is usually feed to a {@link RuleExecutor}.
- *
- * @param <T> type of rules.
+ * Basic source for test purpose.
  */
-public interface RuleSet<T extends Rule> extends Iterable<T> {
+public class BaseSimpleSource extends BaseSource {
+
+  private int dummyIntArg;
+
+  public BaseSimpleSource(int dummyIntArg) {
+    this.dummyIntArg = dummyIntArg;
+  }
+
+  public int getArg() {
+    return dummyIntArg;
+  }
 }

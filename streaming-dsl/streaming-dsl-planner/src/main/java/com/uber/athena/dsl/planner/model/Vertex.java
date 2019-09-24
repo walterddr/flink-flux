@@ -21,25 +21,33 @@ package com.uber.athena.dsl.planner.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Model node represents a vertex within a {@link com.uber.athena.dsl.planner.topology.Topology}.
+ * Implementation of the {@link VertexNode}.
+ *
+ * <p>This node implementation represents a vertex within a
+ * {@link com.uber.athena.dsl.planner.topology.Topology}.
+ *
+ * <p>If a more complex element or expression builder is present. One could
+ * implement its own {@link VertexNode} in order to support more ambiguous
+ * upstream/downstream connections or stream definitions.
  */
-public class ModelVertex implements VertexNode, Serializable {
+public class Vertex implements VertexNode, Serializable {
 
   protected final String vertexId;
   protected final VertexDef vertexDef;
 
   protected List<String> upstreamVertexIds;
   protected List<String> downstreamVertexIds;
-  protected List<StreamDef> upstreams;
+  protected Map<String, StreamDef> upstreams;
 
-  public ModelVertex(
+  public Vertex(
       String vertexId,
       VertexDef vertexDef,
       List<String> upstreamVertexIds,
       List<String> downstreamVertexIds,
-      List<StreamDef> upstreams) {
+      Map<String, StreamDef> upstreams) {
     this.vertexId = vertexId;
     this.vertexDef = vertexDef;
     this.upstreamVertexIds = upstreamVertexIds;
@@ -68,7 +76,12 @@ public class ModelVertex implements VertexNode, Serializable {
   }
 
   @Override
-  public List<StreamDef> getUpstreams() {
+  public Map<String, StreamDef> getUpstreams() {
     return upstreams;
+  }
+
+  @Override
+  public StreamDef getUpstream(String upstreamId) {
+    return upstreams.get(upstreamId);
   }
 }

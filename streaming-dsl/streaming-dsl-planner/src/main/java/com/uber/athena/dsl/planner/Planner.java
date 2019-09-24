@@ -19,6 +19,15 @@
 
 package com.uber.athena.dsl.planner;
 
+import com.uber.athena.dsl.planner.element.ElementNode;
+import com.uber.athena.dsl.planner.topology.Topology;
+import com.uber.athena.dsl.planner.utils.ConstructionException;
+import com.uber.athena.dsl.planner.utils.ParsingException;
+import com.uber.athena.dsl.planner.utils.ValidationException;
+
+import java.io.InputStream;
+import java.util.Map;
+
 /**
  * Main interface of the planner framework.
  *
@@ -30,14 +39,43 @@ package com.uber.athena.dsl.planner;
  * within the DSL planner framework:
  *
  * <p><ul>
- * <li>{@link DslParser}
- * <li>{@link DslValidator}
- * <li>{@link ElementBuilder}
- * <li>{@link RelationBuilder}
+ * <li>{@link com.uber.athena.dsl.planner.parser.Parser}
+ * <li>{@link com.uber.athena.dsl.planner.validation.Validator}
+ * <li>{@link com.uber.athena.dsl.planner.element.ElementBuilder}
+ * <li>{@link com.uber.athena.dsl.planner.relation.RelationBuilder}
  * <li>...
  * </ul></p>
  *
  */
 public interface Planner {
 
+  /**
+   * Parser an input stream and constructs a {@link Topology}.
+   *
+   * @param stream input stream
+   * @return topology constructed.
+   * @throws ParsingException when parsing of the input stream fails.
+   */
+  Topology parse(InputStream stream) throws ParsingException;
+
+  /**
+   * Validate that the topology is correct.
+   *
+   * <p>Validation does not try to resolve any relations or any elements
+   * that requires construction, it only validates the semantic.
+   *
+   * @param topology topology representing the DSL model.
+   * @return topology after validation process completes.
+   * @throws ValidationException validation fails.
+   */
+  Topology validate(Topology topology) throws ValidationException;
+
+  /**
+   * Construct the {@link ElementNode}s for all vertices.
+   *
+   * @param topology topology definition of the DSL model.
+   * @return a mapping .
+   * @throws ConstructionException when construction fails.
+   */
+  Map<String, ElementNode> constructElement(Topology topology) throws ConstructionException;
 }

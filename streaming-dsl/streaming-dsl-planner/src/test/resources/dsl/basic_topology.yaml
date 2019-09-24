@@ -47,7 +47,7 @@ vertices:
   # source definitions
   source-1:
     id: "source-1"
-    className: "com.uber.athena.dsl.planner.element.BaseSimpleSource"
+    className: "com.uber.athena.dsl.planner.element.utils.BaseSimpleSource"
     parallelism: 1
     constructorArgs:
       - 10
@@ -56,7 +56,7 @@ vertices:
   # operator definitions
   operator-1:
     id: "operator-1"
-    className: "com.uber.athena.dsl.planner.element.BaseMultiConstructorOperator"
+    className: "com.uber.athena.dsl.planner.element.utils.BaseMultiConstructorOperator"
     parallelism: 1
     constructorArgs:
       - 10
@@ -65,7 +65,7 @@ vertices:
   # sink definitions
   sink-1:
     id: "sink-1"
-    className: "com.uber.athena.dsl.planner.element.BaseSimpleSink"
+    className: "com.uber.athena.dsl.planner.element.utils.BaseSimpleSink"
     parallelism: 1
     # ...
 

@@ -17,24 +17,38 @@
  *
  */
 
-package com.uber.athena.dsl.planner.element;
+package com.uber.athena.dsl.planner.element.utils;
 
 /**
- * Basic sink for test purpose.
+ * Basic operator for test purpose on multiple constructor.
  */
-public class BaseSimpleSink extends BaseSink {
+public class BaseMultiConstructorOperator extends BaseOperator {
 
-  private int dummyIntArg;
+  private String dummyStrArg;
+  private long dummyLongArg;
 
-  public BaseSimpleSink() {
-    this(10);
+  public BaseMultiConstructorOperator(int num) {
+    this((long) num, "");
   }
 
-  public BaseSimpleSink(int dummyIntArg) {
-    this.dummyIntArg = dummyIntArg;
+  public BaseMultiConstructorOperator(long num) {
+    this(num, "");
   }
 
-  public int getArg() {
-    return dummyIntArg;
+  public BaseMultiConstructorOperator(int num, String str) {
+    this((long) num, str);
+  }
+
+  public BaseMultiConstructorOperator(long num, String str) {
+    this.dummyLongArg = num;
+    this.dummyStrArg = str;
+  }
+
+  public long getLongArg() {
+    return dummyLongArg;
+  }
+
+  public String getStringArg() {
+    return dummyStrArg;
   }
 }

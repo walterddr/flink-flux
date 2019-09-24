@@ -20,6 +20,7 @@
 package com.uber.athena.dsl.planner.model;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Model node represents a vertex in a topology.
@@ -38,5 +39,7 @@ public interface VertexNode {
 
   List<String> getDownstreamVertexIds();
 
-  List<StreamDef> getUpstreams();
+  Map<String, StreamDef> getUpstreams();
+
+  StreamDef getUpstream(String upstreamVertexId);
 }

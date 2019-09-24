@@ -19,15 +19,12 @@
 
 package com.uber.athena.dsl.planner.element;
 
-import com.uber.athena.dsl.planner.Blackboard;
-import com.uber.athena.dsl.planner.BlackboardImpl;
 import com.uber.athena.dsl.planner.PlannerComponentTestBase;
 import com.uber.athena.dsl.planner.element.constructor.ConstructorImpl;
 import com.uber.athena.dsl.planner.parser.DslParser;
 import com.uber.athena.dsl.planner.parser.Parser;
 import com.uber.athena.dsl.planner.topology.DslTopologyBuilder;
 import com.uber.athena.dsl.planner.topology.Topology;
-import com.uber.athena.dsl.planner.type.TypeFactoryImpl;
 import com.uber.athena.dsl.planner.validation.DslValidator;
 import com.uber.athena.dsl.planner.validation.Validator;
 import org.junit.BeforeClass;
@@ -49,16 +46,13 @@ public class ElementBuilderTest extends PlannerComponentTestBase {
     parser = new DslParser(null, new DslTopologyBuilder());
     elementBuilder = new ElementBuilder(
         null,
-        new ConstructorImpl(),
-        new TypeFactoryImpl(),
-        null);
+        new ConstructorImpl());
   }
 
   @Override
   public void testTopology(File file) throws Exception {
     Topology topology = parser.parseFile(file.getCanonicalPath(), false, null, false);
     validator.validate(topology);
-    Blackboard<ElementNode> blackboard = new BlackboardImpl<>(ElementNode.class);
-    elementBuilder.construct(topology, blackboard);
+    elementBuilder.construct(topology);
   }
 }

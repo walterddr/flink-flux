@@ -19,8 +19,6 @@
 
 package com.uber.athena.dsl.planner.element;
 
-import com.uber.athena.dsl.planner.type.Type;
-
 /**
  * Base implementation of an {@link ElementNode}.
  */
@@ -28,17 +26,11 @@ import com.uber.athena.dsl.planner.type.Type;
 public class Element implements ElementNode {
 
   private Object obj;
-  private Type type;
   private Class<?> clazz;
 
   public Element(Object obj, Class<?> clazz) {
-    this(obj, clazz, null);
-  }
-
-  public Element(Object obj, Class<?> clazz, Type type) {
     this.obj = obj;
     this.clazz = clazz;
-    this.type = type;
   }
 
   @Override
@@ -49,10 +41,5 @@ public class Element implements ElementNode {
   @Override
   public <R> R getElement() {
     return (R) this.obj;
-  }
-
-  @Override
-  public <T extends Type> T getProduceType() {
-    return (T) type;
   }
 }

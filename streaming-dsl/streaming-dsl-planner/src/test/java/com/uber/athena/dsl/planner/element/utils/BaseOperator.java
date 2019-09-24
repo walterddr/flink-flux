@@ -17,10 +17,11 @@
  *
  */
 
-package com.uber.athena.dsl.planner.element.convertlet;
+package com.uber.athena.dsl.planner.element.utils;
 
 /**
- * Executor that executes the actions defined in {@link Convertlet}s.
+ * Base operator for test purpose.
  */
-public interface ConvertletExecutor {
+public class BaseOperator {
 }
+

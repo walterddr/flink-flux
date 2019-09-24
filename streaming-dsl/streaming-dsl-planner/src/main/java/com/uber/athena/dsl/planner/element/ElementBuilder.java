@@ -19,20 +19,19 @@
 
 package com.uber.athena.dsl.planner.element;
 
-import com.uber.athena.dsl.planner.Blackboard;
 import com.uber.athena.dsl.planner.element.constructor.Constructor;
-import com.uber.athena.dsl.planner.element.convertlet.ConvertletExecutor;
-import com.uber.athena.dsl.planner.model.ModelVertex;
+import com.uber.athena.dsl.planner.model.VertexNode;
 import com.uber.athena.dsl.planner.topology.Topology;
-import com.uber.athena.dsl.planner.type.Type;
-import com.uber.athena.dsl.planner.type.TypeFactory;
+import com.uber.athena.dsl.planner.utils.ConstructionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
- * Builder for constructing an {@link Element} from a {@link ModelVertex}.
+ * Builder for constructing an {@link Element} from a {@link VertexNode}.
  *
  * <p>Element builder is used to construct a proper Object for later
  * relation construction. It does process some
@@ -46,91 +45,49 @@ public class ElementBuilder {
   private Constructor constructor;
 
   /**
-   * Configuration properties for {@link Convertlet}s and {@link TypeFactory}.
+   * Configuration properties.
    */
   private Properties config;
-
-  /**
-   * Type/Schema factory used to determine output schema of an Element.
-   */
-  private TypeFactory typeFactory;
-
-  /**
-   * Executor of {@link Convertlet}s.
-   *
-   * <p>{@link Convertlet}s are encapsulated within the executor environment.
-   */
-  private ConvertletExecutor convertlet;
 
   /**
    * Construct an element builder.
    *
    * @param builderConfig configuration properties for the builder.
-   * @param typeFactory the type factory to construct element produce type.
-   * @param convertlet the optional convertlet used to convert element.
+   * @param constructor the constructor used to construct elements.
    */
   public ElementBuilder(
       Properties builderConfig,
-      Constructor constructor,
-      TypeFactory typeFactory,
-      ConvertletExecutor convertlet) {
+      Constructor constructor) {
     this.config = builderConfig;
     this.constructor = constructor;
-    this.typeFactory = typeFactory;
-    this.convertlet = convertlet;
   }
 
   /**
-   * Construct ElementNodes for the entire topology.
+   * Construct {@link ElementNode}s for the topology.
    *
-   * <p>Constructed nodes will be put into the {@link Blackboard} provided.
+   * <p>Element builder invokes the constructor to create runtime objects for
+   * the DSL topology. It provides a reflective constructor mechanism as
+   * default approach.
    *
    * @param topology the topology defined by the DSL model.
-   * @param elementBlackboard blackboard for holding constructed elements.
+   * @return a mapping from the vertex Ids to the constructed runtime objects.
    */
-  public void construct(
-      Topology topology,
-      Blackboard<ElementNode> elementBlackboard) {
-    for (ModelVertex vertex : topology.getSources().values()) {
-      ElementNode node = construct(vertex, topology);
-      elementBlackboard.saveNode(node, vertex);
+  public Map<String, ElementNode> construct(
+      Topology topology) throws ConstructionException {
+    Map<String, ElementNode> elementMapping = new HashMap<>();
+    for (VertexNode vertex : topology.getSources().values()) {
+      ElementNode node = constructor.construct(vertex, topology);
+      elementMapping.put(vertex.getVertexId(), node);
     }
-    for (ModelVertex vertex : topology.getSinks().values()) {
-      ElementNode node = construct(vertex, topology);
-      elementBlackboard.saveNode(node, vertex);
+    for (VertexNode vertex : topology.getSinks().values()) {
+      ElementNode node = constructor.construct(vertex, topology);
+      elementMapping.put(vertex.getVertexId(), node);
     }
-    for (ModelVertex vertex : topology.getOperators().values()) {
-      ElementNode node = construct(vertex, topology);
-      elementBlackboard.saveNode(node, vertex);
+    for (VertexNode vertex : topology.getOperators().values()) {
+      ElementNode node = constructor.construct(vertex, topology);
+      elementMapping.put(vertex.getVertexId(), node);
     }
-  }
-
-  private ElementNode construct(ModelVertex vertex, Topology topology) {
-    try {
-      // Construct the element from vertex using reflection.
-      Object obj = constructor.construct(vertex.getVertexDef(), topology);
-      Class<?> clazz = Class.forName(vertex.getVertexDef().getClassName());
-
-      // Determines the constructed element produce type.
-      Type type = typeFactory.getType(vertex);
-      ElementNode node = new Element(obj, clazz, type);
-
-      // Invoke convertlet executor to make extended conversions.
-      // TODO @walterddr add convertlet invocation.
-
-      return node;
-    } catch (Exception e) {
-      LOG.error("Cannot construct element!", e);
-      return null;
-    }
-  }
-
-  public ConvertletExecutor getConvertlet() {
-    return convertlet;
-  }
-
-  public TypeFactory getTypeFactory() {
-    return typeFactory;
+    return elementMapping;
   }
 
   public Properties getConfig() {

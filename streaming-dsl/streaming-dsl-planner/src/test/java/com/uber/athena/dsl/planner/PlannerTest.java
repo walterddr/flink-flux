@@ -17,11 +17,11 @@
  *
  */
 
-package com.uber.athena.dsl.planner.element;
+package com.uber.athena.dsl.planner;
 
 /**
- * Base operator for testing construction.
+ * Test for {@link Planner}.
  */
-public class BaseSink {
-}
+public class PlannerTest {
 
+}

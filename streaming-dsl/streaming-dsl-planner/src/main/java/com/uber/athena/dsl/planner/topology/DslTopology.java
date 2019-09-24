@@ -20,9 +20,9 @@
 package com.uber.athena.dsl.planner.topology;
 
 import com.uber.athena.dsl.planner.model.ComponentDef;
-import com.uber.athena.dsl.planner.model.ModelVertex;
 import com.uber.athena.dsl.planner.model.PropertyDef;
 import com.uber.athena.dsl.planner.model.StreamDef;
+import com.uber.athena.dsl.planner.model.VertexNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,9 +37,10 @@ public class DslTopology implements Topology {
 
   private final String name;
   private final Map<String, ComponentDef> components;
-  private final Map<String, ModelVertex> sources;
-  private final Map<String, ModelVertex> sinks;
-  private final Map<String, ModelVertex> operators;
+  private final HashMap<String, VertexNode> vertices;
+  private final Map<String, VertexNode> sources;
+  private final Map<String, VertexNode> sinks;
+  private final Map<String, VertexNode> operators;
   private final List<StreamDef> streams;
   private final Map<String, Object> config;
   private final Map<String, PropertyDef> propertyMap;
@@ -47,6 +48,8 @@ public class DslTopology implements Topology {
   public DslTopology(String name) {
     this.name = name;
     this.components = new HashMap<>();
+
+    this.vertices = new HashMap<>();
     this.sources = new HashMap<>();
     this.sinks = new HashMap<>();
     this.operators = new HashMap<>();
@@ -77,17 +80,26 @@ public class DslTopology implements Topology {
   }
 
   @Override
-  public Map<String, ModelVertex> getOperators() {
+  public VertexNode getVertex(String vertexId) {
+    return vertices.get(vertexId);
+  }
+
+  public void putVertex(String vertexId, VertexNode vertex) {
+    this.vertices.put(vertexId, vertex);
+  }
+
+  @Override
+  public Map<String, VertexNode> getOperators() {
     return operators;
   }
 
   @Override
-  public Map<String, ModelVertex> getSources() {
+  public Map<String, VertexNode> getSources() {
     return sources;
   }
 
   @Override
-  public Map<String, ModelVertex> getSinks() {
+  public Map<String, VertexNode> getSinks() {
     return sinks;
   }
 

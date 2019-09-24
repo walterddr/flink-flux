@@ -20,9 +20,9 @@
 package com.uber.athena.dsl.planner.topology;
 
 import com.uber.athena.dsl.planner.model.ComponentDef;
-import com.uber.athena.dsl.planner.model.ModelVertex;
 import com.uber.athena.dsl.planner.model.PropertyDef;
 import com.uber.athena.dsl.planner.model.StreamDef;
+import com.uber.athena.dsl.planner.model.VertexNode;
 
 import java.io.Serializable;
 import java.util.List;
@@ -41,11 +41,13 @@ public interface Topology extends Serializable {
 
   Map<String, ComponentDef> getComponents();
 
-  Map<String, ModelVertex> getOperators();
+  VertexNode getVertex(String vertexId);
 
-  Map<String, ModelVertex> getSources();
+  Map<String, VertexNode> getOperators();
 
-  Map<String, ModelVertex> getSinks();
+  Map<String, VertexNode> getSources();
+
+  Map<String, VertexNode> getSinks();
 
   List<StreamDef> getStreams();
 }

@@ -20,6 +20,7 @@
 package com.uber.athena.dsl.planner.parser;
 
 import com.uber.athena.dsl.planner.topology.Topology;
+import com.uber.athena.dsl.planner.utils.ParsingException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,10 @@ import java.io.InputStream;
  * Parse into a {@link Topology} from its stringify, user-friendly format.
  */
 public interface Parser {
+
+  // TODO @walterddr: make the parser interface more unified. instead of supporting
+  // different types of input, support only java.io.Reader and let it figure out
+  // how to deal with different types of Reader impl.
 
   Topology parseFile(
       String inputFile,

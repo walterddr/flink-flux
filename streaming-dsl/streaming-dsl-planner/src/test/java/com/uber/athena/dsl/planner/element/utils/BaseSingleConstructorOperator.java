@@ -17,30 +17,20 @@
  *
  */
 
-package com.uber.athena.dsl.planner;
-
-import com.uber.athena.dsl.planner.model.ModelVertex;
-
-import java.util.HashMap;
-import java.util.Map;
+package com.uber.athena.dsl.planner.element.utils;
 
 /**
- * standard blackboard implementation.
- *
- * @param <T> type of nodes store on this blackboard.
+ * Basic operator for test purpose.
  */
-public class BlackboardImpl<T> implements Blackboard<T> {
+public class BaseSingleConstructorOperator extends BaseOperator {
 
-  private final Map<String, T> nodeMap = new HashMap<>();
+  private int dummyIntArg;
 
-  public BlackboardImpl(Class<T> nodeType) {
+  public BaseSingleConstructorOperator(int dummyIntArg) {
+    this.dummyIntArg = dummyIntArg;
   }
 
-  public T getNode(ModelVertex vertex) {
-    return nodeMap.get(vertex.getVertexId());
-  }
-
-  public void saveNode(T node, ModelVertex vertex) {
-    nodeMap.put(vertex.getVertexId(), node);
+  public int getArg() {
+    return dummyIntArg;
   }
 }

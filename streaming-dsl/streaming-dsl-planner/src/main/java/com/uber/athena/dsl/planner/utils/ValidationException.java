@@ -17,7 +17,7 @@
  *
  */
 
-package com.uber.athena.dsl.planner.validation;
+package com.uber.athena.dsl.planner.utils;
 
 /**
  * Exception for validating a {@code TopologyDef}.

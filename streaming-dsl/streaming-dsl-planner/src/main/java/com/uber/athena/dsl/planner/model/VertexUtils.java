@@ -20,47 +20,49 @@
 package com.uber.athena.dsl.planner.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Utility to construct a {@link ModelVertex}.
+ * Utility to construct a {@link Vertex} based on a DSL topology.
  */
-public final class ModelVertexUtils {
+public final class VertexUtils {
 
-  private ModelVertexUtils() {
+  private VertexUtils() {
   }
 
-  public static ModelVertex construct(String id, VertexDef def) {
-    return new ModelVertex(id, def, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+  public static Vertex construct(String id, VertexDef def) {
+    return new Vertex(id, def, new ArrayList<>(), new ArrayList<>(), new HashMap<>());
   }
 
-  public static void addUpstreamVertices(ModelVertex vertex, List<String> upstream) {
+  public static void addUpstreamVertices(Vertex vertex, List<String> upstream) {
     if (upstream != null) {
       vertex.getUpstreamVertexIds().addAll(upstream);
     }
   }
 
-  public static void addDownstreamVertices(ModelVertex vertex, List<String> downstream) {
+  public static void addDownstreamVertices(Vertex vertex, List<String> downstream) {
     if (downstream != null) {
       vertex.getDownstreamVertexIds().addAll(downstream);
     }
   }
 
-  public static void addStreams(ModelVertex vertex, List<StreamDef> streams) {
+  public static void addStreams(Vertex vertex, Map<String, StreamDef> streams) {
     if (streams != null) {
-      vertex.getUpstreams().addAll(streams);
+      vertex.getUpstreams().putAll(streams);
     }
   }
 
-  public static void addUpstreamVertexId(ModelVertex vertex, String upstreamVertexId) {
+  public static void addUpstreamVertexId(Vertex vertex, String upstreamVertexId) {
     vertex.getUpstreamVertexIds().add(upstreamVertexId);
   }
 
-  public static void addDownstreamVertexId(ModelVertex vertex, String upstreamVertexId) {
+  public static void addDownstreamVertexId(Vertex vertex, String upstreamVertexId) {
     vertex.getDownstreamVertexIds().add(upstreamVertexId);
   }
 
-  public static void addUpstream(ModelVertex vertex, StreamDef streamDef) {
-    vertex.getUpstreams().add(streamDef);
+  public static void addUpstream(Vertex vertex, String upstreamKey, StreamDef streamDef) {
+    vertex.getUpstreams().put(upstreamKey, streamDef);
   }
 }

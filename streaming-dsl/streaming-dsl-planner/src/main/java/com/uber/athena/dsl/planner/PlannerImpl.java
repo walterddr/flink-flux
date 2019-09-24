@@ -19,9 +19,55 @@
 
 package com.uber.athena.dsl.planner;
 
+import com.uber.athena.dsl.planner.element.ElementBuilder;
+import com.uber.athena.dsl.planner.element.ElementNode;
+import com.uber.athena.dsl.planner.parser.Parser;
+import com.uber.athena.dsl.planner.topology.Topology;
+import com.uber.athena.dsl.planner.utils.ConstructionException;
+import com.uber.athena.dsl.planner.utils.ParsingException;
+import com.uber.athena.dsl.planner.utils.ValidationException;
+import com.uber.athena.dsl.planner.validation.Validator;
+
+import java.io.InputStream;
+import java.util.Map;
+
 /**
  * Standard {@link Planner} implementation.
  */
 public class PlannerImpl implements Planner {
 
+  private Parser parser;
+  private Validator validator;
+  private ElementBuilder elementBuilder;
+
+  // TODO @walterddr create wrapper for planner construction instead of directly
+  // creating each individual modules.
+
+  public PlannerImpl(
+      Parser parser,
+      Validator validator,
+      ElementBuilder elementBuilder
+  ) {
+    this.parser = parser;
+    this.validator = validator;
+    this.elementBuilder = elementBuilder;
+  }
+
+  @Override
+  public Topology parse(InputStream stream) throws ParsingException {
+    // fix config utilization.
+    return parser.parseInputStream(stream, false, null, false);
+  }
+
+  @Override
+  public Topology validate(Topology topology) throws ValidationException {
+    validator.validate(topology);
+    return topology;
+  }
+
+  @Override
+  public Map<String, ElementNode> constructElement(
+      Topology topology) throws ConstructionException {
+    return elementBuilder.construct(topology);
+  }
 }

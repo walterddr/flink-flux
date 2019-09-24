@@ -19,20 +19,37 @@
 
 package com.uber.athena.dsl.planner.element.constructor;
 
-import com.uber.athena.dsl.planner.model.VertexDef;
+import com.uber.athena.dsl.planner.element.Element;
+import com.uber.athena.dsl.planner.element.ElementNode;
+import com.uber.athena.dsl.planner.model.VertexNode;
 import com.uber.athena.dsl.planner.topology.Topology;
+import com.uber.athena.dsl.planner.utils.ConstructionException;
 
 /**
- * Basic impl of the {@link Constructor}.
+ * Base implementation of the {@link Constructor}.
+ *
+ * <p>This base impl does not have any extended capabilities such as, dynamic
+ * service loader, supporting of 3rd party library that's not loaded inside
+ * the classpath during JVM start up, etc.
  */
 public class ConstructorImpl implements Constructor {
 
   public ConstructorImpl() {
-
   }
 
   @Override
-  public Object construct(VertexDef vertexDef, Topology topology) throws Exception {
-    return ReflectiveConstructUtils.buildObject(vertexDef, topology);
+  public ElementNode construct(
+      VertexNode vertex,
+      Topology topology) throws ConstructionException {
+    // TODO @walterddr actually using the loader factory
+    // instead of directly using the reflective construct util
+    try {
+      // Construct the element from vertex using reflection.
+      Object obj = ReflectiveConstructUtils.buildObject(vertex.getVertexDef(), topology);
+      Class<?> clazz = Class.forName(vertex.getVertexDef().getClassName());
+      return new Element(obj, clazz);
+    } catch (Exception e) {
+      throw new ConstructionException("Cannot construct element!", e);
+    }
   }
 }

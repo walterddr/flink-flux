@@ -19,12 +19,13 @@
 
 package com.uber.athena.dsl.planner.topology;
 
-import com.uber.athena.dsl.planner.model.ModelVertex;
-import com.uber.athena.dsl.planner.model.ModelVertexUtils;
 import com.uber.athena.dsl.planner.model.StreamDef;
 import com.uber.athena.dsl.planner.model.StreamSpecDef;
 import com.uber.athena.dsl.planner.model.TopologyDef;
+import com.uber.athena.dsl.planner.model.Vertex;
 import com.uber.athena.dsl.planner.model.VertexDef;
+import com.uber.athena.dsl.planner.model.VertexUtils;
+import com.uber.athena.dsl.planner.utils.TopologyBuilderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ public class DslTopologyBuilder implements TopologyBuilder {
   static class TopologyBuilderContext {
     private final TopologyDef topologyDef;
     private final Map<String, VertexDef> vertexMap;
-    private final Map<String, ArrayList<StreamDef>> upstreamMap;
+    private final Map<String, Map<String, StreamDef>> upstreamMap;
 
     private final Map<String, ArrayList<String>> upstreamVertexMap;
     private final Map<String, ArrayList<String>> downstreamVertexMap;
@@ -91,7 +92,7 @@ public class DslTopologyBuilder implements TopologyBuilder {
         if (stream.getStreamSpec() == null) {
           stream.setStreamSpec(getDefaultStreamSpec());
         }
-        addItemToList(this.upstreamMap, to, stream);
+        addItemToMap(this.upstreamMap, to, from, stream);
 
         // assert that the vertex IDs are valid.
         assert vertexMap.containsKey(from);
@@ -128,24 +129,26 @@ public class DslTopologyBuilder implements TopologyBuilder {
         if (!upstreamVertexMap.containsKey(k) && !downstreamVertexMap.containsKey(k)) {
           LOG.warn("unconnected vertex {}", k);
         }
+        Vertex vertex = constructVertex(v);
         if (!upstreamVertexMap.containsKey(k) || upstreamVertexMap.get(k).size() == 0) {
-          topology.getSources().put(k, constructVertex(v));
+          topology.getSources().put(k, vertex);
         } else if (!downstreamVertexMap.containsKey(k) || downstreamVertexMap.get(k).size() == 0) {
-          topology.getSinks().put(k, constructVertex(v));
+          topology.getSinks().put(k, vertex);
         } else {
-          topology.getOperators().put(k, constructVertex(v));
+          topology.getOperators().put(k, vertex);
         }
+        topology.putVertex(k, vertex);
       });
 
       return topology;
     }
 
-    private ModelVertex constructVertex(VertexDef def) {
+    private Vertex constructVertex(VertexDef def) {
       String id = def.getId();
-      ModelVertex dslVertex = ModelVertexUtils.construct(id, def);
-      ModelVertexUtils.addUpstreamVertices(dslVertex, this.upstreamVertexMap.get(id));
-      ModelVertexUtils.addDownstreamVertices(dslVertex, this.downstreamVertexMap.get(id));
-      ModelVertexUtils.addStreams(dslVertex, this.upstreamMap.get(id));
+      Vertex dslVertex = VertexUtils.construct(id, def);
+      VertexUtils.addUpstreamVertices(dslVertex, this.upstreamVertexMap.get(id));
+      VertexUtils.addDownstreamVertices(dslVertex, this.downstreamVertexMap.get(id));
+      VertexUtils.addStreams(dslVertex, this.upstreamMap.get(id));
       return dslVertex;
     }
 
@@ -155,13 +158,26 @@ public class DslTopologyBuilder implements TopologyBuilder {
       return defaultSpec;
     }
 
-    private static <T> void addItemToList(Map<String, ArrayList<T>> m, String k, T v) {
-      ArrayList<T> list = m.get(k);
+    private static <T> void addItemToList(Map<String, ArrayList<T>> m, String key, T v) {
+      ArrayList<T> list = m.get(key);
       if (list == null) {
         list = new ArrayList<>();
+        list.add(v);
+        m.put(key, list);
+      } else {
+        list.add(v);
       }
-      list.add(v);
-      m.put(k, list);
+    }
+
+    private static <T> void addItemToMap(Map<String, Map<String, T>> m, String key, String k, T v) {
+      Map<String, T> map = m.get(key);
+      if (map == null) {
+        map = new HashMap<>();
+        map.put(k, v);
+        m.put(key, map);
+      } else {
+        map.put(k, v);
+      }
     }
   }
 }

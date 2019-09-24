@@ -20,6 +20,7 @@
 package com.uber.athena.dsl.planner.validation;
 
 import com.uber.athena.dsl.planner.topology.Topology;
+import com.uber.athena.dsl.planner.utils.ValidationException;
 
 /**
  * Basic implementation of the {@link Validator} check.

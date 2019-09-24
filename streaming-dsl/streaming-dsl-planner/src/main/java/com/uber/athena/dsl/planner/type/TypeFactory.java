@@ -19,8 +19,8 @@
 
 package com.uber.athena.dsl.planner.type;
 
-import com.uber.athena.dsl.planner.model.ModelVertex;
 import com.uber.athena.dsl.planner.model.TypeSpecDef;
+import com.uber.athena.dsl.planner.model.VertexNode;
 
 /**
  * Factory class that ingests type information.
@@ -28,12 +28,12 @@ import com.uber.athena.dsl.planner.model.TypeSpecDef;
 public interface TypeFactory {
 
   /**
-   * construct produce type based on {@link ModelVertex} definition.
+   * construct produce type based on {@link VertexNode} definition.
    *
    * @param vertex the vertex model.
    * @return the resolved type.
    */
-  Type getType(ModelVertex vertex);
+  Type getType(VertexNode vertex);
 
   /**
    * construct produce type based on {@link TypeSpecDef} definition.

@@ -19,13 +19,23 @@
 
 package com.uber.athena.dsl.planner.element.constructor;
 
-import com.uber.athena.dsl.planner.model.VertexDef;
+import com.uber.athena.dsl.planner.element.ElementNode;
+import com.uber.athena.dsl.planner.model.VertexNode;
 import com.uber.athena.dsl.planner.topology.Topology;
+import com.uber.athena.dsl.planner.utils.ConstructionException;
 
 /**
  * Base class for construction of vertex.
  */
 public interface Constructor {
 
-  Object construct(VertexDef vertexDef, Topology topology) throws Exception;
+  /**
+   * Construct an object based on topology and vertex definitions.
+   *
+   * @param vertex the vertex node defined in the topology
+   * @param topology the topology.
+   * @return a Java object constructed.
+   * @throws ConstructionException when construction failure occurs.
+   */
+  ElementNode construct(VertexNode vertex, Topology topology) throws ConstructionException;
 }

@@ -37,6 +37,9 @@ import java.util.Map;
 
 /**
  * Basic element construction utility using Reflection.
+ *
+ * <p>The util tries to locate the Clazz from its class name and constructor
+ * argument combination.
  */
 @SuppressWarnings("unchecked")
 public final class ReflectiveConstructUtils {
@@ -47,7 +50,7 @@ public final class ReflectiveConstructUtils {
 
   public static Object buildObject(
       ObjectDef def,
-      Topology topology) throws Exception {
+      Topology topology) throws ReflectiveOperationException {
     Class clazz = Class.forName(def.getClassName());
     Object obj = null;
     if (def.getConstructorArgs() != null && def.getConstructorArgs().size() > 0) {
@@ -82,7 +85,7 @@ public final class ReflectiveConstructUtils {
   private static void applyProperties(
       ObjectDef bean,
       Object instance,
-      Topology topology) throws Exception {
+      Topology topology) throws ReflectiveOperationException {
     List<PropertyDef> props = bean.getPropertyList();
     Class clazz = instance.getClass();
     if (props != null) {

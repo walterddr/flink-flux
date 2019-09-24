@@ -17,34 +17,34 @@
  *
  */
 
-package com.uber.athena.dsl.planner.parser;
+package com.uber.athena.dsl.planner.utils;
 
 /**
- * Exception for parsing {@code TopologyDef}.
+ * Exception for constructing {@code Topology}.
  */
-public class ParsingException extends Exception {
+public class TopologyBuilderException extends Exception {
 
   /**
-   * Constructs an {@code ParsingException} with {@code null}
+   * Constructs an {@code TopologyBuilderException} with {@code null}
    * as its error detail message.
    */
-  public ParsingException() {
+  public TopologyBuilderException() {
     super();
   }
 
   /**
-   * Constructs an {@code ParsingException} with the specified detail message.
+   * Constructs an {@code TopologyBuilderException} with the specified detail message.
    *
    * @param message
    *        The detail message (which is saved for later retrieval
    *        by the {@link #getMessage()} method)
    */
-  public ParsingException(String message) {
+  public TopologyBuilderException(String message) {
     super(message);
   }
 
   /**
-   * Constructs an {@code ParsingException} with the specified detail message
+   * Constructs an {@code TopologyBuilderException} with the specified detail message
    * and cause.
    *
    * @param message
@@ -58,12 +58,12 @@ public class ParsingException extends Exception {
    *
    * @since 1.6
    */
-  public ParsingException(String message, Throwable cause) {
+  public TopologyBuilderException(String message, Throwable cause) {
     super(message, cause);
   }
 
   /**
-   * Constructs an {@code ParsingException} with the specified cause.
+   * Constructs an {@code TopologyBuilderException} with the specified cause.
    * also with a detail message of {@code (cause==null ? null : cause.toString())}
    *
    * @param cause
@@ -73,7 +73,7 @@ public class ParsingException extends Exception {
    *
    * @since 1.6
    */
-  public ParsingException(Throwable cause) {
+  public TopologyBuilderException(Throwable cause) {
     super(cause);
   }
 }

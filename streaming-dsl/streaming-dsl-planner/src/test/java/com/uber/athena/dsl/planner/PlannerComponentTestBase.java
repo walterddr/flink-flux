@@ -31,7 +31,7 @@ import java.net.URL;
  */
 public abstract class PlannerComponentTestBase {
   private static final Logger LOG = LoggerFactory.getLogger(PlannerComponentTestBase.class);
-  private static final String DEFAULT_TEST_RESOURCE_PATH = "dsl/";
+  private static final String DEFAULT_TEST_DSL_MODEL_PATH = "dsl/";
 
   /*
    TODO @walterddr add following test cases
@@ -65,7 +65,7 @@ public abstract class PlannerComponentTestBase {
   public abstract void testTopology(File file) throws Exception;
 
   public File[] getTestTopologies() {
-    return getResourceFolderFiles(DEFAULT_TEST_RESOURCE_PATH);
+    return getResourceFolderFiles(DEFAULT_TEST_DSL_MODEL_PATH);
   }
 
   private static File[] getResourceFolderFiles(String folder) {

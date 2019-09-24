@@ -20,6 +20,7 @@
 package com.uber.athena.dsl.planner.topology;
 
 import com.uber.athena.dsl.planner.model.TopologyDef;
+import com.uber.athena.dsl.planner.utils.TopologyBuilderException;
 
 import java.util.Map;
 

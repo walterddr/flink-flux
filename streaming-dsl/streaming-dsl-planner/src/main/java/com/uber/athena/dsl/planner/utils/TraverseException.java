@@ -17,34 +17,34 @@
  *
  */
 
-package com.uber.athena.dsl.planner.topology;
+package com.uber.athena.dsl.planner.utils;
 
 /**
- * Exception for constructing {@code Topology}.
+ * Exception for parsing {@code TopologyDef}.
  */
-public class TopologyBuilderException extends Exception {
+public class TraverseException extends Exception {
 
   /**
-   * Constructs an {@code TopologyBuilderException} with {@code null}
+   * Constructs an {@code TraverseException} with {@code null}
    * as its error detail message.
    */
-  public TopologyBuilderException() {
+  public TraverseException() {
     super();
   }
 
   /**
-   * Constructs an {@code TopologyBuilderException} with the specified detail message.
+   * Constructs an {@code TraverseException} with the specified detail message.
    *
    * @param message
    *        The detail message (which is saved for later retrieval
    *        by the {@link #getMessage()} method)
    */
-  public TopologyBuilderException(String message) {
+  public TraverseException(String message) {
     super(message);
   }
 
   /**
-   * Constructs an {@code TopologyBuilderException} with the specified detail message
+   * Constructs an {@code TraverseException} with the specified detail message
    * and cause.
    *
    * @param message
@@ -58,12 +58,12 @@ public class TopologyBuilderException extends Exception {
    *
    * @since 1.6
    */
-  public TopologyBuilderException(String message, Throwable cause) {
+  public TraverseException(String message, Throwable cause) {
     super(message, cause);
   }
 
   /**
-   * Constructs an {@code TopologyBuilderException} with the specified cause.
+   * Constructs an {@code TraverseException} with the specified cause.
    * also with a detail message of {@code (cause==null ? null : cause.toString())}
    *
    * @param cause
@@ -73,7 +73,7 @@ public class TopologyBuilderException extends Exception {
    *
    * @since 1.6
    */
-  public TopologyBuilderException(Throwable cause) {
+  public TraverseException(Throwable cause) {
     super(cause);
   }
 }

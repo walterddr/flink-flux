@@ -47,26 +47,26 @@ config:
 vertices:
   source-1:
     id: "source-1"
-    className: "com.uber.athena.dsl.planner.element.BaseSimpleSource"
+    className: "com.uber.athena.dsl.planner.element.utils.BaseSimpleSource"
     parallelism: 1
     constructorArgs:
       - 10
 
   operator-1:
     id: "operator-1"
-    className: "com.uber.athena.dsl.planner.element.BaseMultiConstructorOperator"
+    className: "com.uber.athena.dsl.planner.element.utils.BaseMultiConstructorOperator"
     parallelism: 1
     constructorArgs:
       - 10
   operator-2:
     id: "operator-2"
-    className: "com.uber.athena.dsl.planner.element.BaseSingleConstructorOperator"
+    className: "com.uber.athena.dsl.planner.element.utils.BaseSingleConstructorOperator"
     parallelism: 1
     constructorArgs:
       - 10
   operator-merge:
     id: "operator-merge"
-    className: "com.uber.athena.dsl.planner.element.BaseMultiConstructorOperator"
+    className: "com.uber.athena.dsl.planner.element.utils.BaseMultiConstructorOperator"
     parallelism: 1
     constructorArgs:
       - 10
@@ -74,7 +74,7 @@ vertices:
 
   sink-1:
     id: "sink-1"
-    className: "com.uber.athena.flux.converter.impl.testutils.operator.SimpleSink"
+    className: "com.uber.athena.dsl.planner.element.utils.BaseSimpleSink"
     parallelism: 16
 
 #stream definitions
