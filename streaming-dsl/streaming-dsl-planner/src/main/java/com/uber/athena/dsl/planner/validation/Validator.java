@@ -29,7 +29,8 @@ public interface Validator {
 
   /**
    * validate that the definition actually represents a valid DSL topology.
-   * @return true if the topology def is valid.
+   * @return the validated topology.
+   * @throws ValidationException when no valid topology can be generated.
    */
-  void validate(Topology topology) throws ValidationException;
+  Topology validate(Topology topology) throws ValidationException;
 }

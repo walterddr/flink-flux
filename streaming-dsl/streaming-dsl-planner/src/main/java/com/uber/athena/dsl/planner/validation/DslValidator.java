@@ -31,9 +31,10 @@ public class DslValidator implements Validator {
   }
 
   @Override
-  public void validate(Topology topology) throws ValidationException {
+  public Topology validate(Topology topology) throws ValidationException {
     try {
       validateTopology(topology);
+      return topology;
     } catch (Exception e) {
       throw new ValidationException("Validation Exception occur!", e);
     }

@@ -23,7 +23,11 @@ import com.uber.athena.dsl.planner.element.Element;
 import com.uber.athena.dsl.planner.element.ElementNode;
 import com.uber.athena.dsl.planner.model.VertexNode;
 import com.uber.athena.dsl.planner.topology.Topology;
+import com.uber.athena.dsl.planner.type.Type;
+import com.uber.athena.dsl.planner.type.TypeFactory;
 import com.uber.athena.dsl.planner.utils.ConstructionException;
+
+import java.util.List;
 
 /**
  * Base implementation of the {@link Constructor}.
@@ -40,14 +44,25 @@ public class ConstructorImpl implements Constructor {
   @Override
   public ElementNode construct(
       VertexNode vertex,
-      Topology topology) throws ConstructionException {
+      Topology topology,
+      TypeFactory typeFactory) throws ConstructionException {
     // TODO @walterddr actually using the loader factory
     // instead of directly using the reflective construct util
     try {
+      // Resolve references
+      List<Object> resolvedConstructorArgs = ComponentResolutionUtils.resolveReferences(
+          vertex.getVertexDef().getConstructorArgs(), topology);
+      if (resolvedConstructorArgs != null) {
+        vertex.getVertexDef().setConstructorArgs(resolvedConstructorArgs);
+      }
       // Construct the element from vertex using reflection.
       Object obj = ReflectiveConstructUtils.buildObject(vertex.getVertexDef(), topology);
       Class<?> clazz = Class.forName(vertex.getVertexDef().getClassName());
-      return new Element(obj, clazz);
+
+      // Construct the produce type of the vertex.
+      Type type = typeFactory.getType(vertex.getVertexDef().getTypeSpec());
+
+      return new Element(obj, clazz, type);
     } catch (Exception e) {
       throw new ConstructionException("Cannot construct element!", e);
     }

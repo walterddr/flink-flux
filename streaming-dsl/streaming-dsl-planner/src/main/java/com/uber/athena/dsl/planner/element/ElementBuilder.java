@@ -22,13 +22,13 @@ package com.uber.athena.dsl.planner.element;
 import com.uber.athena.dsl.planner.element.constructor.Constructor;
 import com.uber.athena.dsl.planner.model.VertexNode;
 import com.uber.athena.dsl.planner.topology.Topology;
+import com.uber.athena.dsl.planner.type.TypeFactory;
 import com.uber.athena.dsl.planner.utils.ConstructionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Builder for constructing an {@link Element} from a {@link VertexNode}.
@@ -42,24 +42,32 @@ public class ElementBuilder {
   /**
    * Element constructor that creates an object from class reference.
    */
-  private Constructor constructor;
+  protected Constructor constructor;
 
   /**
    * Configuration properties.
    */
-  private Properties config;
+  protected Map<String, Object> config;
+
+  /**
+   * Type/Schema factory used to determine output schema of an Element.
+   */
+  protected TypeFactory typeFactory;
 
   /**
    * Construct an element builder.
    *
    * @param builderConfig configuration properties for the builder.
    * @param constructor the constructor used to construct elements.
+   * @param typeFactory the type factory used to determine element produce type.
    */
   public ElementBuilder(
-      Properties builderConfig,
-      Constructor constructor) {
+      Map<String, Object> builderConfig,
+      Constructor constructor,
+      TypeFactory typeFactory) {
     this.config = builderConfig;
     this.constructor = constructor;
+    this.typeFactory = typeFactory;
   }
 
   /**
@@ -72,25 +80,35 @@ public class ElementBuilder {
    * @param topology the topology defined by the DSL model.
    * @return a mapping from the vertex Ids to the constructed runtime objects.
    */
-  public Map<String, ElementNode> construct(
+  public Map<String, ? extends ElementNode> construct(
       Topology topology) throws ConstructionException {
     Map<String, ElementNode> elementMapping = new HashMap<>();
     for (VertexNode vertex : topology.getSources().values()) {
-      ElementNode node = constructor.construct(vertex, topology);
-      elementMapping.put(vertex.getVertexId(), node);
+      elementMapping.put(
+          vertex.getVertexId(),
+          constructElementNode(vertex, topology));
     }
     for (VertexNode vertex : topology.getSinks().values()) {
-      ElementNode node = constructor.construct(vertex, topology);
-      elementMapping.put(vertex.getVertexId(), node);
+      elementMapping.put(
+          vertex.getVertexId(),
+          constructElementNode(vertex, topology));
     }
     for (VertexNode vertex : topology.getOperators().values()) {
-      ElementNode node = constructor.construct(vertex, topology);
-      elementMapping.put(vertex.getVertexId(), node);
+      elementMapping.put(
+          vertex.getVertexId(),
+          constructElementNode(vertex, topology));
     }
     return elementMapping;
   }
 
-  public Properties getConfig() {
+  public Map<String, Object> getConfig() {
     return config;
+  }
+
+  protected ElementNode constructElementNode(
+      VertexNode vertex,
+      Topology topology) throws ConstructionException {
+    LOG.debug("Element node construction successful for: " + vertex.getVertexId());
+    return constructor.construct(vertex, topology, typeFactory);
   }
 }

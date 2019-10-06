@@ -17,42 +17,40 @@
  *
  */
 
-package com.uber.athena.dsl.planner.element;
+package com.uber.athena.dsl.planner.relation.utils;
 
-import com.uber.athena.dsl.planner.type.Type;
+import com.uber.athena.dsl.planner.element.utils.BaseOperator;
+import com.uber.athena.dsl.planner.model.StreamDef;
+
+import java.util.List;
+import java.util.Map;
 
 /**
- * Base implementation of an {@link ElementNode}.
+ * A stream constructs for testing relation builder purpose.
+ *
+ * <p>With an operator, its associated upstream connections: {@link StreamDef}
+ * and the {@link Stream}.
  */
-@SuppressWarnings("unchecked")
-public class Element implements ElementNode {
+public interface Stream {
 
-  private Object obj;
-  private Type type;
-  private Class<?> clazz;
+  /**
+   * get the upstream connection definition.
+   *
+   * @return the stream/connection definitions.
+   */
+  List<StreamDef> getUpstreamDefs();
 
-  public Element(Object obj, Class<?> clazz) {
-    this(obj, clazz, null);
-  }
+  /**
+   * get the upstreams.
+   *
+   * @return the upstream.
+   */
+  Map<String, Stream> getUpstreams();
 
-  public Element(Object obj, Class<?> clazz, Type type) {
-    this.obj = obj;
-    this.clazz = clazz;
-    this.type = type;
-  }
-
-  @Override
-  public Class<?> getElementClass() {
-    return this.clazz;
-  }
-
-  @Override
-  public <R> R getElement() {
-    return (R) this.obj;
-  }
-
-  @Override
-  public <T extends Type> T getProduceType() {
-    return (T) type;
-  }
+  /**
+   * get the operator associated with this stream.
+   *
+   * @return the operator.
+   */
+  BaseOperator getOperator();
 }

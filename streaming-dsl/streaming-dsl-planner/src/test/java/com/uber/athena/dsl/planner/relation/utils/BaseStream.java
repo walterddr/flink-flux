@@ -17,42 +17,46 @@
  *
  */
 
-package com.uber.athena.dsl.planner.element;
+package com.uber.athena.dsl.planner.relation.utils;
 
-import com.uber.athena.dsl.planner.type.Type;
+import com.uber.athena.dsl.planner.element.utils.BaseOperator;
+import com.uber.athena.dsl.planner.model.StreamDef;
+
+import java.util.List;
+import java.util.Map;
 
 /**
- * Base implementation of an {@link ElementNode}.
+ * A basic definition of a {@link Stream}.
+ *
+ * @param <T> extended type of base operator.
  */
-@SuppressWarnings("unchecked")
-public class Element implements ElementNode {
+public class BaseStream<T extends BaseOperator> implements Stream {
 
-  private Object obj;
-  private Type type;
-  private Class<?> clazz;
+  private T operator;
+  private List<StreamDef> streamDefs;
+  private Map<String, Stream> upstreams;
 
-  public Element(Object obj, Class<?> clazz) {
-    this(obj, clazz, null);
-  }
-
-  public Element(Object obj, Class<?> clazz, Type type) {
-    this.obj = obj;
-    this.clazz = clazz;
-    this.type = type;
-  }
-
-  @Override
-  public Class<?> getElementClass() {
-    return this.clazz;
+  public BaseStream(
+      T operator,
+      List<StreamDef> streamDefs,
+      Map<String, Stream> upstreams) {
+    this.operator = operator;
+    this.streamDefs = streamDefs;
+    this.upstreams = upstreams;
   }
 
   @Override
-  public <R> R getElement() {
-    return (R) this.obj;
+  public List<StreamDef> getUpstreamDefs() {
+    return streamDefs;
   }
 
   @Override
-  public <T extends Type> T getProduceType() {
-    return (T) type;
+  public Map<String, Stream> getUpstreams() {
+    return upstreams;
+  }
+
+  @Override
+  public T getOperator() {
+    return operator;
   }
 }

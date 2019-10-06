@@ -22,7 +22,7 @@ package com.uber.athena.dsl.planner.element.utils;
 /**
  * Basic operator for test purpose.
  */
-public class BaseSingleConstructorOperator extends BaseOperator {
+public class BaseSingleConstructorOperator implements BaseOperator {
 
   private int dummyIntArg;
 

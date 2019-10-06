@@ -22,7 +22,7 @@ package com.uber.athena.dsl.planner.element.utils;
 /**
  * Basic sink for test purpose.
  */
-public class BaseSimpleSink extends BaseSink {
+public class BaseSimpleSink implements BaseSink {
 
   private int dummyIntArg;
 

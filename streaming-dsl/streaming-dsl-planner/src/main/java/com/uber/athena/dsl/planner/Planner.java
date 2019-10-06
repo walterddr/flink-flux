@@ -20,6 +20,7 @@
 package com.uber.athena.dsl.planner;
 
 import com.uber.athena.dsl.planner.element.ElementNode;
+import com.uber.athena.dsl.planner.relation.RelationNode;
 import com.uber.athena.dsl.planner.topology.Topology;
 import com.uber.athena.dsl.planner.utils.ConstructionException;
 import com.uber.athena.dsl.planner.utils.ParsingException;
@@ -74,8 +75,21 @@ public interface Planner {
    * Construct the {@link ElementNode}s for all vertices.
    *
    * @param topology topology definition of the DSL model.
-   * @return a mapping .
+   * @return the constructed elementNode for each vertex.
    * @throws ConstructionException when construction fails.
    */
-  Map<String, ElementNode> constructElement(Topology topology) throws ConstructionException;
+  Map<String, ? extends ElementNode> constructElement(
+      Topology topology) throws ConstructionException;
+
+  /**
+   * Construct the {@link RelationNode} against a particular runtime environment.
+   *
+   * @param topology topology definition of the DSL model.
+   * @param elementMapping the constructed element nodes.
+   * @return the constructed relation node for each vertex.
+   * @throws ConstructionException when construction fails.
+   */
+  Map<String, ? extends RelationNode> constructRelation(
+      Topology topology,
+      Map<String, ElementNode> elementMapping) throws ConstructionException;
 }

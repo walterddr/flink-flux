@@ -22,6 +22,6 @@ package com.uber.athena.dsl.planner.element.utils;
 /**
  * Base operator for testing construction.
  */
-public class BaseSink extends BaseOperator {
+public interface BaseSink extends BaseOperator {
 }
 

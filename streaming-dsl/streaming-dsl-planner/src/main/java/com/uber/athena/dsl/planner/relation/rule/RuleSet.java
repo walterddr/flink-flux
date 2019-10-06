@@ -17,20 +17,42 @@
  *
  */
 
-package com.uber.athena.dsl.planner.type;
-
-import com.uber.athena.dsl.planner.model.TypeSpecDef;
+package com.uber.athena.dsl.planner.relation.rule;
 
 /**
- * Factory class that ingests type information.
+ * A set of {@code Rule}s that works together to construct a plan.
+ *
+ * <p>the set of rule is usually feed to a {@link RuleExecutor}.
  */
-public interface TypeFactory {
+public interface RuleSet extends Iterable<Rule> {
 
   /**
-   * construct produce type based on {@link TypeSpecDef} definition.
+   * The rule matching order for this set of rules.
    *
-   * @param typeSpecDef the type specification model.
-   * @return the resolved type.
+   * @return the {@link RuleMatchOrder} value.
    */
-  Type getType(TypeSpecDef typeSpecDef);
+  default RuleMatchOrder getRuleMatchOrder() {
+    return RuleMatchOrder.SEQUENTIAL;
+  }
+
+  /**
+   * The set of ordering mechanisms supported.
+   */
+  enum RuleMatchOrder {
+
+    /**
+     * Match in arbitrary order.
+     *
+     * <p>This is the default because it is efficient, and most rules don't care
+     * about order.
+     */
+    ARBITRARY,
+
+    /**
+     * Match from top down.
+     *
+     * <p>A match attempts to apply rules in a {@link RuleSet} sequentially.
+     */
+    SEQUENTIAL
+  }
 }

@@ -17,42 +17,15 @@
  *
  */
 
-package com.uber.athena.dsl.planner.element;
-
-import com.uber.athena.dsl.planner.type.Type;
+package com.uber.athena.dsl.planner.relation.rule;
 
 /**
- * Base implementation of an {@link ElementNode}.
+ * Simple test rule for a source operator.
  */
-@SuppressWarnings("unchecked")
-public class Element implements ElementNode {
-
-  private Object obj;
-  private Type type;
-  private Class<?> clazz;
-
-  public Element(Object obj, Class<?> clazz) {
-    this(obj, clazz, null);
-  }
-
-  public Element(Object obj, Class<?> clazz, Type type) {
-    this.obj = obj;
-    this.clazz = clazz;
-    this.type = type;
-  }
+public class SourceConstructRule extends BaseConstructRule {
 
   @Override
-  public Class<?> getElementClass() {
-    return this.clazz;
-  }
-
-  @Override
-  public <R> R getElement() {
-    return (R) this.obj;
-  }
-
-  @Override
-  public <T extends Type> T getProduceType() {
-    return (T) type;
+  public boolean matches(RuleCall ruleCall) {
+    return ruleCall.getUpstreamDefMapping().size() == 0;
   }
 }

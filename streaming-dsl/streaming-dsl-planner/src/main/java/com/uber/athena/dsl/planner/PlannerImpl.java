@@ -22,6 +22,8 @@ package com.uber.athena.dsl.planner;
 import com.uber.athena.dsl.planner.element.ElementBuilder;
 import com.uber.athena.dsl.planner.element.ElementNode;
 import com.uber.athena.dsl.planner.parser.Parser;
+import com.uber.athena.dsl.planner.relation.RelationBuilder;
+import com.uber.athena.dsl.planner.relation.RelationNode;
 import com.uber.athena.dsl.planner.topology.Topology;
 import com.uber.athena.dsl.planner.utils.ConstructionException;
 import com.uber.athena.dsl.planner.utils.ParsingException;
@@ -39,6 +41,7 @@ public class PlannerImpl implements Planner {
   private Parser parser;
   private Validator validator;
   private ElementBuilder elementBuilder;
+  private RelationBuilder relationBuilder;
 
   // TODO @walterddr create wrapper for planner construction instead of directly
   // creating each individual modules.
@@ -46,11 +49,13 @@ public class PlannerImpl implements Planner {
   public PlannerImpl(
       Parser parser,
       Validator validator,
-      ElementBuilder elementBuilder
+      ElementBuilder elementBuilder,
+      RelationBuilder relationBuilder
   ) {
     this.parser = parser;
     this.validator = validator;
     this.elementBuilder = elementBuilder;
+    this.relationBuilder = relationBuilder;
   }
 
   @Override
@@ -66,8 +71,15 @@ public class PlannerImpl implements Planner {
   }
 
   @Override
-  public Map<String, ElementNode> constructElement(
+  public Map<String, ? extends ElementNode> constructElement(
       Topology topology) throws ConstructionException {
     return elementBuilder.construct(topology);
+  }
+
+  @Override
+  public Map<String, ? extends RelationNode> constructRelation(
+      Topology topology,
+      Map<String, ElementNode> elementMapping) throws ConstructionException {
+    return relationBuilder.construct(topology, elementMapping);
   }
 }

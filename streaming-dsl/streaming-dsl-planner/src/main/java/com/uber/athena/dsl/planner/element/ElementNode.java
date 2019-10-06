@@ -19,6 +19,8 @@
 
 package com.uber.athena.dsl.planner.element;
 
+import com.uber.athena.dsl.planner.type.Type;
+
 /**
  * Node that represents a vertex with its constructed object.
  *
@@ -55,4 +57,20 @@ public interface ElementNode {
    * @return the constructed element, or null if not constructed.
    */
   <R> R getElement();
+
+  /**
+   * Return the output type of which the element will produce.
+   *
+   * <p>The type of the element output is best-effort to be determined
+   * during element build time. If element type is non-deterministic at
+   * element build time. the result will be null and it is up to the
+   * {@link com.uber.athena.dsl.planner.relation.RelationBuilder} phase to
+   * infer or extract type from the relation construct.
+   *
+   * <p>Type is nullable.
+   *
+   * @param <T> result matching of the type
+   * @return the produce/output type of the element constructed.
+   */
+  <T extends Type> T getProduceType();
 }

@@ -17,12 +17,16 @@
  *
  */
 
-package com.uber.athena.dsl.planner.element;
+package com.uber.athena.dsl.planner.relation;
 
 import com.uber.athena.dsl.planner.PlannerComponentTestBase;
+import com.uber.athena.dsl.planner.element.ElementBuilder;
+import com.uber.athena.dsl.planner.element.ElementNode;
 import com.uber.athena.dsl.planner.element.constructor.ConstructorImpl;
 import com.uber.athena.dsl.planner.parser.DslParser;
 import com.uber.athena.dsl.planner.parser.Parser;
+import com.uber.athena.dsl.planner.relation.rule.RuleExecutorImpl;
+import com.uber.athena.dsl.planner.relation.rule.ruleset.StandardRuleSet;
 import com.uber.athena.dsl.planner.topology.DslTopologyBuilder;
 import com.uber.athena.dsl.planner.topology.Topology;
 import com.uber.athena.dsl.planner.type.TypeFactoryImpl;
@@ -31,15 +35,18 @@ import com.uber.athena.dsl.planner.validation.Validator;
 import org.junit.BeforeClass;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * Test for {@link ElementBuilder}.
  */
-public class ElementBuilderTest extends PlannerComponentTestBase {
+@SuppressWarnings("unchecked")
+public class RelationBuilderTest extends PlannerComponentTestBase {
 
   private static Parser parser;
   private static Validator validator;
   private static ElementBuilder elementBuilder;
+  private static RelationBuilder relationBuilder;
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -49,12 +56,17 @@ public class ElementBuilderTest extends PlannerComponentTestBase {
         null,
         new ConstructorImpl(),
         new TypeFactoryImpl());
+    relationBuilder = new RelationBuilder(
+        null,
+        new RuleExecutorImpl(StandardRuleSet.getInstance(), null));
   }
 
   @Override
   public void testTopology(File file) throws Exception {
     Topology topology = parser.parseFile(file.getCanonicalPath(), false, null, false);
     Topology validatedTopology = validator.validate(topology);
-    elementBuilder.construct(validatedTopology);
+    Map<String, ElementNode> elementMapping =
+        (Map<String, ElementNode>) elementBuilder.construct(validatedTopology);
+    relationBuilder.construct(validatedTopology, elementMapping);
   }
 }

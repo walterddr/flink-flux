@@ -20,7 +20,6 @@
 package com.uber.athena.dsl.planner.type;
 
 import com.uber.athena.dsl.planner.model.TypeSpecDef;
-import com.uber.athena.dsl.planner.model.VertexNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +32,6 @@ public final class TypeFactoryImpl implements TypeFactory {
   private static final Logger LOG = LoggerFactory.getLogger(TypeFactoryImpl.class);
 
   public TypeFactoryImpl() {
-  }
-
-  @Override
-  public Type getType(VertexNode vertex) {
-    return getType(vertex.getVertexDef().getTypeSpec());
   }
 
   @Override

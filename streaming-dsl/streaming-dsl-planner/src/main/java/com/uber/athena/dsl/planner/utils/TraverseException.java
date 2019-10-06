@@ -22,7 +22,7 @@ package com.uber.athena.dsl.planner.utils;
 /**
  * Exception for parsing {@code TopologyDef}.
  */
-public class TraverseException extends Exception {
+public class TraverseException extends ConstructionException {
 
   /**
    * Constructs an {@code TraverseException} with {@code null}

@@ -17,30 +17,37 @@
  *
  */
 
-package com.uber.athena.dsl.planner.element.constructor;
+package com.uber.athena.dsl.planner.relation.rule;
 
 import com.uber.athena.dsl.planner.element.ElementNode;
+import com.uber.athena.dsl.planner.model.StreamDef;
 import com.uber.athena.dsl.planner.model.VertexNode;
-import com.uber.athena.dsl.planner.topology.Topology;
-import com.uber.athena.dsl.planner.type.TypeFactory;
+import com.uber.athena.dsl.planner.relation.RelationNode;
 import com.uber.athena.dsl.planner.utils.ConstructionException;
 
+import java.util.Map;
+
 /**
- * Base class for construction of vertex.
+ * Base implementation of a RuleExecutor.
+ *
+ * <p>Concrete implementation of an executor should depend on a concrete
+ * implementation of {@link RuleCall}.
  */
-public interface Constructor {
+public interface RuleExecutor {
 
   /**
-   * Construct an object based on topology and vertex definitions.
+   * Executes a {@link RuleSet} on a specific {@link VertexNode}.
    *
-   * @param vertex the vertex node defined in the topology
-   * @param topology the topology.
-   * @param typeFactory the type factory for generating element return type.
-   * @return a Java object constructed.
-   * @throws ConstructionException when construction failure occurs.
+   * @param vertex the vertex node in the DSL model.
+   * @param elementNode the element node constructed as an object.
+   * @param streamDefs the upstream stream definitions
+   * @param relations the upstream relation nodes.
+   * @return the relation node representing the current vertex.
+   * @throws ConstructionException when relation cannot be constructed.
    */
-  ElementNode construct(
+  RelationNode convert(
       VertexNode vertex,
-      Topology topology,
-      TypeFactory typeFactory) throws ConstructionException;
+      ElementNode elementNode,
+      Map<String, StreamDef> streamDefs,
+      Map<String, RelationNode> relations) throws ConstructionException;
 }

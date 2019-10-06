@@ -22,6 +22,6 @@ package com.uber.athena.dsl.planner.element.utils;
 /**
  * Base operator for test purpose.
  */
-public class BaseOperator {
+public interface BaseOperator {
 }
 

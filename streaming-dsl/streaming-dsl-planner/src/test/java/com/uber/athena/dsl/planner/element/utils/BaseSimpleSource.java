@@ -22,7 +22,7 @@ package com.uber.athena.dsl.planner.element.utils;
 /**
  * Basic source for test purpose.
  */
-public class BaseSimpleSource extends BaseSource {
+public class BaseSimpleSource implements BaseSource {
 
   private int dummyIntArg;
 
