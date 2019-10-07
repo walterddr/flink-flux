@@ -34,17 +34,17 @@ under the License.
     <packaging>pom</packaging>
 
     <modules>
-        <!--module>streaming-dsl-impl-flink</module-->
+        <module>streaming-dsl-server-flink</module>
         <module>streaming-dsl-planner</module>
     </modules>
 
-    <dependencies>
-
-        <!--dependency>
-            <groupId>com.uber.athena</groupId>
-            <artifactId>streaming-dsl-planner</artifactId>
-            <version>${project.version}</version>
-        </dependency-->
-
-    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.uber.athena</groupId>
+                <artifactId>streaming-dsl-planner</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
