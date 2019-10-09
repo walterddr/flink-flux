@@ -27,7 +27,9 @@ import com.uber.athena.dsl.planner.type.Type;
 import com.uber.athena.dsl.planner.type.TypeFactory;
 import com.uber.athena.dsl.planner.utils.ConstructionException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Base implementation of the {@link Constructor}.
@@ -38,7 +40,14 @@ import java.util.List;
  */
 public class ConstructorImpl implements Constructor {
 
+  protected final Map<String, Object> constructMap;
+
   public ConstructorImpl() {
+    this(new HashMap<>());
+  }
+
+  public ConstructorImpl(Map<String, Object> constructMap) {
+    this.constructMap = constructMap;
   }
 
   @Override
@@ -51,12 +60,14 @@ public class ConstructorImpl implements Constructor {
     try {
       // Resolve references
       List<Object> resolvedConstructorArgs = ComponentResolutionUtils.resolveReferences(
-          vertex.getVertexDef().getConstructorArgs(), topology);
+          vertex.getVertexDef().getConstructorArgs(), topology, constructMap);
       if (resolvedConstructorArgs != null) {
         vertex.getVertexDef().setConstructorArgs(resolvedConstructorArgs);
       }
       // Construct the element from vertex using reflection.
-      Object obj = ReflectiveConstructUtils.buildObject(vertex.getVertexDef(), topology);
+      Object obj = ReflectiveConstructUtils.buildObject(
+          vertex.getVertexDef(), topology, constructMap);
+      constructMap.put(vertex.getVertexId(), obj);
       Class<?> clazz = Class.forName(vertex.getVertexDef().getClassName());
 
       // Construct the produce type of the vertex.

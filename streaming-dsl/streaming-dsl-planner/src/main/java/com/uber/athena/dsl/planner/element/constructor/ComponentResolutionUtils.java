@@ -58,7 +58,8 @@ public final class ComponentResolutionUtils {
    */
   public static List<Object> resolveReferences(
       List<Object> args,
-      Topology topology) {
+      Topology topology,
+      Map<String, Object> constructMap) {
     LOG.debug("Checking arguments for references.");
     List<Object> cArgs = new ArrayList<Object>();
     // resolve references
@@ -66,12 +67,23 @@ public final class ComponentResolutionUtils {
     if (args != null) {
       for (Object arg : args) {
         if (arg instanceof ComponentRefDef) {
-          ComponentDef component = componentMap.get(((ComponentRefDef) arg).getId());
+          String componentId = ((ComponentRefDef) arg).getId();
+          ComponentDef component = componentMap.get(componentId);
           if (component == null) {
             throw new IllegalArgumentException("TraverserContext does not contain component"
                 + " reference for: " + arg);
           }
-          cArgs.add(component);
+          if (constructMap.get(componentId) != null) {
+            cArgs.add(constructMap.get(componentId));
+          } else {
+            try {
+              Object obj = ReflectiveConstructUtils.buildObject(component, topology, constructMap);
+              cArgs.add(obj);
+              constructMap.put(componentId, obj);
+            } catch (ReflectiveOperationException e) {
+              throw new IllegalArgumentException("Unable to construct component!", e);
+            }
+          }
         } else {
           cArgs.add(arg);
         }

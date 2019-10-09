@@ -19,6 +19,9 @@
 
 package com.uber.athena.dsl.planner.topology;
 
+import com.uber.athena.dsl.planner.model.ComponentDef;
+import com.uber.athena.dsl.planner.model.ComponentRefDef;
+import com.uber.athena.dsl.planner.model.ObjectDef;
 import com.uber.athena.dsl.planner.model.StreamDef;
 import com.uber.athena.dsl.planner.model.StreamSpecDef;
 import com.uber.athena.dsl.planner.model.TopologyDef;
@@ -32,7 +35,10 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * The {@link TopologyBuilder} implementation for {@link DslTopology}.
@@ -120,11 +126,21 @@ public class DslTopologyBuilder implements TopologyBuilder {
         topology.getPropertyMap().putAll(this.topologyDef.getPropertyMap());
       }
       if (this.topologyDef.getComponents() != null) {
-        topology.getComponents().putAll(this.topologyDef.getComponents());
+        topology.getComponents().putAll(
+            this.topologyDef.getComponents().entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                e -> {
+                  ComponentDef componentDef = e.getValue();
+                  processObjectDef(componentDef);
+                  return componentDef;
+                })
+            ));
       }
 
       // Add all vertices.
       this.vertexMap.forEach((k, v) -> {
+        // dereference all vertex
+        processObjectDef(v);
         // check in case of unconnected vertex (no upstream and downstream)
         if (!upstreamVertexMap.containsKey(k) && !downstreamVertexMap.containsKey(k)) {
           LOG.warn("unconnected vertex {}", k);
@@ -177,6 +193,37 @@ public class DslTopologyBuilder implements TopologyBuilder {
         m.put(key, map);
       } else {
         map.put(k, v);
+      }
+    }
+
+    /**
+     * In-place pre-processing of the object definition.
+     *
+     * <p>This in-place utility only de-reference objects in arguments as of
+     * now.
+     *
+     * @param objectDef the object definition.
+     */
+    @SuppressWarnings("unchecked")
+    private static void processObjectDef(ObjectDef objectDef) {
+      // de-referencing the object.
+      List<Object> args = objectDef.getConstructorArgs();
+      if (args != null) {
+        List<Object> newArgs = new ArrayList<Object>();
+        for (Object obj : args) {
+          if (obj instanceof LinkedHashMap) {
+            Map<String, Object> map = (Map<String, Object>) obj;
+            if (map.containsKey("ref") && map.size() == 1) {
+              newArgs.add(new ComponentRefDef().id((String) map.get("ref")));
+              objectDef.setHasReferenceInArgs(true);
+            } else {
+              newArgs.add(obj);
+            }
+          } else {
+            newArgs.add(obj);
+          }
+        }
+        objectDef.setConstructorArgs(newArgs);
       }
     }
   }

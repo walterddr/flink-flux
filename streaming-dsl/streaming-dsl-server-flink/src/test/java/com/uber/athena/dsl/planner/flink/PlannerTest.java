@@ -36,36 +36,24 @@ import java.util.Properties;
  * Test of the generation of Flink runtime job graph / application.
  */
 public class PlannerTest extends FlinkPlannerTestBase {
-  private static final String BASIC_TOPOLOGY = "/dsl/basic_topology.yaml";
-  private static final String DIAMOND_TOPOLOGY = "/dsl/diamond_topology.yaml";
 
   @Test
-  @SuppressWarnings("unchecked")
   public void testBasicTopology() throws Exception {
-    Configuration flinkConf = new Configuration();
-    Properties properties = new Properties();
-    StreamExecutionEnvironment sEnv =
-        StreamExecutionEnvironment.createLocalEnvironment(1, flinkConf);
-    RuleSet ruleSet = new FlinkDataStreamRuleSet(1, flinkConf, sEnv);
-    FlinkPlanner planner = new FlinkPlanner.Builder()
-        .flinkConf(flinkConf)
-        .properties(properties)
-        .ruleSet(ruleSet)
-        .build();
-    Topology topology = planner.parse(PlannerTest.class.getResourceAsStream(BASIC_TOPOLOGY));
-    topology = planner.validate(topology);
-    Map<String, ElementNode> elementMapping =
-        (Map<String, ElementNode>) planner.constructElement(topology);
-    Map<String, ? extends RelationNode> relationMapping =
-        planner.constructRelation(topology, elementMapping);
-
-    Assert.assertEquals(3, relationMapping.size());
-    Assert.assertNotNull(sEnv.getExecutionPlan());
+    test(BASIC_TOPOLOGY, 3);
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void testDiamondTopology() throws Exception {
+    test(DIAMOND_TOPOLOGY, 4);
+  }
+
+  @Test
+  public void testKafkaTopology() throws Exception {
+    test(KAFKA_TOPOLOGY, 3);
+  }
+
+  @SuppressWarnings("unchecked")
+  private static void test(String def, int expectedRelationSize) throws Exception {
     Configuration flinkConf = new Configuration();
     Properties properties = new Properties();
     StreamExecutionEnvironment sEnv =
@@ -76,15 +64,14 @@ public class PlannerTest extends FlinkPlannerTestBase {
         .properties(properties)
         .ruleSet(ruleSet)
         .build();
-    Topology topology = planner.parse(PlannerTest.class.getResourceAsStream(DIAMOND_TOPOLOGY));
+    Topology topology = planner.parse(PlannerTest.class.getResourceAsStream(def));
     topology = planner.validate(topology);
     Map<String, ElementNode> elementMapping =
         (Map<String, ElementNode>) planner.constructElement(topology);
     Map<String, ? extends RelationNode> relationMapping =
         planner.constructRelation(topology, elementMapping);
 
-    Assert.assertEquals(4, relationMapping.size());
+    Assert.assertEquals(expectedRelationSize, relationMapping.size());
     Assert.assertNotNull(sEnv.getExecutionPlan());
   }
-
 }

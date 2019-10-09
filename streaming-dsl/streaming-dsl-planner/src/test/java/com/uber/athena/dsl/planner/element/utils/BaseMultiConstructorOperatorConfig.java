@@ -20,40 +20,23 @@
 package com.uber.athena.dsl.planner.element.utils;
 
 /**
- * Basic operator for test purpose on multiple constructor.
+ * Config used to test referencing and de-referencing when constructing elements.
  */
-public class BaseMultiConstructorOperator implements BaseOperator {
+public class BaseMultiConstructorOperatorConfig {
 
-  private String dummyStrArg;
-  private long dummyLongArg;
+  private final String dummyStrArg;
+  private final long dummyLongArg;
 
-  public BaseMultiConstructorOperator(int num) {
-    this((long) num, "");
-  }
-
-  public BaseMultiConstructorOperator(long num) {
-    this(num, "");
-  }
-
-  public BaseMultiConstructorOperator(int num, String str) {
-    this((long) num, str);
-  }
-
-  public BaseMultiConstructorOperator(BaseMultiConstructorOperatorConfig conf) {
-    this.dummyLongArg = conf.getDummyLongArg();
-    this.dummyStrArg = conf.getDummyStrArg();
-  }
-
-  public BaseMultiConstructorOperator(long num, String str) {
-    this.dummyLongArg = num;
+  public BaseMultiConstructorOperatorConfig(String str, long val) {
     this.dummyStrArg = str;
+    this.dummyLongArg = val;
   }
 
-  public long getLongArg() {
-    return dummyLongArg;
-  }
-
-  public String getStringArg() {
+  public String getDummyStrArg() {
     return dummyStrArg;
+  }
+
+  public long getDummyLongArg() {
+    return dummyLongArg;
   }
 }

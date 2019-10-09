@@ -35,8 +35,6 @@ import java.util.Properties;
  * Test of the generation of Flink runtime job graph / application.
  */
 public class PlannerITCase extends FlinkPlannerTestBase {
-  private static final String BASIC_TOPOLOGY = "/dsl/basic_topology.yaml";
-  private static final String DIAMOND_TOPOLOGY = "/dsl/diamond_topology.yaml";
 
   @Test
   @SuppressWarnings("unchecked")

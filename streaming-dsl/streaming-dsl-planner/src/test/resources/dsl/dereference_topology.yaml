@@ -22,68 +22,54 @@
 # we shouldn't choke if we see a document separator...
 ---
 
-name: "yaml-topology"
+name: "dereference-topology"
 
 config:
   topology.workers: 1
   # ...
 
-# source definitions
+components:
+  reference-config:
+    className: "com.uber.athena.dsl.planner.element.utils.BaseMultiConstructorOperatorConfig"
+    constructorArgs:
+      - "foo"
+      - 10
+
 vertices:
+  # source definitions
   source-1:
     id: "source-1"
     className: "com.uber.athena.dsl.planner.element.utils.BaseSimpleSource"
     parallelism: 1
     constructorArgs:
       - 10
+    # ...
 
+  # operator definitions
   operator-1:
     id: "operator-1"
     className: "com.uber.athena.dsl.planner.element.utils.BaseMultiConstructorOperator"
     parallelism: 1
     constructorArgs:
-      - 10
-  operator-2:
-    id: "operator-2"
-    className: "com.uber.athena.dsl.planner.element.utils.BaseSingleConstructorOperator"
-    parallelism: 1
-    constructorArgs:
-      - 10
-  operator-merge:
-    id: "operator-merge"
-    className: "com.uber.athena.dsl.planner.element.utils.BaseMultiConstructorOperator"
-    parallelism: 1
-    constructorArgs:
-      - 10
-      - "foo"
+      - ref: "reference-config"
+    # ...
 
+  # sink definitions
   sink-1:
     id: "sink-1"
     className: "com.uber.athena.dsl.planner.element.utils.BaseSimpleSink"
-    parallelism: 16
+    parallelism: 1
+    # ...
 
 #stream definitions
 streams:
   - id: "source-1 --> operator-1"
     fromVertex: "source-1"
     toVertex: "operator-1"
-  - id: "source-1 --> operator-2"
-    fromVertex: "source-1"
-    toVertex: "operator-2"
-  - id: "operator-1 --> operator-merge"
-    fromVertex: "operator-1"
-    toVertex: "operator-merge"
-    streamSpec:
-      streamType: "LEADING_CO_STREAM"
-  - id: "operator-2 --> operator-merge"
-    fromVertex: "operator-2"
-    toVertex: "operator-merge"
-    streamSpec:
-      streamType: "FOLLOWING_CO_STREAM"
-  - id: "operator-merge --> sink-1"
-    fromVertex: "operator-merge"
-    toVertex: "sink-1"
 
+  - id: "operator-1 --> sink-1"
+    fromVertex: "operator-1"
+    toVertex: "sink-1"
 
 
 

@@ -20,7 +20,7 @@
 package com.uber.athena.dsl.planner.flink.element.constructor;
 
 import com.uber.athena.dsl.planner.element.constructor.ComponentResolutionUtils;
-import com.uber.athena.dsl.planner.element.constructor.Constructor;
+import com.uber.athena.dsl.planner.element.constructor.ConstructorImpl;
 import com.uber.athena.dsl.planner.element.constructor.ReflectiveConstructUtils;
 import com.uber.athena.dsl.planner.flink.element.FlinkElement;
 import com.uber.athena.dsl.planner.flink.type.FlinkType;
@@ -33,9 +33,9 @@ import com.uber.athena.dsl.planner.utils.ConstructionException;
 import java.util.List;
 
 /**
- * Flink implementation of the {@link Constructor}.
+ * Flink implementation of the constructor class.
  */
-public class FlinkConstructor implements Constructor {
+public class FlinkConstructor extends ConstructorImpl {
 
   // TODO: @walterddr override this to support 3rd party lib loading.
   @Override
@@ -48,16 +48,18 @@ public class FlinkConstructor implements Constructor {
       FlinkTypeFactory flinkTypeFactory = (FlinkTypeFactory) typeFactory;
       // Resolve references
       List<Object> resolvedConstructorArgs = ComponentResolutionUtils.resolveReferences(
-          vertex.getVertexDef().getConstructorArgs(), topology);
+          vertex.getVertexDef().getConstructorArgs(), topology, constructMap);
       if (resolvedConstructorArgs != null) {
         vertex.getVertexDef().setConstructorArgs(resolvedConstructorArgs);
       }
       // Construct the element from vertex using reflection.
-      Object obj = ReflectiveConstructUtils.buildObject(vertex.getVertexDef(), topology);
+      Object obj = ReflectiveConstructUtils.buildObject(
+          vertex.getVertexDef(), topology, constructMap);
       Class<?> clazz = Class.forName(vertex.getVertexDef().getClassName());
 
       // Construct the Flink TypeInformation.
       FlinkType type = flinkTypeFactory.getType(vertex.getVertexDef().getTypeSpec());
+
       return new FlinkElement(obj, clazz, type);
     } catch (Exception e) {
       throw new ConstructionException("Cannot construct element!", e);

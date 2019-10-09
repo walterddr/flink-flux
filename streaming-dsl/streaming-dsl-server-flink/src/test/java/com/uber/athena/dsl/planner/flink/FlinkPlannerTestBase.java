@@ -26,7 +26,11 @@ import java.net.URL;
  * Base test setup for testing {@link FlinkPlanner} and its components.
  */
 public abstract class FlinkPlannerTestBase {
-  private static final String DEFAULT_TEST_DSL_MODEL_PATH = "dsl/";
+  protected static final String DEFAULT_TEST_DSL_MODEL_PATH = "dsl/";
+
+  protected static final String BASIC_TOPOLOGY = "/dsl/basic_topology.yaml";
+  protected static final String DIAMOND_TOPOLOGY = "/dsl/diamond_topology.yaml";
+  protected static final String KAFKA_TOPOLOGY = "/dsl/kafka_topology.yaml";
 
   protected File[] getTestTopologies() {
     return getResourceFolderFiles(DEFAULT_TEST_DSL_MODEL_PATH);

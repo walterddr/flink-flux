@@ -50,7 +50,8 @@ public final class ReflectiveConstructUtils {
 
   public static Object buildObject(
       ObjectDef def,
-      Topology topology) throws ReflectiveOperationException {
+      Topology topology,
+      Map<String, Object> constructMap) throws ReflectiveOperationException {
     Class clazz = Class.forName(def.getClassName());
     Object obj = null;
     if (def.getConstructorArgs() != null && def.getConstructorArgs().size() > 0) {
@@ -59,7 +60,7 @@ public final class ReflectiveConstructUtils {
       List<Object> cArgs = def.getConstructorArgs();
 
       if (def.getHasReferenceInArgs()) {
-        cArgs = ComponentResolutionUtils.resolveReferences(cArgs, topology);
+        cArgs = ComponentResolutionUtils.resolveReferences(cArgs, topology, constructMap);
       }
 
       Constructor con = ReflectiveConstructUtils.findCompatibleConstructor(cArgs, clazz);
@@ -78,7 +79,7 @@ public final class ReflectiveConstructUtils {
       obj = clazz.getConstructor().newInstance();
     }
     applyProperties(def, obj, topology);
-    invokeConfigMethods(def, obj, topology);
+    invokeConfigMethods(def, obj, topology, constructMap);
     return obj;
   }
 
@@ -112,7 +113,8 @@ public final class ReflectiveConstructUtils {
   private static void invokeConfigMethods(
       ObjectDef bean,
       Object instance,
-      Topology topology) throws InvocationTargetException, IllegalAccessException {
+      Topology topology,
+      Map<String, Object> constructMap) throws InvocationTargetException, IllegalAccessException {
 
     List<ConfigMethodDef> methodDefs = bean.getConfigMethods();
     if (methodDefs == null || methodDefs.size() == 0) {
@@ -125,7 +127,7 @@ public final class ReflectiveConstructUtils {
         args = new ArrayList<>();
       }
       if (methodDef.getHasReferenceInArgs()) {
-        args = ComponentResolutionUtils.resolveReferences(args, topology);
+        args = ComponentResolutionUtils.resolveReferences(args, topology, constructMap);
       }
       String methodName = methodDef.getName();
       Method method = ReflectiveConstructUtils.findCompatibleMethod(args, clazz, methodName);
