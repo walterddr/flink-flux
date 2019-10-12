@@ -19,9 +19,10 @@
 
 package com.uber.athena.dsl.planner.parser;
 
-import com.uber.athena.dsl.planner.PlannerComponentTestBase;
+import com.uber.athena.dsl.planner.PlannerTestBase;
 import com.uber.athena.dsl.planner.topology.DslTopologyBuilder;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 
@@ -29,17 +30,21 @@ import java.io.File;
 /**
  * Test for {@link Parser}.
  */
-public class DslParserTest extends PlannerComponentTestBase {
+public class DslParserTest extends PlannerTestBase {
 
   private static Parser parser;
+
+  public DslParserTest(String name, File file) {
+    super(name, file);
+  }
 
   @BeforeClass
   public static void setUp() {
     parser = new DslParser(null, new DslTopologyBuilder());
   }
 
-  @Override
-  public void testTopology(File file) throws Exception {
+  @Test
+  public void testParser() throws Exception {
     parser.parseFile(file.getAbsolutePath(), false, null, false);
   }
 }

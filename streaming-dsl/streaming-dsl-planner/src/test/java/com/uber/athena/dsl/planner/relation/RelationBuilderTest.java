@@ -19,7 +19,7 @@
 
 package com.uber.athena.dsl.planner.relation;
 
-import com.uber.athena.dsl.planner.PlannerComponentTestBase;
+import com.uber.athena.dsl.planner.PlannerTestBase;
 import com.uber.athena.dsl.planner.element.ElementBuilder;
 import com.uber.athena.dsl.planner.element.ElementNode;
 import com.uber.athena.dsl.planner.element.constructor.ConstructorImpl;
@@ -33,6 +33,7 @@ import com.uber.athena.dsl.planner.type.TypeFactoryImpl;
 import com.uber.athena.dsl.planner.validation.DslValidator;
 import com.uber.athena.dsl.planner.validation.Validator;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.Map;
@@ -41,12 +42,16 @@ import java.util.Map;
  * Test for {@link ElementBuilder}.
  */
 @SuppressWarnings("unchecked")
-public class RelationBuilderTest extends PlannerComponentTestBase {
+public class RelationBuilderTest extends PlannerTestBase {
 
   private static Parser parser;
   private static Validator validator;
   private static ElementBuilder elementBuilder;
   private static RelationBuilder relationBuilder;
+
+  public RelationBuilderTest(String name, File file) {
+    super(name, file);
+  }
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -61,8 +66,8 @@ public class RelationBuilderTest extends PlannerComponentTestBase {
         new RuleExecutorImpl(StandardRuleSet.getInstance(), null));
   }
 
-  @Override
-  public void testTopology(File file) throws Exception {
+  @Test
+  public void testRelationBuilder() throws Exception {
     Topology topology = parser.parseFile(file.getCanonicalPath(), false, null, false);
     Topology validatedTopology = validator.validate(topology);
     Map<String, ElementNode> elementMapping =

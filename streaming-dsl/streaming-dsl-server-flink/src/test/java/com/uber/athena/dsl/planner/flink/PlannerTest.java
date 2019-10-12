@@ -29,6 +29,8 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Map;
 import java.util.Properties;
 
@@ -37,23 +39,13 @@ import java.util.Properties;
  */
 public class PlannerTest extends FlinkPlannerTestBase {
 
-  @Test
-  public void testBasicTopology() throws Exception {
-    test(BASIC_TOPOLOGY, 3);
+  public PlannerTest(String name, File file) {
+    super(name, file);
   }
 
   @Test
-  public void testDiamondTopology() throws Exception {
-    test(DIAMOND_TOPOLOGY, 4);
-  }
-
-  @Test
-  public void testKafkaTopology() throws Exception {
-    test(KAFKA_TOPOLOGY, 3);
-  }
-
   @SuppressWarnings("unchecked")
-  private static void test(String def, int expectedRelationSize) throws Exception {
+  public void testPlanner() throws Exception {
     Configuration flinkConf = new Configuration();
     Properties properties = new Properties();
     StreamExecutionEnvironment sEnv =
@@ -64,14 +56,14 @@ public class PlannerTest extends FlinkPlannerTestBase {
         .properties(properties)
         .ruleSet(ruleSet)
         .build();
-    Topology topology = planner.parse(PlannerTest.class.getResourceAsStream(def));
+    Topology topology = planner.parse(new FileInputStream(file));
     topology = planner.validate(topology);
     Map<String, ElementNode> elementMapping =
         (Map<String, ElementNode>) planner.constructElement(topology);
     Map<String, ? extends RelationNode> relationMapping =
         planner.constructRelation(topology, elementMapping);
 
-    Assert.assertEquals(expectedRelationSize, relationMapping.size());
+    Assert.assertEquals(elementMapping.size(), relationMapping.size());
     Assert.assertNotNull(sEnv.getExecutionPlan());
   }
 }

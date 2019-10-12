@@ -19,24 +19,41 @@
 
 package com.uber.athena.dsl.planner.flink;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Base test setup for testing {@link FlinkPlanner} and its components.
  */
+@RunWith(Parameterized.class)
 public abstract class FlinkPlannerTestBase {
   protected static final String DEFAULT_TEST_DSL_MODEL_PATH = "dsl/";
 
-  protected static final String BASIC_TOPOLOGY = "/dsl/basic_topology.yaml";
-  protected static final String DIAMOND_TOPOLOGY = "/dsl/diamond_topology.yaml";
-  protected static final String KAFKA_TOPOLOGY = "/dsl/kafka_topology.yaml";
+  protected String name;
+  protected File file;
 
-  protected File[] getTestTopologies() {
-    return getResourceFolderFiles(DEFAULT_TEST_DSL_MODEL_PATH);
+  protected FlinkPlannerTestBase(String name, File file) {
+    this.name = name;
+    this.file = file;
   }
 
-  protected static File[] getResourceFolderFiles(String folder) {
+  @Parameterized.Parameters(name = "{0}")
+  public static Collection<Object[]> data() {
+    File[] testFiles = getResourceFolderFiles(DEFAULT_TEST_DSL_MODEL_PATH);
+
+    Collection<Object[]> data = new ArrayList<>();
+    for (File testFile : testFiles) {
+      data.add(new Object[]{testFile.getName(), testFile});
+    }
+    return data;
+  }
+
+  private static File[] getResourceFolderFiles(String folder) {
     ClassLoader loader = Thread.currentThread().getContextClassLoader();
     URL url = loader.getResource(folder);
     String path = url.getPath();

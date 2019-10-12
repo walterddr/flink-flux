@@ -19,19 +19,31 @@
 
 package com.uber.athena.dsl.planner;
 
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Base test class for a specific component within a planner.
+ *
+ * <p>This planner component test base loads list of DSL models from a folder
+ * to allow its subclass to execute test logic as parameterized tests.
  */
-public abstract class PlannerComponentTestBase {
-  private static final Logger LOG = LoggerFactory.getLogger(PlannerComponentTestBase.class);
+@RunWith(Parameterized.class)
+public abstract class PlannerTestBase {
   private static final String DEFAULT_TEST_DSL_MODEL_PATH = "dsl/";
+
+  protected String name;
+  protected File file;
+
+  protected PlannerTestBase(String name, File file) {
+    this.name = name;
+    this.file = file;
+  }
 
   /*
    TODO @walterddr add following test cases
@@ -53,19 +65,15 @@ public abstract class PlannerComponentTestBase {
    - invoke external validation mechanism to check the Topology content.
    */
 
-  @Test
-  public void testPlannerComponent() throws Exception {
-    File[] testFiles = this.getTestTopologies();
-    for (File file : testFiles) {
-      LOG.info("Testing: " + file.getCanonicalPath());
-      testTopology(file);
+  @Parameterized.Parameters(name = "{0}")
+  public static Collection<Object[]> data() {
+    File[] testFiles = getResourceFolderFiles(DEFAULT_TEST_DSL_MODEL_PATH);
+
+    Collection<Object[]> data = new ArrayList<>();
+    for (File testFile : testFiles) {
+      data.add(new Object[]{testFile.getName(), testFile});
     }
-  }
-
-  public abstract void testTopology(File file) throws Exception;
-
-  public File[] getTestTopologies() {
-    return getResourceFolderFiles(DEFAULT_TEST_DSL_MODEL_PATH);
+    return data;
   }
 
   private static File[] getResourceFolderFiles(String folder) {

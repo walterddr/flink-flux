@@ -19,22 +19,27 @@
 
 package com.uber.athena.dsl.planner.validation;
 
-import com.uber.athena.dsl.planner.PlannerComponentTestBase;
+import com.uber.athena.dsl.planner.PlannerTestBase;
 import com.uber.athena.dsl.planner.parser.DslParser;
 import com.uber.athena.dsl.planner.parser.Parser;
 import com.uber.athena.dsl.planner.topology.DslTopologyBuilder;
 import com.uber.athena.dsl.planner.topology.Topology;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 
 /**
  * Test for {@link Validator}.
  */
-public class DslValidatorTest extends PlannerComponentTestBase {
+public class DslValidatorTest extends PlannerTestBase {
 
   private static Parser parser;
   private static Validator validator;
+
+  public DslValidatorTest(String name, File file) {
+    super(name, file);
+  }
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -42,8 +47,8 @@ public class DslValidatorTest extends PlannerComponentTestBase {
     parser = new DslParser(null, new DslTopologyBuilder());
   }
 
-  @Override
-  public void testTopology(File file) throws Exception {
+  @Test
+  public void testValidator() throws Exception {
     Topology topology = parser.parseFile(file.getCanonicalPath(), false, null, false);
     validator.validate(topology);
   }
