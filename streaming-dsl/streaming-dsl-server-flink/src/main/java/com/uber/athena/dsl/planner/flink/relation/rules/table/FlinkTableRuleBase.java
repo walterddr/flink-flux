@@ -20,7 +20,7 @@
 package com.uber.athena.dsl.planner.flink.relation.rules.table;
 
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.api.StreamTableEnvironment;
+import org.apache.flink.table.api.TableEnvironment;
 
 /**
  * Basic {@link com.uber.athena.dsl.planner.relation.rule.Rule}s for Flink.
@@ -35,9 +35,9 @@ public interface FlinkTableRuleBase {
   StreamExecutionEnvironment getStreamExecEnv();
 
   /**
-   * Get the {@link StreamTableEnvironment} for the runtime.
+   * Get the {@link TableEnvironment} for the runtime.
    *
    * @return the table environment used for generating table applications.
    */
-  StreamTableEnvironment getTableEnv();
+  TableEnvironment getTableEnv();
 }

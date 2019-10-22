@@ -30,6 +30,7 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.functions.co.CoFlatMapFunction;
 import org.apache.flink.streaming.api.functions.co.CoMapFunction;
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction;
+import org.apache.flink.streaming.api.functions.co.KeyedCoProcessFunction;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -56,6 +57,7 @@ public class DataStreamCoFunctionRule extends BaseDataStreamRule {
     }
   }
 
+  @SuppressWarnings("unchecked")
   private RuleCall process(RuleCall ruleCall, String dsId1, String dsId2) {
     ElementNode elementNode = ruleCall.getElementNode();
 
@@ -66,8 +68,11 @@ public class DataStreamCoFunctionRule extends BaseDataStreamRule {
 
     DataStream<?> resultDs = null;
 
+    if (elementNode.getElement() instanceof KeyedCoProcessFunction) {
+      resultDs = ds1.connect(ds2).process((KeyedCoProcessFunction) elementNode.getElement());
+    }
     if (elementNode.getElement() instanceof CoProcessFunction) {
-      resultDs = ds1.connect(ds2).process(elementNode.getElement());
+      resultDs = ds1.connect(ds2).process((CoProcessFunction) elementNode.getElement());
     } else if (elementNode.getElement() instanceof CoMapFunction) {
       resultDs = ds1.connect(ds2).map(elementNode.getElement());
     } else if (elementNode.getElement() instanceof CoFlatMapFunction) {

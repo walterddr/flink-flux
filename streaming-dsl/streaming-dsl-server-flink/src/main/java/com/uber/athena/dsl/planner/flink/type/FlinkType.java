@@ -35,6 +35,7 @@ public class FlinkType implements Type {
     this.ti = ti;
   }
 
+  @SuppressWarnings("deprecation")
   public FlinkType(TableSchema schema) {
     this.ti = new RowTypeInfo(schema.getFieldTypes(), schema.getFieldNames());
   }
