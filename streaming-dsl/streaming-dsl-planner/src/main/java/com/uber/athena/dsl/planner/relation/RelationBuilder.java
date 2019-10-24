@@ -67,7 +67,8 @@ public class RelationBuilder {
    * @param elementMapping the mapping from each vertex ID to element object.
    * @return the constructed relation node for each vertex.
    */
-  public Map<String, ? extends RelationNode> construct(
+  @SuppressWarnings("unchecked")
+  public <T extends RelationNode> Map<String, T> construct(
       Topology topology,
       Map<String, ElementNode> elementMapping) throws ConstructionException {
 
@@ -96,6 +97,6 @@ public class RelationBuilder {
           );
       relationMapping.put(vertexId, relation);
     }
-    return relationMapping;
+    return (Map<String, T>) relationMapping;
   }
 }

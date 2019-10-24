@@ -55,4 +55,8 @@ public abstract class FlinkRuleSet implements RuleSet {
     this.parallelism = parallelism;
     this.flinkConf = flinkConf;
   }
+
+  public StreamExecutionEnvironment getStreamExecutionEnvironment() {
+    return sEnv;
+  }
 }

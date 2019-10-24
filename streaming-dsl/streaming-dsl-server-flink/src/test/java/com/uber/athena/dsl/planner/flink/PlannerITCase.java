@@ -26,7 +26,6 @@ import com.uber.athena.dsl.planner.relation.rule.RuleSet;
 import com.uber.athena.dsl.planner.topology.Topology;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
@@ -37,8 +36,8 @@ import java.util.Properties;
 /**
  * Test of the generation of Flink runtime job graph / application.
  */
-public class PlannerTest extends PlannerTestBase {
-  public PlannerTest(String name, File file) {
+public class PlannerITCase extends PlannerITCaseBase {
+  public PlannerITCase(String name, File file) {
     super(name, file);
   }
 
@@ -62,7 +61,6 @@ public class PlannerTest extends PlannerTestBase {
     Map<String, ? extends RelationNode> relationMapping =
         planner.constructRelation(topology, elementMapping);
 
-    Assert.assertEquals(elementMapping.size(), relationMapping.size());
-    Assert.assertNotNull(sEnv.getExecutionPlan());
+    sEnv.execute();
   }
 }

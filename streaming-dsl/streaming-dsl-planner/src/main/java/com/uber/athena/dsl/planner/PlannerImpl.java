@@ -71,13 +71,13 @@ public class PlannerImpl implements Planner {
   }
 
   @Override
-  public Map<String, ? extends ElementNode> constructElement(
+  public <T extends ElementNode> Map<String, T> constructElement(
       Topology topology) throws ConstructionException {
     return elementBuilder.construct(topology);
   }
 
   @Override
-  public Map<String, ? extends RelationNode> constructRelation(
+  public <T extends RelationNode> Map<String, T> constructRelation(
       Topology topology,
       Map<String, ElementNode> elementMapping) throws ConstructionException {
     return relationBuilder.construct(topology, elementMapping);

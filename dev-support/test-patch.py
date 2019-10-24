@@ -93,7 +93,7 @@ class TestPatchRunner:
         LOG.info('Running tests')
         proc = Popen([
             '/bin/bash', '-c',
-            'mvn test --batch-mode --fail-at-end|tee ' + TARGET_DIR + '/testResults.txt;'
+            'mvn test integration-test --batch-mode --fail-at-end|tee ' + TARGET_DIR + '/testResults.txt;'
             + '[ $PIPESTATUS -eq 0 ] || exit $PIPESTATUS'], stdout=sys.stdout, stderr=sys.stderr)
         return proc.wait()
 

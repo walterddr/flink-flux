@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -31,15 +30,11 @@ import java.util.Collection;
  * Base test setup for testing {@link FlinkPlanner} and its components.
  */
 @RunWith(Parameterized.class)
-public abstract class FlinkPlannerTestBase {
+public abstract class PlannerTestBase extends DslTestBase {
   protected static final String DEFAULT_TEST_DSL_MODEL_PATH = "dsl/";
 
-  protected String name;
-  protected File file;
-
-  protected FlinkPlannerTestBase(String name, File file) {
-    this.name = name;
-    this.file = file;
+  protected PlannerTestBase(String name, File file) {
+    super(name, file);
   }
 
   @Parameterized.Parameters(name = "{0}")
@@ -51,12 +46,5 @@ public abstract class FlinkPlannerTestBase {
       data.add(new Object[]{testFile.getName(), testFile});
     }
     return data;
-  }
-
-  private static File[] getResourceFolderFiles(String folder) {
-    ClassLoader loader = Thread.currentThread().getContextClassLoader();
-    URL url = loader.getResource(folder);
-    String path = url.getPath();
-    return new File(path).listFiles();
   }
 }

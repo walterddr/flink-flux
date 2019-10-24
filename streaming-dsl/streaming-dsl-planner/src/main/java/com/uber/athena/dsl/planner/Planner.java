@@ -74,22 +74,24 @@ public interface Planner {
   /**
    * Construct the {@link ElementNode}s for all vertices.
    *
+   * @param <T> return element node type expected by client code
    * @param topology topology definition of the DSL model.
    * @return the constructed elementNode for each vertex.
    * @throws ConstructionException when construction fails.
    */
-  Map<String, ? extends ElementNode> constructElement(
+  <T extends ElementNode> Map<String, T> constructElement(
       Topology topology) throws ConstructionException;
 
   /**
    * Construct the {@link RelationNode} against a particular runtime environment.
    *
+   * @param <T> return relation node type expected by client code
    * @param topology topology definition of the DSL model.
    * @param elementMapping the constructed element nodes.
    * @return the constructed relation node for each vertex.
    * @throws ConstructionException when construction fails.
    */
-  Map<String, ? extends RelationNode> constructRelation(
+  <T extends RelationNode> Map<String, T> constructRelation(
       Topology topology,
       Map<String, ElementNode> elementMapping) throws ConstructionException;
 }

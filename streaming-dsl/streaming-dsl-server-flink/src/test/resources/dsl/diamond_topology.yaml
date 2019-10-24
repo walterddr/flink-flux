@@ -25,14 +25,14 @@ vertices:
     className: "com.uber.athena.dsl.planner.flink.test.utils.datastream.BasicSourceFunction"
     parallelism: 1
     constructorArgs:
-      - 10
+      - 1
 
   source-2:
     id: "source-2"
     className: "com.uber.athena.dsl.planner.flink.test.utils.datastream.BasicSourceFunction"
     parallelism: 1
     constructorArgs:
-      - 20
+      - 2
 
   operator-1:
     id: "operator-1"

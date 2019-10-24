@@ -25,7 +25,7 @@ vertices:
     className: "com.uber.athena.dsl.planner.flink.test.utils.datastream.BasicSourceFunction"
     parallelism: 1
     constructorArgs:
-      - 10
+      - 1
 
   operator-1:
     id: "operator-1"

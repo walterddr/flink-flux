@@ -80,7 +80,8 @@ public class ElementBuilder {
    * @param topology the topology defined by the DSL model.
    * @return a mapping from the vertex Ids to the constructed runtime objects.
    */
-  public Map<String, ? extends ElementNode> construct(
+  @SuppressWarnings("unchecked")
+  public <T extends ElementNode> Map<String, T> construct(
       Topology topology) throws ConstructionException {
     Map<String, ElementNode> elementMapping = new HashMap<>();
     for (VertexNode vertex : topology.getSources().values()) {
@@ -98,7 +99,7 @@ public class ElementBuilder {
           vertex.getVertexId(),
           constructElementNode(vertex, topology));
     }
-    return elementMapping;
+    return (Map<String, T>) elementMapping;
   }
 
   public Map<String, Object> getConfig() {

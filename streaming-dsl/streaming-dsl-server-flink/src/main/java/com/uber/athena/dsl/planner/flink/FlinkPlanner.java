@@ -43,6 +43,7 @@ import com.uber.athena.dsl.planner.validation.Validator;
 import org.apache.flink.configuration.Configuration;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
@@ -91,13 +92,13 @@ public class FlinkPlanner implements Planner {
   }
 
   @Override
-  public Map<String, ? extends ElementNode> constructElement(
+  public <T extends ElementNode> Map<String, T> constructElement(
       Topology topology) throws ConstructionException {
     return elementBuilder.construct(topology);
   }
 
   @Override
-  public Map<String, ? extends RelationNode> constructRelation(
+  public <T extends RelationNode> Map<String, T> constructRelation(
       Topology topology,
       Map<String, ElementNode> elementMapping) throws ConstructionException {
     return relationBuilder.construct(topology, elementMapping);
@@ -111,22 +112,30 @@ public class FlinkPlanner implements Planner {
    * provide the configs, properties and the {@link Configuration}.
    */
   public static class Builder {
-    private Parser parser;
-    private Validator validator;
-    private ElementBuilder elementBuilder;
-    private RelationBuilder relationBuilder;
 
-    private TypeFactory typeFactory;
-    private Constructor constructor;
-    private RuleExecutor ruleExecutor;
-    private DslTopologyBuilder topologyBuilder;
+    // Main modules
+    private transient Parser parser;
+    private transient Validator validator;
+    private transient ElementBuilder elementBuilder;
+    private transient RelationBuilder relationBuilder;
 
-    private RuleSet ruleSet;
+    // auxiliary modules
+    private transient TypeFactory typeFactory;
+    private transient Constructor constructor;
+    private transient RuleExecutor ruleExecutor;
+    private transient DslTopologyBuilder topologyBuilder;
+    private transient RuleSet ruleSet;
+
+    // Configurable objects for the builder.
     private Configuration flinkConf;
     private Map<String, Object> config;
     private Properties properties;
 
     public Builder() {
+      // Setting the defaults.
+      this.flinkConf = new Configuration();
+      this.config = Collections.emptyMap();
+      this.properties = new Properties();
     }
 
     public Builder flinkConf(Configuration flinkConf) {
@@ -150,6 +159,10 @@ public class FlinkPlanner implements Planner {
     }
 
     public FlinkPlanner build() {
+      if (ruleSet == null) {
+        throw new IllegalArgumentException("Cannot instantiate Flink planner, "
+            + "not rule set is specified!");
+      }
       this.constructor = new FlinkConstructor();
       this.typeFactory = new FlinkTypeFactory();
       this.ruleExecutor = new RuleExecutorImpl(ruleSet, config);
