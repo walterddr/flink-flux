@@ -22,7 +22,9 @@ package com.uber.athena.dsl.planner.element.constructor;
 import com.uber.athena.dsl.planner.model.ComponentDef;
 import com.uber.athena.dsl.planner.model.ComponentRefDef;
 import com.uber.athena.dsl.planner.model.PropertyDef;
+import com.uber.athena.dsl.planner.model.TypeSpecDef;
 import com.uber.athena.dsl.planner.topology.Topology;
+import com.uber.athena.dsl.planner.type.TypeSpecUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,5 +114,10 @@ public final class ComponentResolutionUtils {
       resolvedPropertyToObjectMap.put(prop.getName(), value);
     }
     return resolvedPropertyToObjectMap;
+  }
+
+  public static TypeSpecDef resolveTypeSpecDef(TypeSpecDef typeSpecDef) {
+    typeSpecDef.setTypeDef(TypeSpecUtils.recursiveResolveType(typeSpecDef.getTypeDef()));
+    return typeSpecDef;
   }
 }

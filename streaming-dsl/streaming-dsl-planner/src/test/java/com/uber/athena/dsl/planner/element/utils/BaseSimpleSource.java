@@ -19,6 +19,8 @@
 
 package com.uber.athena.dsl.planner.element.utils;
 
+import com.uber.athena.dsl.planner.model.TypeSpecDef;
+
 /**
  * Basic source for test purpose.
  */
@@ -26,11 +28,21 @@ public class BaseSimpleSource implements BaseSource {
 
   private int dummyIntArg;
 
+  private TypeSpecDef typeSpecDef;
+
   public BaseSimpleSource(int dummyIntArg) {
     this.dummyIntArg = dummyIntArg;
   }
 
   public int getArg() {
     return dummyIntArg;
+  }
+
+  public TypeSpecDef getTypeSpecDef() {
+    return typeSpecDef;
+  }
+
+  public void setTypeSpecDef(TypeSpecDef typeSpecDef) {
+    this.typeSpecDef = typeSpecDef;
   }
 }

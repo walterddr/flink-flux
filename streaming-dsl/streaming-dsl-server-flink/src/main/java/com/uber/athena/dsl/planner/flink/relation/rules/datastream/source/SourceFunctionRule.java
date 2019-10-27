@@ -22,8 +22,10 @@ package com.uber.athena.dsl.planner.flink.relation.rules.datastream.source;
 import com.uber.athena.dsl.planner.element.ElementNode;
 import com.uber.athena.dsl.planner.flink.relation.FlinkDataStreamRelationNode;
 import com.uber.athena.dsl.planner.flink.relation.rules.datastream.BaseDataStreamRule;
+import com.uber.athena.dsl.planner.flink.type.FlinkType;
 import com.uber.athena.dsl.planner.model.StreamDef;
 import com.uber.athena.dsl.planner.relation.rule.RuleCall;
+import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
 
@@ -40,7 +42,14 @@ public class SourceFunctionRule extends BaseDataStreamRule {
     DataStreamSource<?> resultDs = null;
 
     if (elementNode.getElement() instanceof SourceFunction) {
-      resultDs = this.getStreamEnv().addSource(elementNode.getElement());
+      if (elementNode.getProduceType() != null) {
+        FlinkType type = elementNode.getProduceType();
+        resultDs = this.getStreamEnv().addSource(
+            elementNode.getElement(),
+            (TypeInformation<?>) type.getTypeInformation());
+      } else {
+        resultDs = this.getStreamEnv().addSource(elementNode.getElement());
+      }
     }
 
     if (resultDs != null) {

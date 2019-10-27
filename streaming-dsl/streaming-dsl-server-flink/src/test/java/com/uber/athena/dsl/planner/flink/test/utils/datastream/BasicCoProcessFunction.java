@@ -24,18 +24,19 @@ import org.apache.flink.util.Collector;
 
 /**
  * basic co processing pass through process function.
+ * @param <T> the element type.
  */
-public class BasicCoProcessFunction extends CoProcessFunction<String, String, String> {
+public class BasicCoProcessFunction<T> extends CoProcessFunction<T, T, T> {
 
   @Override
   public void processElement1(
-      String s, Context context, Collector<String> collector) throws Exception {
+      T s, Context context, Collector<T> collector) throws Exception {
     collector.collect(s);
   }
 
   @Override
   public void processElement2(
-      String s, Context context, Collector<String> collector) throws Exception {
+      T s, Context context, Collector<T> collector) throws Exception {
     collector.collect(s);
   }
 }

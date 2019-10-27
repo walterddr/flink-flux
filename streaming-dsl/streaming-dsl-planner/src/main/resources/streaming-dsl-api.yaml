@@ -123,40 +123,82 @@ components:
         typeService:
           type: object
           $ref: '#/components/schemas/TypeService'
+          description: the type service used to resolve the type definition.
         typeDef:
-          type: object
-          required: false
-          $ref: '#/components/schemas/TypeDef'
+          oneOf:
+            - $ref: '#/components/schemas/TypeDef'
+            - type: object
+              additionalProperties:
+                type: object
+              description: defining the type via raw type mapping.
     TypeDef:
       type: object
-      additionalProperties:
-        oneOf:
-          - $ref: '#/components/schemas/BasicTypeDef'
-          - $ref: '#/components/schemas/TypeDef'
-    BasicTypeDef:
-      type: string
-      description: the primitive and basic types.
-      enum:
-        - STRING_TYPE
-        - BOOLEAN_TYPE
-        - BYTE_TYPE
-        - SHORT_TYPE
-        - INT_TYPE
-        - LONG_TYPE
-        - FLOAT_TYPE
-        - DOUBLE_TYPE
-        - CHAR_TYPE
-        - DATE_TYPE
-        - VOID_TYPE
-        - BIG_INT_TYPE
-        - BIG_DEC_TYPE
-        - INSTANT_TYPE
+      properties:
+        type:
+          type: string
+          description: the primitive and basic types.
+          enum:
+            - STRING_TYPE
+            - BOOLEAN_TYPE
+            - BYTE_TYPE
+            - SHORT_TYPE
+            - INT_TYPE
+            - LONG_TYPE
+            - FLOAT_TYPE
+            - DOUBLE_TYPE
+            - CHAR_TYPE
+            - DATE_TYPE
+            - VOID_TYPE
+            - BIG_INT_TYPE
+            - BIG_DEC_TYPE
+            - INSTANT_TYPE
+            - ROW_TYPE
+            - ARRAY_TYPE
+            - MAP_TYPE
+    RowTypeDef:
+      allOf:
+        - $ref: '#/components/schemas/TypeDef'
+        - type: object
+          properties:
+            fieldNames:
+              type: array
+              items:
+                type: string
+            fieldTypes:
+              type: array
+              items:
+                $ref: '#/components/schemas/TypeDef'
+    ArrayTypeDef:
+      allOf:
+        - $ref: '#/components/schemas/TypeDef'
+        - type: object
+          properties:
+            elementType:
+              $ref: '#/components/schemas/TypeDef'
+    MapTypeDef:
+      allOf:
+        - $ref: '#/components/schemas/TypeDef'
+        - type: object
+          properties:
+            keyType:
+              $ref: '#/components/schemas/TypeDef'
+            valueType:
+              $ref: '#/components/schemas/TypeDef'
     TypeService:
-      type: string
-      description: indicator of type service used to resolve the produce type.
-      enum:
-        - RAW
-        - HTTP
+      type: object
+      properties:
+        serviceType:
+          type: string
+          description: indicator of type service used to resolve the produce type.
+          enum:
+            - HTTP
+        serviceURL:
+          type: string
+          description: the service endpoint URL used for querying for type object.
+        serviceParams:
+          type: object
+          additionalProperties:
+            type: object
 
   # ---------------------------------------------------------------------------
   # Topology Construct Definitions - Vertex & Edge

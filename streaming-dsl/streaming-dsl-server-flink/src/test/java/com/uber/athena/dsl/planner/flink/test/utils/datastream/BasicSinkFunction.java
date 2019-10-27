@@ -23,11 +23,12 @@ import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 
 /**
  * Basic sink function for testing.
+ * @param <T> the element type.
  */
-public class BasicSinkFunction implements SinkFunction<String> {
+public class BasicSinkFunction<T> implements SinkFunction<T> {
 
   @Override
-  public void invoke(String value, SinkFunction.Context context) throws Exception {
+  public void invoke(T value, SinkFunction.Context context) throws Exception {
     System.out.println(value);
   }
 }

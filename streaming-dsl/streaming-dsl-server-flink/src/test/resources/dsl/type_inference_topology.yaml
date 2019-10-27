@@ -1,0 +1,61 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: "type-inference-topology"
+
+config:
+  topology.workers: 1
+
+vertices:
+  source-1:
+    id: "source-1"
+    className: "com.uber.athena.dsl.planner.flink.test.utils.datastream.type.GenericSource"
+    parallelism: 1
+    constructorArgs:
+      - 2
+    typeSpec:
+      typeDef:
+        a: INT_TYPE
+        b: STRING_TYPE
+        c:
+          c1: STRING_TYPE
+          c2: LONG_TYPE
+        d:
+          __ELEMENT_TYPE: STRING_TYPE
+        e:
+          __KEY_TYPE: STRING_TYPE
+          __VALUE_TYPE:
+            v1: STRING_TYPE
+            v2: BOOLEAN_TYPE
+
+  operator-1:
+    id: "operator-1"
+    className: "com.uber.athena.dsl.planner.flink.test.utils.datastream.BasicPassThroughProcessFunction"
+    parallelism: 1
+
+  sink-1:
+    id: "sink-1"
+    className: "com.uber.athena.dsl.planner.flink.test.utils.datastream.BasicSinkFunction"
+    parallelism: 1
+
+streams:
+  - id: "source-1 --> operator-1"
+    fromVertex: "source-1"
+    toVertex: "operator-1"
+
+  - id: "operator-1 --> sink-1"
+    fromVertex: "operator-1"
+    toVertex: "sink-1"

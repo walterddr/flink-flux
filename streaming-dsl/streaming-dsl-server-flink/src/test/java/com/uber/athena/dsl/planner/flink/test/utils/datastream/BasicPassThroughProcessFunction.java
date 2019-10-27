@@ -24,12 +24,13 @@ import org.apache.flink.util.Collector;
 
 /**
  * basic pass through process function.
+ * @param <T> the element type.
  */
-public class BasicPassThroughProcessFunction extends ProcessFunction<String, String> {
+public class BasicPassThroughProcessFunction<T> extends ProcessFunction<T, T> {
 
   @Override
   public void processElement(
-      String s, Context context, Collector<String> collector) throws Exception {
+      T s, Context context, Collector<T> collector) throws Exception {
     collector.collect(s);
   }
 }

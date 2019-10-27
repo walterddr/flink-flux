@@ -58,7 +58,7 @@ public class PlannerTest extends PlannerTestBase {
     Topology topology = planner.parse(new FileInputStream(file));
     topology = planner.validate(topology);
     Map<String, ElementNode> elementMapping =
-        (Map<String, ElementNode>) planner.constructElement(topology);
+        planner.constructElement(topology);
     Map<String, ? extends RelationNode> relationMapping =
         planner.constructRelation(topology, elementMapping);
 

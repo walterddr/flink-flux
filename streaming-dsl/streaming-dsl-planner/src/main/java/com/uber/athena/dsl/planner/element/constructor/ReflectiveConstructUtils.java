@@ -22,6 +22,8 @@ package com.uber.athena.dsl.planner.element.constructor;
 import com.uber.athena.dsl.planner.model.ConfigMethodDef;
 import com.uber.athena.dsl.planner.model.ObjectDef;
 import com.uber.athena.dsl.planner.model.PropertyDef;
+import com.uber.athena.dsl.planner.model.TypeSpecDef;
+import com.uber.athena.dsl.planner.model.VertexDef;
 import com.uber.athena.dsl.planner.topology.Topology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,16 +80,39 @@ public final class ReflectiveConstructUtils {
     } else {
       obj = clazz.getConstructor().newInstance();
     }
+    applyTypeSpecDef(def, obj);
     applyProperties(def, obj, topology);
     invokeConfigMethods(def, obj, topology, constructMap);
     return obj;
   }
 
+  private static void applyTypeSpecDef(
+      ObjectDef def,
+      Object obj) {
+    if (def instanceof VertexDef) {
+      VertexDef vertexDef = (VertexDef) def;
+      TypeSpecDef typeSpecDef = vertexDef.getTypeSpec();
+      if (typeSpecDef != null) {
+        vertexDef.setTypeSpec(
+            ComponentResolutionUtils.resolveTypeSpecDef(typeSpecDef)
+        );
+      }
+      Class clazz = obj.getClass();
+      try {
+        // TODO (@walterddr) systematically create native config setters.
+        Method typeSpecDefSetter = clazz.getMethod("setTypeSpecDef", TypeSpecDef.class);
+        typeSpecDefSetter.invoke(obj, typeSpecDef);
+      } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        LOG.warn("Unable to apply type spec to object, ignoring!");
+      }
+    }
+  }
+
   private static void applyProperties(
-      ObjectDef bean,
+      ObjectDef def,
       Object instance,
       Topology topology) throws ReflectiveOperationException {
-    List<PropertyDef> props = bean.getPropertyList();
+    List<PropertyDef> props = def.getPropertyList();
     Class clazz = instance.getClass();
     if (props != null) {
       Map<String, Object> propertyToObjectMap =

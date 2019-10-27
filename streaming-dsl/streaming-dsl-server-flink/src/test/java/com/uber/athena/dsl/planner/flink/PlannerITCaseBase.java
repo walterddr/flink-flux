@@ -34,10 +34,11 @@ import java.util.Set;
  */
 @RunWith(Parameterized.class)
 public abstract class PlannerITCaseBase extends DslTestBase {
-  protected static final Set<String> DSL_LIST_FOR_ITCASE = new HashSet<>(
+  protected static final Set<String> DSL_LIST_FOR_IT_CASE = new HashSet<>(
       Arrays.asList(
           "basic_topology.yaml",
-          "diamond_topology.yaml")
+          "diamond_topology.yaml",
+          "type_inference_topology.yaml")
   );
 
   protected PlannerITCaseBase(String name, File file) {
@@ -50,7 +51,7 @@ public abstract class PlannerITCaseBase extends DslTestBase {
 
     Collection<Object[]> data = new ArrayList<>();
     for (File testFile : testFiles) {
-      if (DSL_LIST_FOR_ITCASE.contains(testFile.getName())) {
+      if (DSL_LIST_FOR_IT_CASE.contains(testFile.getName())) {
         data.add(new Object[]{testFile.getName(), testFile});
       }
     }
