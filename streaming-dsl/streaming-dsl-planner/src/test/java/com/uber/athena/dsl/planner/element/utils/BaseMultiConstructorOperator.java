@@ -56,4 +56,16 @@ public class BaseMultiConstructorOperator implements BaseOperator {
   public String getStringArg() {
     return dummyStrArg;
   }
+
+  public void setDummyStrArg(String dummyStrArg) {
+    this.dummyLongArg = dummyLongArg;
+  }
+
+  public void setDummyLongArg(long dummyLongArg) {
+    this.dummyLongArg = dummyLongArg;
+  }
+
+  public void setDummyLongArg(int dummyIntArg) {
+    this.dummyLongArg = (long) dummyIntArg;
+  }
 }

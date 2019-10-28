@@ -19,7 +19,7 @@
 
 package com.uber.athena.dsl.planner.validation;
 
-import com.uber.athena.dsl.planner.PlannerTestBase;
+import com.uber.athena.dsl.planner.PlannerComponentTestBase;
 import com.uber.athena.dsl.planner.parser.DslParser;
 import com.uber.athena.dsl.planner.parser.Parser;
 import com.uber.athena.dsl.planner.topology.DslTopologyBuilder;
@@ -32,7 +32,7 @@ import java.io.File;
 /**
  * Test for {@link Validator}.
  */
-public class DslValidatorTest extends PlannerTestBase {
+public class DslValidatorTest extends PlannerComponentTestBase {
 
   private static Parser parser;
   private static Validator validator;

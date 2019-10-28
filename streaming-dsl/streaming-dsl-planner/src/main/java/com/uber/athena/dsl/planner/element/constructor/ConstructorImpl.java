@@ -21,6 +21,7 @@ package com.uber.athena.dsl.planner.element.constructor;
 
 import com.uber.athena.dsl.planner.element.Element;
 import com.uber.athena.dsl.planner.element.ElementNode;
+import com.uber.athena.dsl.planner.model.TypeSpecDef;
 import com.uber.athena.dsl.planner.model.VertexNode;
 import com.uber.athena.dsl.planner.topology.Topology;
 import com.uber.athena.dsl.planner.type.Type;
@@ -58,12 +59,18 @@ public class ConstructorImpl implements Constructor {
     // TODO @walterddr actually using the loader factory
     // instead of directly using the reflective construct util
     try {
+      // Resolve type specifications
+      TypeSpecDef resolveTypeSpecDef = ComponentResolutionUtils.resolveTypeSpecDef(
+          vertex.getVertexDef().getTypeSpec());
+      vertex.getVertexDef().setTypeSpec(resolveTypeSpecDef);
+
       // Resolve references
       List<Object> resolvedConstructorArgs = ComponentResolutionUtils.resolveReferences(
           vertex.getVertexDef().getConstructorArgs(), topology, constructMap);
       if (resolvedConstructorArgs != null) {
         vertex.getVertexDef().setConstructorArgs(resolvedConstructorArgs);
       }
+
       // Construct the element from vertex using reflection.
       Object obj = ReflectiveConstructUtils.buildObject(
           vertex.getVertexDef(), topology, constructMap);

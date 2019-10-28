@@ -19,7 +19,7 @@
 
 package com.uber.athena.dsl.planner.element;
 
-import com.uber.athena.dsl.planner.PlannerTestBase;
+import com.uber.athena.dsl.planner.PlannerComponentTestBase;
 import com.uber.athena.dsl.planner.element.constructor.ConstructorImpl;
 import com.uber.athena.dsl.planner.parser.DslParser;
 import com.uber.athena.dsl.planner.parser.Parser;
@@ -36,7 +36,7 @@ import java.io.File;
 /**
  * Test for {@link ElementBuilder}.
  */
-public class ElementBuilderTest extends PlannerTestBase {
+public class ElementBuilderTest extends PlannerComponentTestBase {
 
   private static Parser parser;
   private static Validator validator;

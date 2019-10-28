@@ -19,7 +19,7 @@
 
 package com.uber.athena.dsl.planner.parser;
 
-import com.uber.athena.dsl.planner.PlannerTestBase;
+import com.uber.athena.dsl.planner.PlannerComponentTestBase;
 import com.uber.athena.dsl.planner.topology.DslTopologyBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,7 +30,7 @@ import java.io.File;
 /**
  * Test for {@link Parser}.
  */
-public class DslParserTest extends PlannerTestBase {
+public class DslParserTest extends PlannerComponentTestBase {
 
   private static Parser parser;
 

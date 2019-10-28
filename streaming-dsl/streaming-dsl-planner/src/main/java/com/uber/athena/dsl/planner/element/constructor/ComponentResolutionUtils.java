@@ -22,6 +22,7 @@ package com.uber.athena.dsl.planner.element.constructor;
 import com.uber.athena.dsl.planner.model.ComponentDef;
 import com.uber.athena.dsl.planner.model.ComponentRefDef;
 import com.uber.athena.dsl.planner.model.PropertyDef;
+import com.uber.athena.dsl.planner.model.TypeDef;
 import com.uber.athena.dsl.planner.model.TypeSpecDef;
 import com.uber.athena.dsl.planner.topology.Topology;
 import com.uber.athena.dsl.planner.type.TypeSpecUtils;
@@ -117,7 +118,16 @@ public final class ComponentResolutionUtils {
   }
 
   public static TypeSpecDef resolveTypeSpecDef(TypeSpecDef typeSpecDef) {
-    typeSpecDef.setTypeDef(TypeSpecUtils.recursiveResolveType(typeSpecDef.getTypeDef()));
+    if (typeSpecDef != null) {
+      try {
+        TypeDef typeDef = TypeSpecUtils.recursiveResolveType(typeSpecDef.getTypeDef());
+        if (typeDef != null) {
+          typeSpecDef.setTypeDef(typeDef);
+        }
+      } catch (IllegalArgumentException ie) {
+        LOG.info("Cannot resolve type specification");
+      }
+    }
     return typeSpecDef;
   }
 }

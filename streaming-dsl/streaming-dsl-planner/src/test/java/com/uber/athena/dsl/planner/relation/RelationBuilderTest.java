@@ -19,7 +19,7 @@
 
 package com.uber.athena.dsl.planner.relation;
 
-import com.uber.athena.dsl.planner.PlannerTestBase;
+import com.uber.athena.dsl.planner.PlannerComponentTestBase;
 import com.uber.athena.dsl.planner.element.ElementBuilder;
 import com.uber.athena.dsl.planner.element.ElementNode;
 import com.uber.athena.dsl.planner.element.constructor.ConstructorImpl;
@@ -42,7 +42,7 @@ import java.util.Map;
  * Test for {@link ElementBuilder}.
  */
 @SuppressWarnings("unchecked")
-public class RelationBuilderTest extends PlannerTestBase {
+public class RelationBuilderTest extends PlannerComponentTestBase {
 
   private static Parser parser;
   private static Validator validator;

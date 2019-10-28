@@ -34,13 +34,13 @@ import java.util.Collection;
  * to allow its subclass to execute test logic as parameterized tests.
  */
 @RunWith(Parameterized.class)
-public abstract class PlannerTestBase {
+public abstract class PlannerComponentTestBase {
   private static final String DEFAULT_TEST_DSL_MODEL_PATH = "dsl/";
 
   protected String name;
   protected File file;
 
-  protected PlannerTestBase(String name, File file) {
+  protected PlannerComponentTestBase(String name, File file) {
     this.name = name;
     this.file = file;
   }

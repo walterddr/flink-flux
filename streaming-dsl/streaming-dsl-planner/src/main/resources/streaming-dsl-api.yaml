@@ -52,7 +52,7 @@ components:
         name:
           type: string
           description: the configuration method/function name
-        configArgs:
+        args:
           type: array
           items:
             type: object

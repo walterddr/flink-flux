@@ -22,7 +22,6 @@ package com.uber.athena.dsl.planner.element.constructor;
 import com.uber.athena.dsl.planner.model.ConfigMethodDef;
 import com.uber.athena.dsl.planner.model.ObjectDef;
 import com.uber.athena.dsl.planner.model.PropertyDef;
-import com.uber.athena.dsl.planner.model.TypeSpecDef;
 import com.uber.athena.dsl.planner.model.VertexDef;
 import com.uber.athena.dsl.planner.topology.Topology;
 import org.slf4j.Logger;
@@ -34,6 +33,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +46,7 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public final class ReflectiveConstructUtils {
   private static final Logger LOG = LoggerFactory.getLogger(ReflectiveConstructUtils.class);
+  private static final String SYSTEM_CONFIG_METHOD_TYPE_SPEC_DEF = "setTypeSpecDef";
 
   private ReflectiveConstructUtils() {
   }
@@ -80,32 +81,10 @@ public final class ReflectiveConstructUtils {
     } else {
       obj = clazz.getConstructor().newInstance();
     }
-    applyTypeSpecDef(def, obj);
     applyProperties(def, obj, topology);
-    invokeConfigMethods(def, obj, topology, constructMap);
+    invokeSystemConfigMethods(def, obj, topology, constructMap);
+    invokeUserConfigMethods(def, obj, topology, constructMap);
     return obj;
-  }
-
-  private static void applyTypeSpecDef(
-      ObjectDef def,
-      Object obj) {
-    if (def instanceof VertexDef) {
-      VertexDef vertexDef = (VertexDef) def;
-      TypeSpecDef typeSpecDef = vertexDef.getTypeSpec();
-      if (typeSpecDef != null) {
-        vertexDef.setTypeSpec(
-            ComponentResolutionUtils.resolveTypeSpecDef(typeSpecDef)
-        );
-      }
-      Class clazz = obj.getClass();
-      try {
-        // TODO (@walterddr) systematically create native config setters.
-        Method typeSpecDefSetter = clazz.getMethod("setTypeSpecDef", TypeSpecDef.class);
-        typeSpecDefSetter.invoke(obj, typeSpecDef);
-      } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-        LOG.warn("Unable to apply type spec to object, ignoring!");
-      }
-    }
   }
 
   private static void applyProperties(
@@ -135,37 +114,72 @@ public final class ReflectiveConstructUtils {
     }
   }
 
-  private static void invokeConfigMethods(
-      ObjectDef bean,
-      Object instance,
+  private static void invokeSystemConfigMethods(
+      ObjectDef objDef,
+      Object obj,
+      Topology topology,
+      Map<String, Object> constructMap) {
+    if (objDef instanceof VertexDef) {
+      VertexDef vertexDef = (VertexDef) objDef;
+      try {
+        // invoke typeSpecDef config methods
+        invokeConfigMethod(
+            obj,
+            new ConfigMethodDef()
+                .name(SYSTEM_CONFIG_METHOD_TYPE_SPEC_DEF)
+                .args(Collections.singletonList(vertexDef.getTypeSpec()))
+                .hasReferenceInArgs(false),
+            topology,
+            constructMap
+        );
+      } catch (Exception e) {
+        LOG.info("Cannot apply system configs!", e);
+      }
+    }
+  }
+
+  private static void invokeUserConfigMethods(
+      ObjectDef objDef,
+      Object obj,
+      Topology topology,
+      Map<String, Object> constructMap) {
+    List<ConfigMethodDef> methodDefs = objDef.getConfigMethods();
+    if (methodDefs != null && methodDefs.size() > 0) {
+      for (ConfigMethodDef methodDef : methodDefs) {
+        try {
+          invokeConfigMethod(obj, methodDef, topology, constructMap);
+        } catch (Exception e) {
+          LOG.info("Cannot apply system configs!", e);
+        }
+      }
+    }
+  }
+
+  private static void invokeConfigMethod(
+      Object obj,
+      ConfigMethodDef methodDef,
       Topology topology,
       Map<String, Object> constructMap) throws InvocationTargetException, IllegalAccessException {
 
-    List<ConfigMethodDef> methodDefs = bean.getConfigMethods();
-    if (methodDefs == null || methodDefs.size() == 0) {
-      return;
+    Class clazz = obj.getClass();
+    List<Object> args = methodDef.getArgs();
+    if (args == null) {
+      args = new ArrayList<>();
     }
-    Class clazz = instance.getClass();
-    for (ConfigMethodDef methodDef : methodDefs) {
-      List<Object> args = methodDef.getConfigArgs();
-      if (args == null) {
-        args = new ArrayList<>();
-      }
-      if (methodDef.getHasReferenceInArgs()) {
-        args = ComponentResolutionUtils.resolveReferences(args, topology, constructMap);
-      }
-      String methodName = methodDef.getName();
-      Method method = ReflectiveConstructUtils.findCompatibleMethod(args, clazz, methodName);
-      if (method != null) {
-        Object[] methodArgs =
-            ReflectiveConstructUtils.getArgsWithListCoercian(args, method.getParameterTypes());
-        method.invoke(instance, methodArgs);
-      } else {
-        String msg = String.format(
-            "Unable to find configuration method '%s' in class '%s' with arguments %s.",
-            methodName, clazz.getName(), args);
-        throw new IllegalArgumentException(msg);
-      }
+    if (methodDef.getHasReferenceInArgs()) {
+      args = ComponentResolutionUtils.resolveReferences(args, topology, constructMap);
+    }
+    String methodName = methodDef.getName();
+    Method method = ReflectiveConstructUtils.findCompatibleMethod(args, clazz, methodName);
+    if (method != null) {
+      Object[] methodArgs =
+          ReflectiveConstructUtils.getArgsWithListCoercian(args, method.getParameterTypes());
+      method.invoke(obj, methodArgs);
+    } else {
+      String msg = String.format(
+          "Unable to find configuration method '%s' in class '%s' with arguments %s.",
+          methodName, clazz.getName(), args);
+      throw new IllegalArgumentException(msg);
     }
   }
 
