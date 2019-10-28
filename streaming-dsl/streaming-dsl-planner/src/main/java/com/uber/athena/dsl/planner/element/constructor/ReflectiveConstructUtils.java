@@ -19,10 +19,10 @@
 
 package com.uber.athena.dsl.planner.element.constructor;
 
+import com.uber.athena.dsl.planner.element.ComponentResolutionUtils;
 import com.uber.athena.dsl.planner.model.ConfigMethodDef;
 import com.uber.athena.dsl.planner.model.ObjectDef;
 import com.uber.athena.dsl.planner.model.PropertyDef;
-import com.uber.athena.dsl.planner.model.VertexDef;
 import com.uber.athena.dsl.planner.topology.Topology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +45,6 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public final class ReflectiveConstructUtils {
   private static final Logger LOG = LoggerFactory.getLogger(ReflectiveConstructUtils.class);
-  private static final String SYSTEM_CONFIG_METHOD_TYPE_SPEC_DEF = "setTypeSpecDef";
 
   private ReflectiveConstructUtils() {
   }
@@ -82,8 +80,7 @@ public final class ReflectiveConstructUtils {
       obj = clazz.getConstructor().newInstance();
     }
     applyProperties(def, obj, topology);
-    invokeSystemConfigMethods(def, obj, topology, constructMap);
-    invokeUserConfigMethods(def, obj, topology, constructMap);
+    invokeConfigMethods(def, obj, topology, constructMap);
     return obj;
   }
 
@@ -114,31 +111,7 @@ public final class ReflectiveConstructUtils {
     }
   }
 
-  private static void invokeSystemConfigMethods(
-      ObjectDef objDef,
-      Object obj,
-      Topology topology,
-      Map<String, Object> constructMap) {
-    if (objDef instanceof VertexDef) {
-      VertexDef vertexDef = (VertexDef) objDef;
-      try {
-        // invoke typeSpecDef config methods
-        invokeConfigMethod(
-            obj,
-            new ConfigMethodDef()
-                .name(SYSTEM_CONFIG_METHOD_TYPE_SPEC_DEF)
-                .args(Collections.singletonList(vertexDef.getTypeSpec()))
-                .hasReferenceInArgs(false),
-            topology,
-            constructMap
-        );
-      } catch (Exception e) {
-        LOG.info("Cannot apply system configs!", e);
-      }
-    }
-  }
-
-  private static void invokeUserConfigMethods(
+  private static void invokeConfigMethods(
       ObjectDef objDef,
       Object obj,
       Topology topology,
@@ -147,7 +120,7 @@ public final class ReflectiveConstructUtils {
     if (methodDefs != null && methodDefs.size() > 0) {
       for (ConfigMethodDef methodDef : methodDefs) {
         try {
-          invokeConfigMethod(obj, methodDef, topology, constructMap);
+          reflectiveInvokeConfigMethod(obj, methodDef, topology, constructMap);
         } catch (Exception e) {
           LOG.info("Cannot apply system configs!", e);
         }
@@ -155,7 +128,7 @@ public final class ReflectiveConstructUtils {
     }
   }
 
-  private static void invokeConfigMethod(
+  private static void reflectiveInvokeConfigMethod(
       Object obj,
       ConfigMethodDef methodDef,
       Topology topology,

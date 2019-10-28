@@ -20,6 +20,9 @@
 package com.uber.athena.dsl.planner.element;
 
 import com.uber.athena.dsl.planner.element.constructor.Constructor;
+import com.uber.athena.dsl.planner.model.ConfigMethodDef;
+import com.uber.athena.dsl.planner.model.TypeSpecDef;
+import com.uber.athena.dsl.planner.model.VertexDef;
 import com.uber.athena.dsl.planner.model.VertexNode;
 import com.uber.athena.dsl.planner.topology.Topology;
 import com.uber.athena.dsl.planner.type.TypeFactory;
@@ -28,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,6 +59,11 @@ public class ElementBuilder {
   protected TypeFactory typeFactory;
 
   /**
+   * The indexed element reference mapping used for de-referencing.
+   */
+  protected Map<String, Object> referenceMap;
+
+  /**
    * Construct an element builder.
    *
    * @param builderConfig configuration properties for the builder.
@@ -65,9 +74,18 @@ public class ElementBuilder {
       Map<String, Object> builderConfig,
       Constructor constructor,
       TypeFactory typeFactory) {
+    this(builderConfig, constructor, typeFactory, new HashMap<>());
+  }
+
+  ElementBuilder(
+      Map<String, Object> builderConfig,
+      Constructor constructor,
+      TypeFactory typeFactory,
+      Map<String, Object> referenceMap) {
     this.config = builderConfig;
     this.constructor = constructor;
     this.typeFactory = typeFactory;
+    this.referenceMap = referenceMap;
   }
 
   /**
@@ -110,6 +128,27 @@ public class ElementBuilder {
       VertexNode vertex,
       Topology topology) throws ConstructionException {
     LOG.debug("Element node construction successful for: " + vertex.getVertexId());
-    return constructor.construct(vertex, topology, typeFactory);
+
+    VertexDef vertexDef = vertex.getVertexDef();
+
+    // 1. Resolve type specifications & construct the produce type of the vertex,
+    TypeSpecDef resolveTypeSpecDef = ComponentResolutionUtils.resolveTypeSpecDef(
+        vertexDef.getTypeSpec());
+    vertexDef.setTypeSpec(resolveTypeSpecDef);
+
+    // 2. Resolve references
+    List<Object> resolvedConstructorArgs = ComponentResolutionUtils.resolveReferences(
+        vertexDef.getConstructorArgs(), topology, referenceMap);
+    if (resolvedConstructorArgs != null) {
+      vertexDef.setConstructorArgs(resolvedConstructorArgs);
+    }
+
+    // 3. Attach system-wide ConfigMethodDefs to the VertexNode
+    List<ConfigMethodDef> configMethods = ComponentResolutionUtils.resolveConfigMethods(
+        vertexDef, vertexDef.getConfigMethods());
+    vertexDef.setConfigMethods(configMethods);
+
+    // 4. Invoke constructor to construct the actual object.
+    return constructor.construct(vertex, topology, typeFactory, referenceMap);
   }
 }

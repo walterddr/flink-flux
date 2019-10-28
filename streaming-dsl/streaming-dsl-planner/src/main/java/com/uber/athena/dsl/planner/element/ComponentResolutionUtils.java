@@ -17,19 +17,23 @@
  *
  */
 
-package com.uber.athena.dsl.planner.element.constructor;
+package com.uber.athena.dsl.planner.element;
 
+import com.uber.athena.dsl.planner.element.constructor.ReflectiveConstructUtils;
 import com.uber.athena.dsl.planner.model.ComponentDef;
 import com.uber.athena.dsl.planner.model.ComponentRefDef;
+import com.uber.athena.dsl.planner.model.ConfigMethodDef;
 import com.uber.athena.dsl.planner.model.PropertyDef;
 import com.uber.athena.dsl.planner.model.TypeDef;
 import com.uber.athena.dsl.planner.model.TypeSpecDef;
+import com.uber.athena.dsl.planner.model.VertexDef;
 import com.uber.athena.dsl.planner.topology.Topology;
 import com.uber.athena.dsl.planner.type.TypeSpecUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +43,9 @@ import java.util.Map;
  */
 public final class ComponentResolutionUtils {
   private static final Logger LOG = LoggerFactory.getLogger(ComponentResolutionUtils.class);
+
+  // Static system-wide configuration methods
+  private static final String SYSTEM_CONFIG_METHOD_TYPE_SPEC_DEF = "setTypeSpecDef";
 
   private ComponentResolutionUtils() {
     // do not instantiate.
@@ -129,5 +136,29 @@ public final class ComponentResolutionUtils {
       }
     }
     return typeSpecDef;
+  }
+
+  /**
+   * Resolve config methods of a specific vertex definition.
+   *
+   * <p>It checks the select configuration method exists in the dedicated class path
+   * as well as adding in system-wide configuration methods if supported by the class.
+   *
+   * @param vertexDef the vertex definition.
+   * @param configMethods the configuration methods set via the DSL model
+   * @return the validated list of configuration methods.
+   */
+  public static List<ConfigMethodDef> resolveConfigMethods(
+      VertexDef vertexDef,
+      List<ConfigMethodDef> configMethods) {
+    List<ConfigMethodDef> finalList = configMethods == null
+        ? new ArrayList<>() : new ArrayList<>(configMethods);
+    finalList.add(
+        new ConfigMethodDef()
+        .name(SYSTEM_CONFIG_METHOD_TYPE_SPEC_DEF)
+        .args(Collections.singletonList(vertexDef.getTypeSpec()))
+        .hasReferenceInArgs(false)
+    );
+    return finalList;
   }
 }

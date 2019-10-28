@@ -19,19 +19,17 @@
 
 package com.uber.athena.dsl.planner.flink.element.constructor;
 
-import com.uber.athena.dsl.planner.element.constructor.ComponentResolutionUtils;
 import com.uber.athena.dsl.planner.element.constructor.ConstructorImpl;
 import com.uber.athena.dsl.planner.element.constructor.ReflectiveConstructUtils;
 import com.uber.athena.dsl.planner.flink.element.FlinkElement;
 import com.uber.athena.dsl.planner.flink.type.FlinkType;
 import com.uber.athena.dsl.planner.flink.type.FlinkTypeFactory;
-import com.uber.athena.dsl.planner.model.TypeSpecDef;
 import com.uber.athena.dsl.planner.model.VertexNode;
 import com.uber.athena.dsl.planner.topology.Topology;
 import com.uber.athena.dsl.planner.type.TypeFactory;
 import com.uber.athena.dsl.planner.utils.ConstructionException;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Flink implementation of the constructor class.
@@ -43,30 +41,23 @@ public class FlinkConstructor extends ConstructorImpl {
   public FlinkElement construct(
       VertexNode vertex,
       Topology topology,
-      TypeFactory typeFactory) throws ConstructionException {
+      TypeFactory typeFactory,
+      Map<String, Object> referenceMap) throws ConstructionException {
     try {
-      // Resolve type specifications
-      TypeSpecDef resolveTypeSpecDef = ComponentResolutionUtils.resolveTypeSpecDef(
-          vertex.getVertexDef().getTypeSpec());
-      vertex.getVertexDef().setTypeSpec(resolveTypeSpecDef);
-
-      // Resolve references
-      List<Object> resolvedConstructorArgs = ComponentResolutionUtils.resolveReferences(
-          vertex.getVertexDef().getConstructorArgs(), topology, constructMap);
-      if (resolvedConstructorArgs != null) {
-        vertex.getVertexDef().setConstructorArgs(resolvedConstructorArgs);
+      if (!(typeFactory instanceof FlinkTypeFactory)) {
+        throw new IllegalArgumentException("Cannot resolve type with given typeFactory: "
+            + typeFactory.getClass());
       }
-
-      // Construct the element from vertex using reflection.
-      Object obj = ReflectiveConstructUtils.buildObject(
-          vertex.getVertexDef(), topology, constructMap);
-      Class<?> clazz = Class.forName(vertex.getVertexDef().getClassName());
-
       // construct Flink type factory.
       FlinkTypeFactory flinkTypeFactory = (FlinkTypeFactory) typeFactory;
 
       // Construct the Flink TypeInformation.
       FlinkType type = flinkTypeFactory.getType(vertex.getVertexDef().getTypeSpec());
+
+      // Construct the element from vertex using reflection.
+      Object obj = ReflectiveConstructUtils.buildObject(
+          vertex.getVertexDef(), topology, referenceMap);
+      Class<?> clazz = Class.forName(vertex.getVertexDef().getClassName());
 
       return new FlinkElement(obj, clazz, type);
     } catch (Exception e) {

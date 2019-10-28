@@ -21,15 +21,12 @@ package com.uber.athena.dsl.planner.element.constructor;
 
 import com.uber.athena.dsl.planner.element.Element;
 import com.uber.athena.dsl.planner.element.ElementNode;
-import com.uber.athena.dsl.planner.model.TypeSpecDef;
 import com.uber.athena.dsl.planner.model.VertexNode;
 import com.uber.athena.dsl.planner.topology.Topology;
 import com.uber.athena.dsl.planner.type.Type;
 import com.uber.athena.dsl.planner.type.TypeFactory;
 import com.uber.athena.dsl.planner.utils.ConstructionException;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,45 +38,22 @@ import java.util.Map;
  */
 public class ConstructorImpl implements Constructor {
 
-  protected final Map<String, Object> constructMap;
-
-  public ConstructorImpl() {
-    this(new HashMap<>());
-  }
-
-  public ConstructorImpl(Map<String, Object> constructMap) {
-    this.constructMap = constructMap;
-  }
-
   @Override
   public ElementNode construct(
       VertexNode vertex,
       Topology topology,
-      TypeFactory typeFactory) throws ConstructionException {
-    // TODO @walterddr actually using the loader factory
-    // instead of directly using the reflective construct util
+      TypeFactory typeFactory,
+      Map<String, Object> referenceMap) throws ConstructionException {
     try {
-      // Resolve type specifications
-      TypeSpecDef resolveTypeSpecDef = ComponentResolutionUtils.resolveTypeSpecDef(
-          vertex.getVertexDef().getTypeSpec());
-      vertex.getVertexDef().setTypeSpec(resolveTypeSpecDef);
-
-      // Resolve references
-      List<Object> resolvedConstructorArgs = ComponentResolutionUtils.resolveReferences(
-          vertex.getVertexDef().getConstructorArgs(), topology, constructMap);
-      if (resolvedConstructorArgs != null) {
-        vertex.getVertexDef().setConstructorArgs(resolvedConstructorArgs);
-      }
-
+      // TODO(@walterddr) using the service loader instead of reflective construct util
       // Construct the element from vertex using reflection.
       Object obj = ReflectiveConstructUtils.buildObject(
-          vertex.getVertexDef(), topology, constructMap);
-      constructMap.put(vertex.getVertexId(), obj);
-      Class<?> clazz = Class.forName(vertex.getVertexDef().getClassName());
-
-      // Construct the produce type of the vertex.
+          vertex.getVertexDef(), topology, referenceMap);
+      referenceMap.put(vertex.getVertexId(), obj);
+      // Invoke typeFactory to construct the object acceptable to runtime type system.
       Type type = typeFactory.getType(vertex.getVertexDef().getTypeSpec());
 
+      Class<?> clazz = Class.forName(vertex.getVertexDef().getClassName());
       return new Element(obj, clazz, type);
     } catch (Exception e) {
       throw new ConstructionException("Cannot construct element!", e);

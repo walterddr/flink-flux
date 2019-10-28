@@ -25,6 +25,8 @@ import com.uber.athena.dsl.planner.topology.Topology;
 import com.uber.athena.dsl.planner.type.TypeFactory;
 import com.uber.athena.dsl.planner.utils.ConstructionException;
 
+import java.util.Map;
+
 /**
  * Base class for construction of vertex.
  */
@@ -35,12 +37,14 @@ public interface Constructor {
    *
    * @param vertex the vertex node defined in the topology
    * @param topology the topology.
-   * @param typeFactory the type factory for generating element return type.
+   * @param typeFactory the type factory used to resolve the type spec definition.
+   * @param referenceMap the global reference map maintained in elementBuilder.
    * @return a Java object constructed.
    * @throws ConstructionException when construction failure occurs.
    */
   ElementNode construct(
       VertexNode vertex,
       Topology topology,
-      TypeFactory typeFactory) throws ConstructionException;
+      TypeFactory typeFactory,
+      Map<String, Object> referenceMap) throws ConstructionException;
 }
