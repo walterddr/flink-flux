@@ -37,6 +37,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Parse a {@link TopologyDef} from its stringify, user-friendly format.
@@ -44,6 +46,8 @@ import java.util.Properties;
 public final class DslParser implements Parser {
   private static final Logger LOG = LoggerFactory.getLogger(DslParser.class);
   private static final String DEFAULT_ENCODING = "UTF8";
+  private static final String PROPERTIES_SUB_REGEX = "\\$\\{PROP\\.[\\w\\d\\.]+\\}";
+  private static final String ENV_SUB_REGEX = "\\$\\{ENV-[\\w\\d-_]+\\}";
 
   private Map<String, Object> config;
   private TopologyBuilder builder;
@@ -166,7 +170,14 @@ public final class DslParser implements Parser {
         }
         propsIn.close();
         for (Object key : props.keySet()) {
-          str = str.replace("${" + key + "}", props.getProperty((String) key));
+          str = str.replace("${PROP." + key + "}", props.getProperty((String) key));
+        }
+        // check if any remaining properties substitution exists.
+        Pattern pattern = Pattern.compile(PROPERTIES_SUB_REGEX);
+        Matcher matcher = pattern.matcher(str);
+        if (matcher.find()) {
+          throw new ParsingException("Unable to parse DSL model. "
+              + "Found unresolved property reference: " + matcher.group(0));
         }
       } else {
         LOG.info("Not performing property substitution.");
@@ -178,6 +189,13 @@ public final class DslParser implements Parser {
         Map<String, String> envs = System.getenv();
         for (Map.Entry<String, String> e : envs.entrySet()) {
           str = str.replace("${ENV-" + e.getKey() + "}", e.getValue());
+        }
+        // check if any remaining env substitution exists
+        Pattern pattern = Pattern.compile(ENV_SUB_REGEX);
+        Matcher matcher = pattern.matcher(str);
+        if (matcher.find()) {
+          throw new ParsingException("Unable to parse DSL model. "
+              + "Found unresolved property reference: " + matcher.group(0));
         }
       } else {
         LOG.info("Not performing environment variable substitution.");

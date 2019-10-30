@@ -36,13 +36,22 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public abstract class PlannerComponentTestBase {
   private static final String DEFAULT_TEST_DSL_MODEL_PATH = "dsl/";
+  private static final String DEFAULT_PROPERTY_FILE_PATH = "properties/";
 
   protected String name;
   protected File file;
+  protected String propertiesFilePath;
+  protected boolean isEnvSub;
 
-  protected PlannerComponentTestBase(String name, File file) {
+  protected PlannerComponentTestBase(
+      String name,
+      File file,
+      String propertiesFilePath,
+      boolean isEnvSub) {
     this.name = name;
     this.file = file;
+    this.propertiesFilePath = propertiesFilePath;
+    this.isEnvSub = isEnvSub;
   }
 
   /*
@@ -71,7 +80,13 @@ public abstract class PlannerComponentTestBase {
 
     Collection<Object[]> data = new ArrayList<>();
     for (File testFile : testFiles) {
-      data.add(new Object[]{testFile.getName(), testFile});
+      File propertiesFile = getResourceFile(DEFAULT_PROPERTY_FILE_PATH
+          + testFile.getName().replace(".yaml", ".properties"));
+      data.add(new Object[]{
+          testFile.getName(),
+          testFile,
+          propertiesFile == null ? null : propertiesFile.getAbsolutePath(),
+          true});
     }
     return data;
   }
@@ -81,5 +96,16 @@ public abstract class PlannerComponentTestBase {
     URL url = loader.getResource(folder);
     String path = url.getPath();
     return new File(path).listFiles();
+  }
+
+  private static File getResourceFile(String file) {
+    ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    URL url = loader.getResource(file);
+    if (url != null) {
+      String path = url.getPath();
+      return new File(path);
+    } else {
+      return null;
+    }
   }
 }

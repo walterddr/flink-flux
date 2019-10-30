@@ -34,8 +34,12 @@ public class DslParserTest extends PlannerComponentTestBase {
 
   private static Parser parser;
 
-  public DslParserTest(String name, File file) {
-    super(name, file);
+  public DslParserTest(
+      String name,
+      File file,
+      String propertiesFilePath,
+      boolean isEnvSub) {
+    super(name, file, propertiesFilePath, isEnvSub);
   }
 
   @BeforeClass
@@ -45,6 +49,7 @@ public class DslParserTest extends PlannerComponentTestBase {
 
   @Test
   public void testParser() throws Exception {
-    parser.parseFile(file.getAbsolutePath(), false, null, false);
+    parser.parseFile(
+        file.getCanonicalPath(), false, propertiesFilePath, isEnvSub);
   }
 }

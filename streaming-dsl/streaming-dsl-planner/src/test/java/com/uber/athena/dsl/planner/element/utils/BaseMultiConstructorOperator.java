@@ -19,12 +19,16 @@
 
 package com.uber.athena.dsl.planner.element.utils;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Basic operator for test purpose on multiple constructor.
  */
 public class BaseMultiConstructorOperator implements BaseOperator {
 
   private String dummyStrArg;
+  private List<String> dummyListArg;
   private long dummyLongArg;
 
   public BaseMultiConstructorOperator(int num) {
@@ -40,13 +44,17 @@ public class BaseMultiConstructorOperator implements BaseOperator {
   }
 
   public BaseMultiConstructorOperator(BaseMultiConstructorOperatorConfig conf) {
-    this.dummyLongArg = conf.getDummyLongArg();
-    this.dummyStrArg = conf.getDummyStrArg();
+    this(conf.getDummyLongArg(), conf.getDummyStrArg());
   }
 
   public BaseMultiConstructorOperator(long num, String str) {
+    this(num, str, Collections.emptyList());
+  }
+
+  public BaseMultiConstructorOperator(long num, String str, List<String> dummyListArg) {
     this.dummyLongArg = num;
     this.dummyStrArg = str;
+    this.dummyListArg = dummyListArg;
   }
 
   public long getLongArg() {
@@ -55,6 +63,10 @@ public class BaseMultiConstructorOperator implements BaseOperator {
 
   public String getStringArg() {
     return dummyStrArg;
+  }
+
+  public List<String> getListArg() {
+    return dummyListArg;
   }
 
   public void setDummyStrArg(String dummyStrArg) {
@@ -67,5 +79,9 @@ public class BaseMultiConstructorOperator implements BaseOperator {
 
   public void setDummyLongArg(int dummyIntArg) {
     this.dummyLongArg = (long) dummyIntArg;
+  }
+
+  public void setDummyListArg(List<String> dummyListArg) {
+    this.dummyListArg = dummyListArg;
   }
 }

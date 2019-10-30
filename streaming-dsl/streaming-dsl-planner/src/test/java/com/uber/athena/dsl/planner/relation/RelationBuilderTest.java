@@ -49,8 +49,12 @@ public class RelationBuilderTest extends PlannerComponentTestBase {
   private static ElementBuilder elementBuilder;
   private static RelationBuilder relationBuilder;
 
-  public RelationBuilderTest(String name, File file) {
-    super(name, file);
+  public RelationBuilderTest(
+      String name,
+      File file,
+      String propertiesFilePath,
+      boolean isEnvSub) {
+    super(name, file, propertiesFilePath, isEnvSub);
   }
 
   @BeforeClass
@@ -68,10 +72,11 @@ public class RelationBuilderTest extends PlannerComponentTestBase {
 
   @Test
   public void testRelationBuilder() throws Exception {
-    Topology topology = parser.parseFile(file.getCanonicalPath(), false, null, false);
+    Topology topology = parser.parseFile(
+        file.getCanonicalPath(), false, propertiesFilePath, isEnvSub);
     Topology validatedTopology = validator.validate(topology);
     Map<String, ElementNode> elementMapping =
-        (Map<String, ElementNode>) elementBuilder.construct(validatedTopology);
+        elementBuilder.construct(validatedTopology);
     relationBuilder.construct(validatedTopology, elementMapping);
   }
 }

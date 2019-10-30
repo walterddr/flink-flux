@@ -37,8 +37,12 @@ public class DslValidatorTest extends PlannerComponentTestBase {
   private static Parser parser;
   private static Validator validator;
 
-  public DslValidatorTest(String name, File file) {
-    super(name, file);
+  public DslValidatorTest(
+      String name,
+      File file,
+      String propertiesFilePath,
+      boolean isEnvSub) {
+    super(name, file, propertiesFilePath, isEnvSub);
   }
 
   @BeforeClass
@@ -49,7 +53,8 @@ public class DslValidatorTest extends PlannerComponentTestBase {
 
   @Test
   public void testValidator() throws Exception {
-    Topology topology = parser.parseFile(file.getCanonicalPath(), false, null, false);
+    Topology topology = parser.parseFile(
+        file.getCanonicalPath(), false, propertiesFilePath, isEnvSub);
     validator.validate(topology);
   }
 }

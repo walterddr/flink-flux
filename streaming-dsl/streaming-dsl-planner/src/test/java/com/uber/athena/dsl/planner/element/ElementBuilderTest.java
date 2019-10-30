@@ -42,8 +42,12 @@ public class ElementBuilderTest extends PlannerComponentTestBase {
   private static Validator validator;
   private static ElementBuilder elementBuilder;
 
-  public ElementBuilderTest(String name, File file) {
-    super(name, file);
+  public ElementBuilderTest(
+      String name,
+      File file,
+      String propertiesFilePath,
+      boolean isEnvSub) {
+    super(name, file, propertiesFilePath, isEnvSub);
   }
 
   @BeforeClass
@@ -58,7 +62,8 @@ public class ElementBuilderTest extends PlannerComponentTestBase {
 
   @Test
   public void testElementBuilder() throws Exception {
-    Topology topology = parser.parseFile(file.getCanonicalPath(), false, null, false);
+    Topology topology = parser.parseFile(
+        file.getCanonicalPath(), false, propertiesFilePath, isEnvSub);
     Topology validatedTopology = validator.validate(topology);
     elementBuilder.construct(validatedTopology);
   }
