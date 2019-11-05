@@ -25,8 +25,8 @@ import org.apache.flink.configuration.Configuration;
 import java.util.Map;
 import java.util.Properties;
 
-import static com.uber.athena.plugin.utils.SerializationUtils.javaDeserialize;
-import static com.uber.athena.plugin.utils.SerializationUtils.serializerJavaObj;
+import static com.uber.athena.dsl.planner.flink.plugin.SerializationUtils.javaDeserialize;
+import static com.uber.athena.dsl.planner.flink.plugin.SerializationUtils.serializerJavaObj;
 
 /**
  * {@link PluginPayload} for Flink DSL construct.

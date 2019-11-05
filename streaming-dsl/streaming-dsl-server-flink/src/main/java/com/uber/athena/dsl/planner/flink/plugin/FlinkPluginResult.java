@@ -22,8 +22,8 @@ package com.uber.athena.dsl.planner.flink.plugin;
 import com.uber.athena.plugin.api.PluginResult;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 
-import static com.uber.athena.plugin.utils.SerializationUtils.javaDeserialize;
-import static com.uber.athena.plugin.utils.SerializationUtils.serializerJavaObj;
+import static com.uber.athena.dsl.planner.flink.plugin.SerializationUtils.javaDeserialize;
+import static com.uber.athena.dsl.planner.flink.plugin.SerializationUtils.serializerJavaObj;
 
 /**
  * {@link PluginResult} for Flink DSL construct.
