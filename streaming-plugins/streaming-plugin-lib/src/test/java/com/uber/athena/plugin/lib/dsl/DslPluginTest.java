@@ -17,27 +17,17 @@
  *
  */
 
-package com.uber.athena.dsl.planner.flink.plugin;
+package com.uber.athena.plugin.lib.dsl;
 
-import com.uber.athena.dsl.planner.flink.PlannerTestBase;
 import com.uber.athena.plugin.api.PluginResult;
 import com.uber.athena.plugin.executor.direct.DirectInvokeExecutor;
 import com.uber.athena.plugin.executor.process.ProcessExecutor;
+import com.uber.athena.plugin.lib.dsl.payload.FlinkPluginResult;
 import com.uber.athena.plugin.payload.ExecutorPayloadImpl;
-import org.apache.flink.configuration.Configuration;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Properties;
-
-public class DslPluginTest extends PlannerTestBase {
-
-  public DslPluginTest(String name, File file) {
-    super(name, file);
-  }
+public class DslPluginTest extends DslPluginTestBase {
 
   @Test
   public void testDslPluginConstructorDirectInvoke() throws Exception {
@@ -57,18 +47,5 @@ public class DslPluginTest extends PlannerTestBase {
         generatePayload()));
     Assert.assertTrue(res instanceof FlinkPluginResult);
     Assert.assertNotNull(((FlinkPluginResult) res).getJobGraph());
-  }
-
-  private FlinkPluginPayload generatePayload() {
-    Configuration flinkConf = new Configuration();
-    Properties properties = new Properties();
-    Map<String, Object> config = Collections.singletonMap("_JOB_PARALLELISM", "1");
-    return new FlinkPluginPayload(
-        file.getAbsolutePath(),
-        FlinkPluginPayload.PluginRuleSetType.DATASTREAM,
-        flinkConf,
-        config,
-        properties
-    );
   }
 }

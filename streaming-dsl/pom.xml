@@ -45,17 +45,6 @@ under the License.
                 <artifactId>streaming-dsl-planner</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.uber.athena</groupId>
-                <artifactId>streaming-plugin-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.uber.athena</groupId>
-                <artifactId>streaming-plugin-executor</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

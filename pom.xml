@@ -51,6 +51,16 @@ under the License.
 				<artifactId>streaming-dsl-api</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.uber.athena</groupId>
+				<artifactId>streaming-dsl-planner</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.uber.athena</groupId>
+				<artifactId>streaming-dsl-server-flink</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 			<!-- core dependencies -->
 			<dependency>
@@ -77,10 +87,10 @@ under the License.
 				<version>${snakeyaml.version}</version>
 			</dependency>
 
-			<!-- flink dependencies -->
+			<!-- Flink dependencies -->
 			<dependency>
 				<groupId>org.apache.flink</groupId>
-				<artifactId>flink-core_${scala.binary.version}</artifactId>
+				<artifactId>flink-core</artifactId>
 				<version>${flink.version}</version>
 			</dependency>
 			<dependency>
@@ -114,6 +124,14 @@ under the License.
 			</dependency>
 
 			<!-- test dependencies -->
+
+			<dependency>
+				<groupId>com.uber.athena</groupId>
+				<artifactId>streaming-dsl-server-flink</artifactId>
+				<version>${project.version}</version>
+				<type>test-jar</type>
+				<scope>test</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>org.apache.flink</groupId>

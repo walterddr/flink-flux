@@ -17,13 +17,10 @@
  *
  */
 
-package com.uber.athena.dsl.planner.flink.plugin;
+package com.uber.athena.plugin.lib.dsl.payload;
 
 import com.uber.athena.plugin.api.PluginResult;
 import org.apache.flink.runtime.jobgraph.JobGraph;
-
-import static com.uber.athena.dsl.planner.flink.plugin.SerializationUtils.javaDeserialize;
-import static com.uber.athena.dsl.planner.flink.plugin.SerializationUtils.serializerJavaObj;
 
 /**
  * {@link PluginResult} for Flink DSL construct.
@@ -38,12 +35,12 @@ public class FlinkPluginResult implements PluginResult<FlinkPluginResult> {
 
   @Override
   public byte[] serialize() throws Exception {
-    return serializerJavaObj(this);
+    return SerializationUtils.serializerJavaObj(this);
   }
 
   @Override
   public FlinkPluginResult deserialize(byte[] serializedObj) throws Exception {
-    return javaDeserialize(serializedObj);
+    return SerializationUtils.javaDeserialize(serializedObj);
   }
 
   @Override

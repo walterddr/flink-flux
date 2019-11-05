@@ -17,7 +17,7 @@
  *
  */
 
-package com.uber.athena.dsl.planner.flink.plugin;
+package com.uber.athena.plugin.lib.dsl.payload;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,7 +29,7 @@ import java.io.ObjectOutputStream;
  * Utility to serialize & deserialize object for remote execution transfer.
  */
 @SuppressWarnings("unchecked")
-final class SerializationUtils {
+public final class SerializationUtils {
 
   private SerializationUtils() {
   }

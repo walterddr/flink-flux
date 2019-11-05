@@ -36,6 +36,7 @@
     <modules>
         <module>streaming-plugin-api</module>
         <module>streaming-plugin-executor</module>
+        <module>streaming-plugin-lib</module>
     </modules>
 
     <dependencyManagement>
@@ -43,6 +44,16 @@
             <dependency>
                 <groupId>com.uber.athena</groupId>
                 <artifactId>streaming-plugin-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.uber.athena</groupId>
+                <artifactId>streaming-plugin-executor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.uber.athena</groupId>
+                <artifactId>streaming-plugin-lib</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

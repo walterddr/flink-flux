@@ -29,7 +29,7 @@ import java.util.List;
  * This class consist of the general payload transfer utilities.
  *
  * <p>This is used to ensure that the {@link ProcessExecutor} and the
- * {@link PluginWrapper} utilizes the same form of serialization /
+ * {@link PluginWrapperEntryPoint} utilizes the same form of serialization /
  * deserialization and same streams for data transfer between process.
  */
 final class ProcessStreamTransferUtils {
@@ -63,7 +63,7 @@ final class ProcessStreamTransferUtils {
     ops.addAll(resolveLibPath(jvmLibPath));
 
     // execution main class
-    ops.add(PluginWrapper.class.getCanonicalName());
+    ops.add(PluginWrapperEntryPoint.class.getCanonicalName());
 
     // add execution main class argument
     // These arguments should be used by pluginWrapper ONLY

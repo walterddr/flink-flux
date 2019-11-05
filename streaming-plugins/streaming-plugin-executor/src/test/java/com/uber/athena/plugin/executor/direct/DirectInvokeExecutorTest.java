@@ -17,11 +17,10 @@
  *
  */
 
-package com.uber.athena.plugin.executor;
+package com.uber.athena.plugin.executor.direct;
 
 import com.uber.athena.plugin.api.Executor;
 import com.uber.athena.plugin.api.PluginResult;
-import com.uber.athena.plugin.executor.process.ProcessExecutor;
 import com.uber.athena.plugin.executor.utils.SimpleProcessPlugin;
 import com.uber.athena.plugin.executor.utils.SimpleProcessPluginPayload;
 import com.uber.athena.plugin.executor.utils.SimpleProcessPluginResult;
@@ -31,12 +30,12 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class ProcessExecutorTest {
+public class DirectInvokeExecutorTest {
 
   @Test
-  public void testDefault() throws Exception {
+  public void testValidCombo() throws Exception {
     SimpleProcessPluginPayload payload = new SimpleProcessPluginPayload("23", 4);
-    Executor executor = new ProcessExecutor();
+    Executor executor = new DirectInvokeExecutor();
     PluginResult result = executor.run(new ExecutorPayloadImpl(
         SimpleProcessPlugin.class.getName(),
         payload));
@@ -46,23 +45,9 @@ public class ProcessExecutorTest {
   }
 
   @Test
-  public void testProcessWithAllSystemStreams() throws Exception {
-    SimpleProcessPluginPayload payload = new SimpleProcessPluginPayload("23", 4);
-    Executor executor = new ProcessExecutor(
-        ProcessExecutor.ConnectedStreamType.SYSTEM,
-        ProcessExecutor.ConnectedStreamType.SYSTEM);
-    PluginResult result = executor.run(new ExecutorPayloadImpl(
-        SimpleProcessPlugin.class.getName(),
-        payload));
-    Assert.assertTrue(result instanceof SimpleProcessPluginResult);
-    int actual = (Integer) ((SimpleProcessPluginResult) result).getResult();
-    Assert.assertEquals(27, actual);
-  }
-
-  @Test
-  public void testInvalidPayload() throws Exception {
+  public void testInvalidCombo() throws Exception {
     SimpleProcessPluginPayload payload = new SimpleProcessPluginPayload("asdf", 4);
-    Executor executor = new ProcessExecutor();
+    Executor executor = new DirectInvokeExecutor();
     PluginResult result = executor.run(new ExecutorPayloadImpl(
         SimpleProcessPlugin.class.getName(),
         payload));

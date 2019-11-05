@@ -38,9 +38,9 @@ import java.net.Socket;
  *
  * <p>The wrapper main class is meant to be execute by {@link ProcessExecutor}.
  */
-public final class PluginWrapper {
+public final class PluginWrapperEntryPoint {
 
-  private PluginWrapper() {
+  private PluginWrapperEntryPoint() {
   }
 
   public static void main(String[] args) throws Exception {

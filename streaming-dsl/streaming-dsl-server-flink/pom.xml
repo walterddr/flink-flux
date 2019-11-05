@@ -39,10 +39,6 @@ under the License.
             <artifactId>streaming-dsl-planner</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.uber.athena</groupId>
-            <artifactId>streaming-plugin-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
@@ -59,11 +55,6 @@ under the License.
 
         <!-- Test Dependencies -->
         <dependency>
-            <groupId>com.uber.athena</groupId>
-            <artifactId>streaming-plugin-executor</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-kafka-0.11_${scala.binary.version}</artifactId>
             <scope>test</scope>
@@ -79,4 +70,21 @@ under the License.
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- publish some test base classes -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

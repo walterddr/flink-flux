@@ -17,7 +17,7 @@
  *
  */
 
-package com.uber.athena.dsl.planner.flink.plugin;
+package com.uber.athena.plugin.lib.dsl;
 
 import com.uber.athena.dsl.planner.flink.FlinkPlanner;
 import com.uber.athena.dsl.planner.flink.relation.rules.FlinkRuleSet;
@@ -25,6 +25,7 @@ import com.uber.athena.dsl.planner.flink.relation.rules.datastream.FlinkDataStre
 import com.uber.athena.dsl.planner.flink.relation.rules.table.FlinkTableRuleSet;
 import com.uber.athena.plugin.api.Plugin;
 import com.uber.athena.plugin.api.PluginPayload;
+import com.uber.athena.plugin.lib.dsl.payload.FlinkPluginPayload;
 import org.apache.flink.configuration.Configuration;
 
 /**
