@@ -20,6 +20,7 @@
 package com.uber.athena.plugin.lib.dsl.payload;
 
 import com.uber.athena.plugin.api.PluginPayload;
+import com.uber.athena.plugin.lib.utils.SerializationUtils;
 import org.apache.flink.configuration.Configuration;
 
 import java.util.Map;

@@ -29,6 +29,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
+/**
+ * Base class for DSL plugin test.
+ */
 abstract class DslPluginTestBase {
   private static final String TEST_DSL_FILE = "basic_topology.yaml";
 

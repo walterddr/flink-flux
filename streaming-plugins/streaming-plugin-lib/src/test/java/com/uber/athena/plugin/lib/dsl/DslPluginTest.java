@@ -27,6 +27,9 @@ import com.uber.athena.plugin.payload.ExecutorPayloadImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Test DSL plugins without invoking executor.
+ */
 public class DslPluginTest extends DslPluginTestBase {
 
   @Test

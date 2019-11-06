@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,21 +17,24 @@
  *
  */
 
-package com.uber.athena.plugin.lib.dsl.payload;
+package com.uber.athena.plugin.lib.dependencies.payload;
 
 import com.uber.athena.plugin.api.PluginResult;
 import com.uber.athena.plugin.lib.utils.SerializationUtils;
-import org.apache.flink.runtime.jobgraph.JobGraph;
+
+import java.util.Map;
 
 /**
  * {@link PluginResult} for Flink DSL construct.
  */
-public class FlinkPluginResult implements PluginResult<FlinkPluginResult> {
-  private JobGraph jobGraph;
+public class DependencyPluginResult implements PluginResult<DependencyPluginResult> {
+  private Map<String, String> artifactToPathMapping;
   private Throwable exception;
 
-  public FlinkPluginResult(JobGraph jobGraph) {
-    this.jobGraph = jobGraph;
+  public DependencyPluginResult(
+      Map<String, String> artifactToPathMapping
+  ) {
+    this.artifactToPathMapping = artifactToPathMapping;
   }
 
   @Override
@@ -40,7 +43,7 @@ public class FlinkPluginResult implements PluginResult<FlinkPluginResult> {
   }
 
   @Override
-  public FlinkPluginResult deserialize(byte[] serializedObj) throws Exception {
+  public DependencyPluginResult deserialize(byte[] serializedObj) throws Exception {
     return SerializationUtils.javaDeserialize(serializedObj);
   }
 
@@ -54,7 +57,7 @@ public class FlinkPluginResult implements PluginResult<FlinkPluginResult> {
     return exception;
   }
 
-  public JobGraph getJobGraph() {
-    return jobGraph;
+  public Map<String, String> getArtifactToPathMapping() {
+    return artifactToPathMapping;
   }
 }
