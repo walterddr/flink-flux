@@ -22,10 +22,16 @@ package com.uber.athena.dsl.planner.validation;
 import com.uber.athena.dsl.planner.topology.Topology;
 import com.uber.athena.dsl.planner.utils.ValidationException;
 
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 /**
  * Basic implementation of the {@link Validator} check.
  */
 public class DslValidator implements Validator {
+  private static final Pattern ARTIFACT_DEPENDENCY_REGEX = Pattern.compile(
+      "([-_\\w\\d\\.]+):([-_\\w\\d\\.]+):([\\d\\.]+)(\\^([-_\\w\\d\\.]+):([-_\\w\\d\\.]+))*");
 
   public DslValidator() {
   }
@@ -44,6 +50,16 @@ public class DslValidator implements Validator {
    * validate that the definition actually represents a valid DSL topology.
    */
   private static void validateTopology(Topology topology) throws ValidationException {
+    if (topology.getDependencies() != null) {
+      List<String> invalidDep = topology.getDependencies().stream()
+          .filter(d -> !ARTIFACT_DEPENDENCY_REGEX.matcher(d).matches())
+          .collect(Collectors.toList());
+      if (invalidDep.size() > 0) {
+        throw new ValidationException("Validation Exception: "
+            + "Invalid artifact dependency configs: \n"
+            + String.join("\n", invalidDep));
+      }
+    }
     if (topology.getSources() == null || topology.getSources().size() == 0) {
       throw new ValidationException("Validation Exception: No source vertex found!");
     }

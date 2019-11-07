@@ -42,6 +42,7 @@ public class DslTopology implements Topology {
   private final Map<String, VertexNode> sinks;
   private final Map<String, VertexNode> operators;
   private final List<StreamDef> streams;
+  private final List<String> dependencies;
   private final Map<String, Object> config;
   private final Map<String, PropertyDef> propertyMap;
 
@@ -55,6 +56,7 @@ public class DslTopology implements Topology {
     this.operators = new HashMap<>();
     this.streams = new ArrayList<>();
 
+    this.dependencies = new ArrayList<>();
     this.config = new HashMap<>();
     this.propertyMap = new HashMap<>();
   }
@@ -67,6 +69,11 @@ public class DslTopology implements Topology {
   @Override
   public Map<String, Object> getConfig() {
     return config;
+  }
+
+  @Override
+  public List<String> getDependencies() {
+    return dependencies;
   }
 
   @Override

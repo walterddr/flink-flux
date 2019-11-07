@@ -37,6 +37,8 @@ public interface Topology extends Serializable {
 
   Map<String, Object> getConfig();
 
+  List<String> getDependencies();
+
   Map<String, PropertyDef> getPropertyMap();
 
   Map<String, ComponentDef> getComponents();

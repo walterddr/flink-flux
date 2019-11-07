@@ -34,6 +34,10 @@ components:
     # ---------------------------------------------------------------------------
     # Basic DSL element definitions
     # ---------------------------------------------------------------------------
+    DependencyDef:
+      type: string
+      description: "artifact dependency definition,
+        use format: '<groupId>:<artifactId>:<version>:[^<excludeGroupId>:<excludeArtifactId>]+'"
     PropertyDef:
       type: object
       properties:
@@ -117,6 +121,9 @@ components:
             - BROADCAST_STREAM
             - TABLE_STREAM
           default: DATA_STREAM
+    # ---------------------------------------------------------------------------
+    # DSL type specifications
+    # ---------------------------------------------------------------------------
     TypeSpecDef:
       type: object
       properties:
@@ -253,6 +260,10 @@ components:
           additionalProperties:
             type: object
           description: the additional metadata configuration for the topology
+        dependencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/DependencyDef'
         propertyMap:
           type: object
           additionalProperties:

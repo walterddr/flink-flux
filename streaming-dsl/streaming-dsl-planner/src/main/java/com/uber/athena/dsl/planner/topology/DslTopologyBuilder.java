@@ -122,6 +122,9 @@ public class DslTopologyBuilder implements TopologyBuilder {
       if (this.topologyDef.getConfig() != null) {
         topology.getConfig().putAll(this.topologyDef.getConfig());
       }
+      if (this.topologyDef.getDependencies() != null) {
+        topology.getDependencies().addAll(this.topologyDef.getDependencies());
+      }
       if (this.topologyDef.getPropertyMap() != null) {
         topology.getPropertyMap().putAll(this.topologyDef.getPropertyMap());
       }

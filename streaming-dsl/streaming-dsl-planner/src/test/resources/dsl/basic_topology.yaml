@@ -28,6 +28,10 @@ config:
   topology.workers: 1
   # ...
 
+dependencies:
+  - 'commons-io:commons-io:2.6'
+  - 'com.fasterxml.jackson.core:jackson-databind:2.9.10^com.fasterxml.jackson.core:jackson-core'
+
 vertices:
   # source definitions
   source-1:
