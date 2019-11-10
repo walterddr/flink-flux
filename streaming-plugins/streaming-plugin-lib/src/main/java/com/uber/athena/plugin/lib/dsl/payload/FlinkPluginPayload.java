@@ -20,7 +20,6 @@
 package com.uber.athena.plugin.lib.dsl.payload;
 
 import com.uber.athena.plugin.api.PluginPayload;
-import com.uber.athena.plugin.lib.utils.SerializationUtils;
 import org.apache.flink.configuration.Configuration;
 
 import java.util.Map;
@@ -49,16 +48,6 @@ public class FlinkPluginPayload implements PluginPayload<FlinkPluginPayload> {
     this.flinkConf = flinkConf;
     this.config = config;
     this.properties = properties;
-  }
-
-  @Override
-  public byte[] serialize() throws Exception {
-    return SerializationUtils.serializerJavaObj(this);
-  }
-
-  @Override
-  public FlinkPluginPayload deserialize(byte[] serializedObj) throws Exception {
-    return SerializationUtils.javaDeserialize(serializedObj);
   }
 
   public Configuration getFlinkConf() {

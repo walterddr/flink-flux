@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,13 +17,11 @@
  *
  */
 
-package com.uber.athena.plugin.lib.dsl;
+package com.uber.athena.plugin.lib.dsl.runtime;
 
+import com.uber.athena.plugin.api.Plugin;
+import com.uber.athena.plugin.api.PluginPayload;
 import com.uber.athena.plugin.api.PluginResult;
-import com.uber.athena.plugin.executor.direct.DirectInvokeExecutor;
-import com.uber.athena.plugin.executor.process.ProcessExecutor;
-import com.uber.athena.plugin.lib.dsl.payload.FlinkPluginResult;
-import com.uber.athena.plugin.payload.ExecutorPayloadImpl;
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.RestOptions;
@@ -33,31 +31,26 @@ import org.apache.flink.runtime.minicluster.MiniCluster;
 import org.apache.flink.runtime.minicluster.MiniClusterConfiguration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.StreamGraph;
-import org.junit.Test;
 
 /**
- * Integration test for DSL plugin executions.
+ * Run a job graph.
  */
-public class DslPluginITCase extends DslPluginTestBase {
+public class FlinkExecuteJobGraphPlugin implements Plugin {
+  private FlinkExecutePluginPayload payload;
 
-  @Test
-  public void testDslPluginConstructorDirectInvoke() throws Exception {
-    DirectInvokeExecutor executor = new DirectInvokeExecutor();
-    PluginResult res = executor.run(new ExecutorPayloadImpl(
-        FlinkDslConstructPlugin.class.getName(),
-        generatePayload()));
-    JobGraph jobGraph = ((FlinkPluginResult) res).getJobGraph();
-    executeJobGraph(jobGraph);
+  @Override
+  public void instantiate(PluginPayload payload) {
+    if (payload instanceof FlinkExecutePluginPayload) {
+      this.payload = (FlinkExecutePluginPayload) payload;
+    } else {
+      throw new IllegalArgumentException("Cannot instantiate, payload type not supported!");
+    }
   }
 
-  @Test
-  public void testDslPluginConstructorProcessExecute() throws Exception {
-    ProcessExecutor executor = new ProcessExecutor();
-    PluginResult res = executor.run(new ExecutorPayloadImpl(
-        FlinkDslConstructPlugin.class.getName(),
-        generatePayload()));
-    JobGraph jobGraph = ((FlinkPluginResult) res).getJobGraph();
-    executeJobGraph(jobGraph);
+  @Override
+  public PluginResult run() throws Exception {
+    executeJobGraph(payload.getJobGraph());
+    return new FlinkExecutePluginResult();
   }
 
   private void executeJobGraph(JobGraph jobGraph) throws Exception {

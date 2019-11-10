@@ -18,6 +18,10 @@ name: "basic-topology"
 
 config:
   topology.workers: 1
+  mavenLocalRepositoryDirectory: 'target/testBasicDir'
+
+dependencies:
+  - 'commons-io:commons-io:2.6'
 
 vertices:
   source-1:

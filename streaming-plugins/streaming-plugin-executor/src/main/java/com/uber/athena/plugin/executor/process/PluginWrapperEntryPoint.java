@@ -23,6 +23,7 @@ import com.uber.athena.plugin.api.ExecutorPayload;
 import com.uber.athena.plugin.api.Plugin;
 import com.uber.athena.plugin.api.PluginPayload;
 import com.uber.athena.plugin.api.PluginResult;
+import com.uber.athena.plugin.base.ExceptionPluginResult;
 import com.uber.athena.plugin.payload.ExecutorPayloadImpl;
 
 import java.io.IOException;
@@ -54,7 +55,7 @@ public final class PluginWrapperEntryPoint {
       plugin.instantiate(payload);
       res = plugin.run();
     } catch (Throwable e) {
-      res = new ProcessExceptionPluginResult(e);
+      res = new ExceptionPluginResult(e);
     }
 
     // choose the correct output stream

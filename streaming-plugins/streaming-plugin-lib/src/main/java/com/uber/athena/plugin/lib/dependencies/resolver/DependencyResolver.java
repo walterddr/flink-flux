@@ -30,86 +30,54 @@ import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResolutionException;
-import org.eclipse.aether.resolution.DependencyResult;
 import org.eclipse.aether.util.artifact.JavaScopes;
 import org.eclipse.aether.util.filter.DependencyFilterUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Resolver class of dependencies.
  */
 public class DependencyResolver {
-  private final RepositorySystem system = Booter.newRepositorySystem();
-  private final RepositorySystemSession session;
+  private RepositorySystem system = Booter.newRepositorySystem();
 
+  private String localRepoPath;
   private List<RemoteRepository> remoteRepositories;
-  private Proxy proxy;
+  private List<Dependency> dependencies;
+  private boolean allowMissingArtifacts;
 
-  /**
-   * Constuctor.
-   *
-   * @param localRepoPath the directory of local repository
-   */
-  public DependencyResolver(String localRepoPath) {
+  private Proxy proxy = null;
+  private RepositorySystemSession session = null;
+
+  DependencyResolver(String localRepoPath) {
     this(localRepoPath, Collections.emptyList());
   }
 
-  /**
-   * Constuctor.
-   *
-   * @param localRepoPath the directory of local repository
-   * @param repositories  list of remote repositories
-   */
-  public DependencyResolver(String localRepoPath, List<RemoteRepository> repositories) {
-    localRepoPath = handleRelativePath(localRepoPath);
-
-    session = Booter.newRepositorySystemSession(system, localRepoPath);
-
-    remoteRepositories = new ArrayList<>();
-    remoteRepositories.add(Booter.newCentralRepository());
-    remoteRepositories.addAll(repositories);
-  }
-
-  /**
-   * Setter of proxy if needed.
-   *
-   * @param proxyParam proxy object
-   */
-  public void setProxy(Proxy proxyParam) {
-    this.proxy = proxyParam;
-    applyProxy();
-  }
-
-  private String handleRelativePath(String localRepoPath) {
-    File repoDir = new File(localRepoPath);
-    if (!repoDir.isAbsolute()) {
-      // find homedir
-      String home = System.getProperty("storm.home");
-      if (home == null) {
-        home = ".";
-      }
-
-      localRepoPath = home + "/" + localRepoPath;
-    }
-    return localRepoPath;
+  DependencyResolver(String localRepoPath, List<RemoteRepository> repositories) {
+    this.localRepoPath = localRepoPath;
+    this.remoteRepositories = new ArrayList<>();
+    this.remoteRepositories.add(Booter.newCentralRepository());
+    this.remoteRepositories.addAll(repositories);
   }
 
   /**
    * Resolve dependencies and return downloaded information of artifacts.
    *
-   * @param dependencies the list of dependency
    * @return downloaded information of artifacts
    * @throws DependencyResolutionException If the dependency tree could not be
    *                                       built or any dependency artifact could not be resolved.
    * @throws ArtifactResolutionException   If the artifact could not be resolved.
    */
-  public List<ArtifactResult> resolve(List<Dependency> dependencies) throws
+  public List<ArtifactResult> resolve() throws
       DependencyResolutionException, ArtifactResolutionException {
+    if (session == null) {
+      throw new IllegalStateException("Unable to resolve dependency, resolver not initialized!");
+    }
 
+    // Acquire dependencies.
     if (dependencies.size() == 0) {
       return Collections.emptyList();
     }
@@ -123,26 +91,63 @@ public class DependencyResolver {
     for (RemoteRepository repository : remoteRepositories) {
       collectRequest.addRepository(repository);
     }
-
     DependencyFilter classpathFilter = DependencyFilterUtils
         .classpathFilter(JavaScopes.COMPILE, JavaScopes.RUNTIME);
-
     DependencyRequest dependencyRequest =
         new DependencyRequest(collectRequest, classpathFilter);
-    DependencyResult dependencyResult =
-        system.resolveDependencies(session, dependencyRequest);
-    return dependencyResult.getArtifactResults();
+    List<ArtifactResult> artifactResults = system
+        .resolveDependencies(session, dependencyRequest)
+        .getArtifactResults();
+
+    if (!allowMissingArtifacts) {
+      List<ArtifactResult> missingArtifacts = artifactResults
+          .stream()
+          .filter(ArtifactResult::isMissing)
+          .collect(Collectors.toList());
+      if (missingArtifacts.iterator().hasNext()) {
+        throw new ArtifactResolutionException(missingArtifacts);
+      }
+    }
+    return artifactResults;
   }
 
-  private void applyProxy() {
+  public String getLocalRepoPath() {
+    return localRepoPath;
+  }
+
+  /**
+   * Initialize the dependency resolver.
+   *
+   * @throws Exception when initialization fails.
+   */
+  void initialize() throws Exception {
+    // Initialize resolver system.
+    localRepoPath = DependencyResolverUtil.handleRelativePath(
+        localRepoPath, true);
+    session = Booter.newRepositorySystemSession(system, localRepoPath);
+  }
+
+  /**
+   * Setter of proxy if needed.
+   *
+   * @param proxyParam proxy object
+   */
+  void setProxy(Proxy proxyParam) {
+    this.proxy = proxyParam;
     List<RemoteRepository> appliedRepositories =
         new ArrayList<>(remoteRepositories.size());
     for (RemoteRepository repository : remoteRepositories) {
       appliedRepositories.add(
           new RemoteRepository.Builder(repository).setProxy(proxy).build());
     }
-
     this.remoteRepositories = appliedRepositories;
   }
 
+  public void setDependencies(List<Dependency> dependencies) {
+    this.dependencies = dependencies;
+  }
+
+  public void isAllowMissingArtifacts(boolean allowMissingArtifacts) {
+    this.allowMissingArtifacts = allowMissingArtifacts;
+  }
 }

@@ -19,28 +19,37 @@
 
 package com.uber.athena.plugin.lib.dsl;
 
+import com.uber.athena.dsl.planner.flink.DslTestBase;
 import com.uber.athena.plugin.lib.dsl.payload.FlinkPluginPayload;
 import org.apache.flink.configuration.Configuration;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.io.File;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 
 /**
  * Base class for DSL plugin test.
  */
-abstract class DslPluginTestBase {
-  private static final String TEST_DSL_FILE = "basic_topology.yaml";
+@RunWith(Parameterized.class)
+public abstract class DslPluginTestBase extends DslTestBase {
+
+  protected DslPluginTestBase(String name, File file) {
+    super(name, file);
+  }
 
   protected FlinkPluginPayload generatePayload() {
     Configuration flinkConf = new Configuration();
+    // default configuration & properties for instantiate the planner.
     Properties properties = new Properties();
+    // TODO @walterddr fix config handling (#30)
     Map<String, Object> config = Collections.singletonMap("_JOB_PARALLELISM", "1");
     return new FlinkPluginPayload(
-        Objects.requireNonNull(getResourceFile(TEST_DSL_FILE)).getAbsolutePath(),
+        file.getAbsolutePath(),
         FlinkPluginPayload.PluginRuleSetType.DATASTREAM,
         flinkConf,
         config,
@@ -48,13 +57,14 @@ abstract class DslPluginTestBase {
     );
   }
 
-  protected static File getResourceFile(String file) {
-    ClassLoader loader = Thread.currentThread().getContextClassLoader();
-    URL url = loader.getResource(file);
-    if (url != null) {
-      return new File(url.getPath());
-    } else {
-      return null;
+  @Parameterized.Parameters(name = "{0}")
+  public static Collection<Object[]> data() {
+    File[] testFiles = getResourceFolderFiles(DEFAULT_TEST_DSL_MODEL_PATH);
+
+    Collection<Object[]> data = new ArrayList<>();
+    for (File testFile : testFiles) {
+      data.add(new Object[]{testFile.getName(), testFile});
     }
+    return data;
   }
 }

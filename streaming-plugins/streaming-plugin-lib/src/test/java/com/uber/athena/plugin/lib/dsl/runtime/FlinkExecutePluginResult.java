@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,42 +17,21 @@
  *
  */
 
-package com.uber.athena.plugin.executor.process;
+package com.uber.athena.plugin.lib.dsl.runtime;
 
 import com.uber.athena.plugin.api.PluginResult;
-import com.uber.athena.plugin.utils.SerializationUtils;
 
 /**
- * Execution result wrapper for executing via remote {@link Process}.
+ * Dummy for holding execution result.
  */
-public class ProcessExceptionPluginResult implements PluginResult<ProcessExceptionPluginResult> {
-  private Throwable exception;
-
-  public ProcessExceptionPluginResult() {
-    this(null);
-  }
-
-  public ProcessExceptionPluginResult(Throwable exception) {
-    this.exception = exception;
-  }
-
-  @Override
-  public byte[] serialize() throws Exception {
-    return SerializationUtils.serializerJavaObj(exception);
-  }
-
-  @Override
-  public ProcessExceptionPluginResult deserialize(byte[] serializedObj) throws Exception {
-    return SerializationUtils.javaDeserialize(serializedObj);
-  }
-
+public class FlinkExecutePluginResult implements PluginResult<FlinkExecutePluginResult> {
   @Override
   public void setException(Throwable e) {
-    this.exception = e;
+    throw new UnsupportedOperationException("not supported!");
   }
 
   @Override
   public Throwable getException() {
-    return exception;
+    throw new UnsupportedOperationException("not supported!");
   }
 }

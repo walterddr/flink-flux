@@ -19,6 +19,8 @@
 
 package com.uber.athena.plugin.api;
 
+import com.uber.athena.plugin.utils.SerializationUtils;
+
 import java.io.Serializable;
 
 /**
@@ -26,6 +28,7 @@ import java.io.Serializable;
  *
  * @param <T> the type of the concrete plugin payload implementation.
  */
+@SuppressWarnings("unchecked")
 public interface PluginPayload<T extends PluginPayload> extends Serializable {
 
   /**
@@ -34,7 +37,9 @@ public interface PluginPayload<T extends PluginPayload> extends Serializable {
    * @return the serialized byte array.
    * @throws Exception when serialization exception occurs.
    */
-  byte[] serialize() throws Exception;
+  default byte[] serialize() throws Exception {
+    return SerializationUtils.serializerJavaObj(this);
+  }
 
   /**
    * Deserialize the payload byte array back to the plugin payload.
@@ -43,5 +48,7 @@ public interface PluginPayload<T extends PluginPayload> extends Serializable {
    * @return the Java object of the plugin payload.
    * @throws Exception when deserialization exception occurs.
    */
-  T deserialize(byte[] serializedObj) throws Exception;
+  default T deserialize(byte[] serializedObj) throws Exception {
+    return (T) SerializationUtils.javaDeserialize(serializedObj);
+  }
 }

@@ -60,7 +60,10 @@ public class DependencyResolverTest {
         new DependencyResolver(testDirForLocalDirOption.toAbsolutePath().toString());
     Dependency dependency = new Dependency(
         new DefaultArtifact("commons-io:commons-io:2.6"), JavaScopes.COMPILE);
-    List<ArtifactResult> results = resolver.resolve(Lists.newArrayList(dependency));
+    resolver.setDependencies(Lists.newArrayList(dependency));
+    resolver.initialize();
+
+    List<ArtifactResult> results = resolver.resolve();
 
     assertTrue(results.size() > 0);
     assertArtifactResultContains(results, "commons-io", "commons-io", "2.6");
@@ -78,7 +81,10 @@ public class DependencyResolverTest {
                 .build()));
     Dependency dependency = new Dependency(
         new DefaultArtifact("commons-cli:commons-cli:1.4"), JavaScopes.COMPILE);
-    List<ArtifactResult> results = resolver.resolve(Lists.newArrayList(dependency));
+    resolver.setDependencies(Lists.newArrayList(dependency));
+    resolver.initialize();
+
+    List<ArtifactResult> results = resolver.resolve();
 
     assertTrue(results.size() > 0);
     assertArtifactResultContains(results, "commons-cli", "commons-cli", null);

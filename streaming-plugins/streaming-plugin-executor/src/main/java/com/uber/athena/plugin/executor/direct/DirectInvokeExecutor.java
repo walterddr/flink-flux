@@ -23,6 +23,7 @@ import com.uber.athena.plugin.api.Executor;
 import com.uber.athena.plugin.api.ExecutorPayload;
 import com.uber.athena.plugin.api.Plugin;
 import com.uber.athena.plugin.api.PluginResult;
+import com.uber.athena.plugin.base.ExceptionPluginResult;
 
 import java.io.IOException;
 
@@ -49,7 +50,8 @@ public class DirectInvokeExecutor implements Executor {
       plugin.instantiate(payload.getPluginPayload());
       return plugin.run();
     } catch (Exception e) {
-      throw new IOException("Unable to execute plugin directly!", e);
+      return new ExceptionPluginResult(
+          new IOException("Unable to execute plugin directly!", e));
     }
   }
 }

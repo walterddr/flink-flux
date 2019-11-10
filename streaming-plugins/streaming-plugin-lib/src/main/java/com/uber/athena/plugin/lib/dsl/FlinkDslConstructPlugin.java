@@ -24,7 +24,7 @@ import com.uber.athena.dsl.planner.relation.RelationNode;
 import com.uber.athena.dsl.planner.topology.Topology;
 import com.uber.athena.dsl.planner.utils.ConstructionException;
 import com.uber.athena.plugin.api.PluginResult;
-import com.uber.athena.plugin.lib.dsl.payload.FlinkPluginResult;
+import com.uber.athena.plugin.lib.dsl.payload.FlinkPluginConstructionResult;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 
 import java.io.FileInputStream;
@@ -51,7 +51,7 @@ public class FlinkDslConstructPlugin extends FlinkPlugin {
             + "Expected: " + elementMapping.size() + " but found: " + relationMapping.size());
       }
       JobGraph jobGraph = ruleSet.getStreamExecutionEnvironment().getStreamGraph().getJobGraph();
-      return new FlinkPluginResult(jobGraph);
+      return new FlinkPluginConstructionResult(jobGraph);
     }
   }
 }

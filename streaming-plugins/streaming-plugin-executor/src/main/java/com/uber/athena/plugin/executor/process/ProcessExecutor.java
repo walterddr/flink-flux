@@ -22,6 +22,7 @@ package com.uber.athena.plugin.executor.process;
 import com.uber.athena.plugin.api.Executor;
 import com.uber.athena.plugin.api.ExecutorPayload;
 import com.uber.athena.plugin.api.PluginResult;
+import com.uber.athena.plugin.base.ExceptionPluginResult;
 
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
@@ -117,7 +118,7 @@ public class ProcessExecutor implements Executor {
     } catch (Exception e) {
       inStream.close();
       outStream.close();
-      throw new IOException(e);
+      return new ExceptionPluginResult(new IOException(e));
     }
   }
 

@@ -17,7 +17,7 @@
  *
  */
 
-package com.uber.athena.plugin.lib.utils;
+package com.uber.athena.plugin.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

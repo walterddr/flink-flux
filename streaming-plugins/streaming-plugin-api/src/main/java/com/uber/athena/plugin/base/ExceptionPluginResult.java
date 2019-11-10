@@ -17,23 +17,33 @@
  *
  */
 
-package com.uber.athena.plugin.lib.dependencies.payload;
+package com.uber.athena.plugin.base;
 
 import com.uber.athena.plugin.api.PluginResult;
-
-import java.util.Map;
+import com.uber.athena.plugin.utils.SerializationUtils;
 
 /**
- * {@link PluginResult} for Flink DSL construct.
+ * Execution result is a wrapper for a plugin executed with exception.
  */
-public class DependencyPluginResult implements PluginResult<DependencyPluginResult> {
-  private Map<String, String> artifactToPathMapping;
+public class ExceptionPluginResult implements PluginResult<ExceptionPluginResult> {
   private Throwable exception;
 
-  public DependencyPluginResult(
-      Map<String, String> artifactToPathMapping
-  ) {
-    this.artifactToPathMapping = artifactToPathMapping;
+  public ExceptionPluginResult() {
+    this(null);
+  }
+
+  public ExceptionPluginResult(Throwable exception) {
+    this.exception = exception;
+  }
+
+  @Override
+  public byte[] serialize() throws Exception {
+    return SerializationUtils.serializerJavaObj(exception);
+  }
+
+  @Override
+  public ExceptionPluginResult deserialize(byte[] serializedObj) throws Exception {
+    return SerializationUtils.javaDeserialize(serializedObj);
   }
 
   @Override
@@ -44,9 +54,5 @@ public class DependencyPluginResult implements PluginResult<DependencyPluginResu
   @Override
   public Throwable getException() {
     return exception;
-  }
-
-  public Map<String, String> getArtifactToPathMapping() {
-    return artifactToPathMapping;
   }
 }

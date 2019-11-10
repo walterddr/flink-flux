@@ -17,23 +17,30 @@
  *
  */
 
-package com.uber.athena.plugin.lib.dependencies.payload;
+package com.uber.athena.plugin.lib.dsl.payload;
 
 import com.uber.athena.plugin.api.PluginResult;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link PluginResult} for Flink DSL construct.
  */
-public class DependencyPluginResult implements PluginResult<DependencyPluginResult> {
-  private Map<String, String> artifactToPathMapping;
+public class FlinkPluginDependencyResult implements PluginResult<FlinkPluginDependencyResult> {
+  private List<String> artifacts;
+  private String classPath;
   private Throwable exception;
 
-  public DependencyPluginResult(
-      Map<String, String> artifactToPathMapping
-  ) {
-    this.artifactToPathMapping = artifactToPathMapping;
+  public FlinkPluginDependencyResult(String classPath) {
+    this(classPath, new ArrayList<>());
+  }
+
+  public FlinkPluginDependencyResult(
+      String classPath,
+      List<String> artifacts) {
+    this.classPath = classPath;
+    this.artifacts = artifacts;
   }
 
   @Override
@@ -46,7 +53,19 @@ public class DependencyPluginResult implements PluginResult<DependencyPluginResu
     return exception;
   }
 
-  public Map<String, String> getArtifactToPathMapping() {
-    return artifactToPathMapping;
+  public List<String> getArtifacts() {
+    return artifacts;
+  }
+
+  public void setArtifacts(List<String> artifacts) {
+    this.artifacts = artifacts;
+  }
+
+  public String getClassPath() {
+    return classPath;
+  }
+
+  public void setClassPath(String classPath) {
+    this.classPath = classPath;
   }
 }

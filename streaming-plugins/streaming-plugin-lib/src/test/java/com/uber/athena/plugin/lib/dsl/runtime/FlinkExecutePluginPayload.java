@@ -17,36 +17,26 @@
  *
  */
 
-package com.uber.athena.plugin.lib.dependencies.payload;
+package com.uber.athena.plugin.lib.dsl.runtime;
 
-import com.uber.athena.plugin.api.PluginResult;
-
-import java.util.Map;
+import com.uber.athena.plugin.api.PluginPayload;
+import org.apache.flink.runtime.jobgraph.JobGraph;
 
 /**
- * {@link PluginResult} for Flink DSL construct.
+ * Execution payload used to run the job graph.
  */
-public class DependencyPluginResult implements PluginResult<DependencyPluginResult> {
-  private Map<String, String> artifactToPathMapping;
-  private Throwable exception;
+public class FlinkExecutePluginPayload implements PluginPayload<FlinkExecutePluginPayload> {
+  private JobGraph jobGraph;
 
-  public DependencyPluginResult(
-      Map<String, String> artifactToPathMapping
-  ) {
-    this.artifactToPathMapping = artifactToPathMapping;
+  public FlinkExecutePluginPayload(JobGraph jobGraph) {
+    this.jobGraph = jobGraph;
   }
 
-  @Override
-  public void setException(Throwable e) {
-    this.exception = e;
+  public JobGraph getJobGraph() {
+    return jobGraph;
   }
 
-  @Override
-  public Throwable getException() {
-    return exception;
-  }
-
-  public Map<String, String> getArtifactToPathMapping() {
-    return artifactToPathMapping;
+  public void setJobGraph(JobGraph jobGraph) {
+    this.jobGraph = jobGraph;
   }
 }

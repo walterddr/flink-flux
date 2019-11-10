@@ -20,17 +20,17 @@
 package com.uber.athena.plugin.lib.dsl.payload;
 
 import com.uber.athena.plugin.api.PluginResult;
-import com.uber.athena.plugin.lib.utils.SerializationUtils;
+import com.uber.athena.plugin.utils.SerializationUtils;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 
 /**
  * {@link PluginResult} for Flink DSL construct.
  */
-public class FlinkPluginResult implements PluginResult<FlinkPluginResult> {
+public class FlinkPluginConstructionResult implements PluginResult<FlinkPluginConstructionResult> {
   private JobGraph jobGraph;
   private Throwable exception;
 
-  public FlinkPluginResult(JobGraph jobGraph) {
+  public FlinkPluginConstructionResult(JobGraph jobGraph) {
     this.jobGraph = jobGraph;
   }
 
@@ -40,7 +40,7 @@ public class FlinkPluginResult implements PluginResult<FlinkPluginResult> {
   }
 
   @Override
-  public FlinkPluginResult deserialize(byte[] serializedObj) throws Exception {
+  public FlinkPluginConstructionResult deserialize(byte[] serializedObj) throws Exception {
     return SerializationUtils.javaDeserialize(serializedObj);
   }
 

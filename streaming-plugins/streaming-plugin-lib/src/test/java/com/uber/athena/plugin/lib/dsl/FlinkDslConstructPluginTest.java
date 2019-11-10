@@ -22,24 +22,30 @@ package com.uber.athena.plugin.lib.dsl;
 import com.uber.athena.plugin.api.PluginResult;
 import com.uber.athena.plugin.executor.direct.DirectInvokeExecutor;
 import com.uber.athena.plugin.executor.process.ProcessExecutor;
-import com.uber.athena.plugin.lib.dsl.payload.FlinkPluginResult;
+import com.uber.athena.plugin.lib.dsl.payload.FlinkPluginConstructionResult;
 import com.uber.athena.plugin.payload.ExecutorPayloadImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
+
 /**
- * Test DSL plugins without invoking executor.
+ * Test DSL plugins and validate the results.
  */
-public class DslPluginTest extends DslPluginTestBase {
+public class FlinkDslConstructPluginTest extends DslPluginTestBase {
+
+  public FlinkDslConstructPluginTest(String name, File file) {
+    super(name, file);
+  }
 
   @Test
-  public void testDslPluginConstructorDirectInvoke() throws Exception {
+  public void testDslPluginConstructor() throws Exception {
     DirectInvokeExecutor executor = new DirectInvokeExecutor();
     PluginResult res = executor.run(new ExecutorPayloadImpl(
         FlinkDslConstructPlugin.class.getName(),
         generatePayload()));
-    Assert.assertTrue(res instanceof FlinkPluginResult);
-    Assert.assertNotNull(((FlinkPluginResult) res).getJobGraph());
+    Assert.assertTrue(res instanceof FlinkPluginConstructionResult);
+    Assert.assertNotNull(((FlinkPluginConstructionResult) res).getJobGraph());
   }
 
   @Test
@@ -48,7 +54,7 @@ public class DslPluginTest extends DslPluginTestBase {
     PluginResult res = executor.run(new ExecutorPayloadImpl(
         FlinkDslConstructPlugin.class.getName(),
         generatePayload()));
-    Assert.assertTrue(res instanceof FlinkPluginResult);
-    Assert.assertNotNull(((FlinkPluginResult) res).getJobGraph());
+    Assert.assertTrue(res instanceof FlinkPluginConstructionResult);
+    Assert.assertNotNull(((FlinkPluginConstructionResult) res).getJobGraph());
   }
 }
