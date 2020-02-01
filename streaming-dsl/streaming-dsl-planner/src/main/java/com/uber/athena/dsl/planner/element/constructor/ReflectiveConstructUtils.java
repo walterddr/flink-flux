@@ -185,7 +185,6 @@ public final class ReflectiveConstructUtils {
     return "set" + name.substring(0, 1).toUpperCase() + name.substring(1, name.length());
   }
 
-
   /**
    * Given a list of constructor arguments and target class, attempt to find a suitable constructor.
    *

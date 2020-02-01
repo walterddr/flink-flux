@@ -56,7 +56,6 @@ public final class DependencyResolverUtil {
   private DependencyResolverUtil() {
   }
 
-
   // --------------------------------------------------------------------------
   // Parsing arguments and printing system messages.
   // --------------------------------------------------------------------------
