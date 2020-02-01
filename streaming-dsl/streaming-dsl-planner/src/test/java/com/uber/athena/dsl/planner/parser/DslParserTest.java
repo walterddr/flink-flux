@@ -26,7 +26,6 @@ import org.junit.Test;
 
 import java.io.File;
 
-
 /**
  * Test for {@link Parser}.
  */
